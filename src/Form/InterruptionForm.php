@@ -18,7 +18,7 @@ class InterruptionForm extends AbstractType
             ->add('dateFinInt')
             ->add('formation', EntityType::class, [
                     'class' => Formation::class,
-                    'choice_label' => 'nom', // or a custom label like nom + numero
+                    'choice_label' => 'nom', // or create a getDisplayName() in Formation
                     'placeholder' => 'Choisir une formation'
             ])
         ;
