@@ -17,7 +17,7 @@ class Formation
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?bool $actif_formation = null;
+    private ?bool $actifFormation = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -29,19 +29,22 @@ class Formation
     private ?string $etat = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $titre_Professionnel = null;
+    private ?string $titreProfessionnel = null;
 
     #[ORM\Column]
     private ?int $niveau = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nb_Stagiaires_previsionnel = null;
+    private ?string $nbStagiairesPrevisionnel = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $groupe_rattachement = null;
+    private ?string $groupeRattachement = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_debut = null;
+    private ?\DateTime $dateDebut = null;
+
+     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    private ?\DateTime $dateFin = null;
 
     #[ORM\ManyToOne(inversedBy: 'formations')]
     #[ORM\JoinColumn(nullable: false)]
@@ -72,12 +75,12 @@ class Formation
 
     public function isActifFormation(): ?bool
     {
-        return $this->actif_formation;
+        return $this->actifFormation;
     }
 
-    public function setActifFormation(bool $actif_formation): static
+    public function setActifFormation(bool $actifFormation): static
     {
-        $this->actif_formation = $actif_formation;
+        $this->actifFormation = $actifFormation;
 
         return $this;
     }
@@ -120,12 +123,12 @@ class Formation
 
     public function getTitreProfessionnel(): ?string
     {
-        return $this->titre_Professionnel;
+        return $this->titreProfessionnel;
     }
 
-    public function setTitreProfessionnel(string $titre_Professionnel): static
+    public function setTitreProfessionnel(string $titreProfessionnel): static
     {
-        $this->titre_Professionnel = $titre_Professionnel;
+        $this->titreProfessionnel = $titreProfessionnel;
 
         return $this;
     }
@@ -144,39 +147,54 @@ class Formation
 
     public function getNbStagiairesPrevisionnel(): ?string
     {
-        return $this->nb_Stagiaires_previsionnel;
+        return $this->nbStagiairesPrevisionnel;
     }
 
-    public function setNbStagiairesPrevisionnel(string $nb_Stagiaires_previsionnel): static
+    public function setNbStagiairesPrevisionnel(string $nbStagiairesPrevisionnel): static
     {
-        $this->nb_Stagiaires_previsionnel = $nb_Stagiaires_previsionnel;
+        $this->nbStagiairesPrevisionnel = $nbStagiairesPrevisionnel;
 
         return $this;
     }
 
     public function getGroupeRattachement(): ?string
     {
-        return $this->groupe_rattachement;
+        return $this->groupeRattachement;
     }
 
     public function setGroupeRattachement(string $groupe_rattachement): static
     {
-        $this->groupe_rattachement = $groupe_rattachement;
+        $this->groupeRattachement = $groupe_rattachement;
 
         return $this;
     }
 
     public function getDateDebut(): ?\DateTime
     {
-        return $this->date_debut;
+        return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTime $date_debut): static
+    public function setDateDebut(\DateTime $dateDebut): static
     {
-        $this->date_debut = $date_debut;
+        $this->dateDebut = $dateDebut;
 
         return $this;
     }
+
+
+  public function getDateFin(): ?\DateTime
+    {
+        return $this->dateFin;
+    }
+
+    public function setDateFin(\DateTime $dateFin): static
+    {
+        $this->dateDebut = $dateFin;
+
+        return $this;
+    }
+
+
 
     public function getFormateur(): ?Formateur
     {

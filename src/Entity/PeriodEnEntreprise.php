@@ -15,10 +15,10 @@ class PeriodEnEntreprise
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_debut = null;
+    private ?\DateTime $dateDebut = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_fin = null;
+    private ?\DateTime $dateFin = null;
 
     #[ORM\ManyToOne(inversedBy: 'periodEnEntreprises')]
     #[ORM\JoinColumn(nullable: false)]
@@ -31,24 +31,24 @@ class PeriodEnEntreprise
 
     public function getDateDebut(): ?\DateTime
     {
-        return $this->date_debut;
+        return $this->dateDebut;
     }
 
-    public function setDateDebut(\DateTime $date_debut): static
+    public function setDateDebut(\DateTime $dateDebut): static
     {
-        $this->date_debut = $date_debut;
+        $this->dateDebut = $dateDebut;
 
         return $this;
     }
 
     public function getDateFin(): ?\DateTime
     {
-        return $this->date_fin;
+        return $this->dateFin;
     }
 
-    public function setDateFin(\DateTime $date_fin): static
+    public function setDateFin(\DateTime $dateFin): static
     {
-        $this->date_fin = $date_fin;
+        $this->dateFin = $dateFin;
 
         return $this;
     }

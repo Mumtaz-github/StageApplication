@@ -18,13 +18,13 @@ class JourFerie
     private ?string $date = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_JourFerie = null;
+    private ?\DateTime $dateJourFerie = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_debut_JourFerie = null;
+    private ?\DateTime $dateDebutJourFerie = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_finJourFerie = null;
+    private ?\DateTime $dateFinJourFerie = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -48,36 +48,36 @@ class JourFerie
 
     public function getDateJourFerie(): ?\DateTime
     {
-        return $this->date_JourFerie;
+        return $this->dateJourFerie;
     }
 
     public function setDateJourFerie(\DateTime $date_JourFerie): static
     {
-        $this->date_JourFerie = $date_JourFerie;
+        $this->dateJourFerie = $date_JourFerie;
 
         return $this;
     }
 
     public function getDateDebutJourFerie(): ?\DateTime
     {
-        return $this->date_debut_JourFerie;
+        return $this->dateDebutJourFerie;
     }
 
-    public function setDateDebutJourFerie(\DateTime $date_debut_JourFerie): static
+    public function setDateDebutJourFerie(\DateTime $dateDebutJourFerie): static
     {
-        $this->date_debut_JourFerie = $date_debut_JourFerie;
+        $this->dateDebutJourFerie = $dateDebutJourFerie;
 
         return $this;
     }
 
     public function getDateFinJourFerie(): ?\DateTime
     {
-        return $this->date_finJourFerie;
+        return $this->dateFinJourFerie;
     }
 
-    public function setDateFinJourFerie(\DateTime $date_finJourFerie): static
+    public function setDateFinJourFerie(\DateTime $dateFinJourFerie): static
     {
-        $this->date_finJourFerie = $date_finJourFerie;
+        $this->dateFinJourFerie = $dateFinJourFerie;
 
         return $this;
     }

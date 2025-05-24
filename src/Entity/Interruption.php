@@ -15,10 +15,10 @@ class Interruption
     private ?int $id = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_debut_int = null;
+    private ?\DateTime $dateDebutInt = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $date_fin_int = null;
+    private ?\DateTime $dateFinInt = null;
 
     #[ORM\ManyToOne(inversedBy: 'interruptions')]
     #[ORM\JoinColumn(nullable: false)]
@@ -31,24 +31,24 @@ class Interruption
 
     public function getDateDebutInt(): ?\DateTime
     {
-        return $this->date_debut_int;
+        return $this->dateDebutInt;
     }
 
-    public function setDateDebutInt(\DateTime $date_debut_int): static
+    public function setDateDebutInt(\DateTime $dateDebutInt): static
     {
-        $this->date_debut_int = $date_debut_int;
+        $this->dateDebutInt = $dateDebutInt;
 
         return $this;
     }
 
     public function getDateFinInt(): ?\DateTime
     {
-        return $this->date_fin_int;
+        return $this->dateFinInt;
     }
 
-    public function setDateFinInt(\DateTime $date_fin_int): static
+    public function setDateFinInt(\DateTime $dateFinInt): static
     {
-        $this->date_fin_int = $date_fin_int;
+        $this->dateFinInt = $dateFinInt;
 
         return $this;
     }

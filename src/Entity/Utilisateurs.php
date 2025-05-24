@@ -26,7 +26,7 @@ class Utilisateurs
     private ?string $role = null;
 
     #[ORM\Column]
-    private ?\DateTime $date_invitation = null;
+    private ?\DateTime $dateInvitation = null;
 
     public function getId(): ?int
     {
@@ -83,12 +83,12 @@ class Utilisateurs
 
     public function getDateInvitation(): ?\DateTime
     {
-        return $this->date_invitation;
+        return $this->dateInvitation;
     }
 
-    public function setDateInvitation(\DateTime $date_invitation): static
+    public function setDateInvitation(\DateTime $dateInvitation): static
     {
-        $this->date_invitation = $date_invitation;
+        $this->dateInvitation = $dateInvitation;
 
         return $this;
     }
