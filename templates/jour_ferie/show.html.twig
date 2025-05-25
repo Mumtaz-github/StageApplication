@@ -1,0 +1,42 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}JourFerie{% endblock %}
+
+{% block body %}
+    <h1>JourFerie</h1>
+
+    <table class="table">
+        <tbody>
+            <tr>
+                <th>Id</th>
+                <td>{{ jour_ferie.id }}</td>
+            </tr>
+            <tr>
+                <th>Date</th>
+                <td>{{ jour_ferie.date }}</td>
+            </tr>
+            <tr>
+                <th>DateJourFerie</th>
+                <td>{{ jour_ferie.dateJourFerie ? jour_ferie.dateJourFerie|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateDebutJourFerie</th>
+                <td>{{ jour_ferie.dateDebutJourFerie ? jour_ferie.dateDebutJourFerie|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>DateFinJourFerie</th>
+                <td>{{ jour_ferie.dateFinJourFerie ? jour_ferie.dateFinJourFerie|date('Y-m-d') : '' }}</td>
+            </tr>
+            <tr>
+                <th>Nom</th>
+                <td>{{ jour_ferie.nom }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_jour_ferie_index') }}">back to list</a>
+
+    <a href="{{ path('app_jour_ferie_edit', {'id': jour_ferie.id}) }}">edit</a>
+
+    {{ include('jour_ferie/_delete_form.html.twig') }}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Liste des Jours Fériés
+{% endblock %}
+
+{% block body %}
+	<h1>Liste des Jours Fériés</h1>
+
+	<table class="table table-striped table-hover">
+		<thead>
+			<tr>
+				<th scope="col">Id</th>
+				<th scope="col">Date</th>
+				<th scope="col">Année</th>
+				<th scope="col">Zone</th>
+				<th scope="col">Nom</th>
+				<th scope="col">Actions</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for jour_ferie in jour_feries %}
+				<tr>
+					<td>{{ jour_ferie.id }}</td>
+					<td>{{ jour_ferie.date ? jour_ferie.date|date('d/m/Y') : '' }}</td>
+					<td>{{ jour_ferie.annee }}</td>
+					<td>{{ jour_ferie.zone }}</td>
+					<td>{{ jour_ferie.nom }}</td>
+					<td>
+						<div class="btn-group" role="group">
+							<a href="{{ path('app_jour_ferie_show', {'id': jour_ferie.id}) }}" class="btn btn-sm btn-info">Voir</a>
+							<a href="{{ path('app_jour_ferie_edit', {'id': jour_ferie.id}) }}" class="btn btn-sm btn-warning">Modifier</a>
+						</div>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="6" class="text-center">Aucun jour férié trouvé</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+
+	<a href="{{ path('app_jour_ferie_new') }}" class="btn btn-primary">
+		<i class="fas fa-plus"></i>
+		Ajouter un jour férié
+	</a>
+{% endblock %}
