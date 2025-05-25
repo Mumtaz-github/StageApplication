@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\JourFerieRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: JourFerieRepository::class)]
@@ -14,17 +13,15 @@ class JourFerie
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    // Change this from DATE_MUTABLE + DateTimeInterface to string
+    #[ORM\Column(type: 'string', length: 10)]  // Assuming format 'YYYY-MM-DD'
     private ?string $date = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateJourFerie = null;
+    #[ORM\Column(length: 4)]
+    private ?string $annee = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateDebutJourFerie = null;
-
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateFinJourFerie = null;
+    #[ORM\Column(length: 50)]
+    private ?string $zone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -42,43 +39,28 @@ class JourFerie
     public function setDate(string $date): static
     {
         $this->date = $date;
-
         return $this;
     }
 
-    public function getDateJourFerie(): ?\DateTime
+    public function getAnnee(): ?string
     {
-        return $this->dateJourFerie;
+        return $this->annee;
     }
 
-    public function setDateJourFerie(\DateTime $date_JourFerie): static
+    public function setAnnee(string $annee): static
     {
-        $this->dateJourFerie = $date_JourFerie;
-
+        $this->annee = $annee;
         return $this;
     }
 
-    public function getDateDebutJourFerie(): ?\DateTime
+    public function getZone(): ?string
     {
-        return $this->dateDebutJourFerie;
+        return $this->zone;
     }
 
-    public function setDateDebutJourFerie(\DateTime $dateDebutJourFerie): static
+    public function setZone(string $zone): static
     {
-        $this->dateDebutJourFerie = $dateDebutJourFerie;
-
-        return $this;
-    }
-
-    public function getDateFinJourFerie(): ?\DateTime
-    {
-        return $this->dateFinJourFerie;
-    }
-
-    public function setDateFinJourFerie(\DateTime $dateFinJourFerie): static
-    {
-        $this->dateFinJourFerie = $dateFinJourFerie;
-
+        $this->zone = $zone;
         return $this;
     }
 
@@ -90,7 +72,92 @@ class JourFerie
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 }
+
+
+
+
+
+
+
+
+
+
+// namespace App\Entity;
+
+// use App\Repository\JourFerieRepository;
+// use Doctrine\DBAL\Types\Types;
+// use Doctrine\ORM\Mapping as ORM;
+
+// #[ORM\Entity(repositoryClass: JourFerieRepository::class)]
+// class JourFerie
+// {
+//     #[ORM\Id]
+//     #[ORM\GeneratedValue]
+//     #[ORM\Column]
+//     private ?int $id = null;
+
+//     #[ORM\Column(type: Types::DATE_MUTABLE)]
+//     private ?\DateTimeInterface $date = null;
+
+//     #[ORM\Column(length: 4)]
+//     private ?string $annee = null;
+
+//     #[ORM\Column(length: 50)]
+//     private ?string $zone = null;
+
+//     #[ORM\Column(length: 255)]
+//     private ?string $nom = null;
+
+//     public function getId(): ?int
+//     {
+//         return $this->id;
+//     }
+
+//     public function getDate(): ?\DateTimeInterface
+//     {
+//         return $this->date;
+//     }
+
+//     public function setDate(\DateTimeInterface $date): static
+//     {
+//         $this->date = $date;
+//         return $this;
+//     }
+
+//     public function getAnnee(): ?string
+//     {
+//         return $this->annee;
+//     }
+
+//     public function setAnnee(string $annee): static
+//     {
+//         $this->annee = $annee;
+//         return $this;
+//     }
+
+//     public function getZone(): ?string
+//     {
+//         return $this->zone;
+//     }
+
+//     public function setZone(string $zone): static
+//     {
+//         $this->zone = $zone;
+//         return $this;
+//     }
+
+//     public function getNom(): ?string
+//     {
+//         return $this->nom;
+//     }
+
+//     public function setNom(string $nom): static
+//     {
+//         $this->nom = $nom;
+//         return $this;
+//     }
+// }
+
