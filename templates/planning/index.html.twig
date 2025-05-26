@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Planning des formations{% endblock %}
+
+{% block body %}
+    <h1>Planning des formations</h1>
+
+    <div id="gantt"></div>
+
+    <script>
+        const tasks = [
+            {% for formation in formations %}
+                {
+                    id: '{{ formation.id }}',
+                    name: '{{ formation.nom|e('js') }}',
+                    start: '{{ formation.dateDebut|date('Y-m-d') }}',
+                    end: '{{ formation.dateFin|date('Y-m-d') }}',
+                    progress: 100,
+                    custom_class: 'bar-class'
+                },
+            {% endfor %}
+        ];
+
+        const gantt = new Gantt("#gantt", tasks, {
+            view_mode: 'Month',
+            date_format: 'YYYY-MM-DD',
+            custom_popup_html: function(task) {
+                return `<div class="details">
+                          <strong>${task.name}</strong><br>
+                          Du ${task.start} au ${task.end}
+                        </div>`;
+            }
+        });
+    </script>
+
+
+
+    <style>
+        #gantt {
+            overflow-x: scroll;
+            padding: 20px;
+        }
+        .bar-class {
+            fill:rgb(175, 96, 43);  /*#6c63ff*/
+        }
+    </style>
+{% endblock %}
+

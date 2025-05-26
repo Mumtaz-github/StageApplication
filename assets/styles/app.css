@@ -1,3 +1,22 @@
 body {
-    background-color: skyblue;
+    background-color: rgb(226, 213, 189);
+}
+
+
+.nav-link {
+  color: black;
+  font-size: 20px;
+  font-weight: 300;
+  font-weight: bolder;
+  padding: 10px 15px;
+  margin: 5px 0;
+}
+
+.nav-link.active {
+  font-weight: bold;
+  background-color: #ff8c00;
+  border-radius: 5px;
+}
+.navbar {
+  background-color: #9e363a; /*#00c9a7, rgb(228, 65, 65) #9e363a*/
 }
