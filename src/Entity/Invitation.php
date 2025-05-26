@@ -20,7 +20,7 @@ class Invitation
     private ?string $token = null;
 
     #[ORM\Column]
-    private ?\DateTime $expiresAT = null;
+    private ?\DateTime $expiresAt = null;
 
     #[ORM\Column]
     private ?bool $used = null;
@@ -54,14 +54,14 @@ class Invitation
         return $this;
     }
 
-    public function getExpiresAT(): ?\DateTime
+    public function getExpiresAt(): ?\DateTime
     {
-        return $this->expiresAT;
+        return $this->expiresAt;
     }
 
-    public function setExpiresAT(\DateTime $expiresAT): static
+    public function setExpiresAt(\DateTime $expiresAt): static
     {
-        $this->expiresAT = $expiresAT;
+        $this->expiresAt = $expiresAt;
 
         return $this;
     }
