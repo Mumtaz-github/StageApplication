@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250526082616 extends AbstractMigration
+final class Version20250526225635 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -36,7 +36,10 @@ final class Version20250526082616 extends AbstractMigration
             CREATE INDEX IDX_F9511BC05200282E ON interruption (formation_id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE jour_ferie (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date VARCHAR(10) NOT NULL, annee VARCHAR(4) NOT NULL, zone VARCHAR(50) NOT NULL, nom VARCHAR(255) NOT NULL)
+            CREATE TABLE invitation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, email VARCHAR(255) NOT NULL, role VARCHAR(50) NOT NULL, token VARCHAR(255) NOT NULL, expires_at DATETIME NOT NULL, used BOOLEAN NOT NULL)
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE TABLE jour_ferie (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date DATE NOT NULL, annee VARCHAR(4) NOT NULL, zone VARCHAR(50) NOT NULL, nom VARCHAR(255) NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE period_en_entreprise (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, formation_id INTEGER NOT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL, CONSTRAINT FK_92E223D25200282E FOREIGN KEY (formation_id) REFERENCES formation (id) NOT DEFERRABLE INITIALLY IMMEDIATE)
@@ -78,6 +81,9 @@ final class Version20250526082616 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE interruption
+        SQL);
+        $this->addSql(<<<'SQL'
+            DROP TABLE invitation
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE jour_ferie

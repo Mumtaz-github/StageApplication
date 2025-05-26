@@ -1,11 +1,17 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}New Invitation{% endblock %}
+{% block title %}New Invitation
+{% endblock %}
 
 {% block body %}
-    <h1>Create new Invitation</h1>
+	<div class="container mt-5">
 
-    {{ include('invitation/_form.html.twig') }}
+		<h1 class="text-center mb-4">Create new Invitation</h1>
 
-    <a href="{{ path('app_invitation_index') }}">back to list</a>
+		<div class="mb-4">
+			{{ include('invitation/_form.html.twig') }}
+		</div>
+
+		<a href="{{ path('app_invitation_index') }}" class="btn btn-secondary">Back to List</a>
+	</div>
 {% endblock %}

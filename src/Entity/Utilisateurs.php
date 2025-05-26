@@ -1,14 +1,14 @@
 <?php
 
-
 namespace App\Entity;
 
 use App\Repository\UtilisateursRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UtilisateursRepository::class)]
-class Utilisateurs implements UserInterface
+class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
@@ -46,7 +46,6 @@ class Utilisateurs implements UserInterface
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -58,7 +57,6 @@ class Utilisateurs implements UserInterface
     public function setPrenom(string $prenom): static
     {
         $this->prenom = $prenom;
-
         return $this;
     }
 
@@ -70,7 +68,6 @@ class Utilisateurs implements UserInterface
     public function setEmail(string $email): static
     {
         $this->email = $email;
-
         return $this;
     }
 
@@ -82,7 +79,6 @@ class Utilisateurs implements UserInterface
     public function setRole(string $role): static
     {
         $this->role = $role;
-
         return $this;
     }
 
@@ -94,17 +90,10 @@ class Utilisateurs implements UserInterface
     public function setDateInvitation(\DateTime $dateInvitation): static
     {
         $this->dateInvitation = $dateInvitation;
-
         return $this;
     }
 
-    // UserInterface methods
-    public function getRoles(): array
-    {
-        // Ensure we always return an array
-        return [$this->role ?: 'ROLE_USER'];
-    }
-
+    // Needed for PasswordAuthenticatedUserInterface
     public function getPassword(): string
     {
         return $this->password;
@@ -116,15 +105,10 @@ class Utilisateurs implements UserInterface
         return $this;
     }
 
-    public function getSalt(): ?string
+    public function getRoles(): array
     {
-        // Not needed when using modern hashing algorithms (like bcrypt)
-        return null;
-    }
-
-    public function getUsername(): string
-    {
-        return $this->email;
+        // Wrap the string role into an array for Symfony
+        return [$this->role ?: 'ROLE_USER'];
     }
 
     public function getUserIdentifier(): string
@@ -132,9 +116,15 @@ class Utilisateurs implements UserInterface
         return $this->email;
     }
 
-    public function eraseCredentials()
+    public function getSalt(): ?string
     {
-        // If you store any temporary, sensitive data on the user, clear it here
+        // No salt needed with modern algorithms (bcrypt, sodium)
+        return null;
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Clear sensitive data if needed
     }
 }
 

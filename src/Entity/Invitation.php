@@ -16,6 +16,9 @@ class Invitation
     #[ORM\Column(length: 255)]
     private ?string $email = null;
 
+    #[ORM\Column(length: 50)]
+     private ?string $role = null;
+
     #[ORM\Column(length: 255)]
     private ?string $token = null;
 
@@ -41,6 +44,16 @@ class Invitation
 
         return $this;
     }
+    public function getRole(): ?string
+{
+    return $this->role;
+}
+
+public function setRole(string $role): static
+{
+    $this->role = $role;
+    return $this;
+}
 
     public function getToken(): ?string
     {

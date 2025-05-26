@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
+use App\Entity\Utilisateurs;
 use App\Entity\Invitation;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -27,21 +27,20 @@ class RegistrationController extends AbstractController
             throw $this->createNotFoundException('Lien invalide ou expiré.');
         }
 
-        $user = new User();
-        $user->setEmail($invitation->getEmail());
+        $utilisateur = new Utilisateurs();
+        $utilisateur->setEmail($invitation->getEmail());
+        $utilisateur->setRole('$invitation->getRole'); 
+        $utilisateur->setDateInvitation(new \DateTime()); // Register date
 
-        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form = $this->createForm(RegistrationFormType::class, $utilisateur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $user->setPassword(
-                $passwordHasher->hashPassword($user, $form->get('plainPassword')->getData())
+            $utilisateur->setPassword(
+                $passwordHasher->hashPassword($utilisateur, $form->get('plainPassword')->getData())
             );
 
-            // Set a default role, if needed
-            $user->setRoles(['ROLE_GESTIONNAIRE']); // Optional default role
-
-            $em->persist($user);
+            $em->persist($utilisateur);
             $invitation->setUsed(true);
             $em->flush();
 
@@ -56,6 +55,7 @@ class RegistrationController extends AbstractController
         ]);
     }
 }
+
 
 
 // namespace App\Controller;
