@@ -1,38 +1,75 @@
 <?php
 
+
 namespace App\Form;
 
 use App\Entity\Formateur;
 use App\Entity\Formation;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\IntegerType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class FormationForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('actifFormation')
-            ->add('nom')
-            ->add('numero')
-            ->add('etat')
-            ->add('titreProfessionnel')
-            ->add('niveau')
-            ->add('nbStagiairesPrevisionnel')
-            ->add('groupeRattachement')
-            ->add('dateDebut', DateType::class, ['widget' => 'single_text'])
-            ->add('dateFin', DateType::class, ['widget' => 'single_text'])
+            ->add('actifFormation', null, [
+                'label' => 'Formation active',
+                'attr' => ['class' => 'form-check-input']
+            ])
+            ->add('nom', TextType::class, [
+                'label' => 'Nom de la formation',
+                'constraints' => [new NotBlank()],
+                'attr' => ['placeholder' => 'Ex: Développement Web Avancé']
+            ])
+            ->add('numero', TextType::class, [
+                'label' => 'Numéro de formation',
+                'required' => false,
+                'attr' => ['placeholder' => 'Optionnel']
+            ])
+            ->add('etat', TextType::class, [
+                'label' => 'État',
+                'attr' => ['placeholder' => 'Ex: En cours de validation']
+            ])
+            ->add('titreProfessionnel', TextType::class, [
+                'label' => 'Titre professionnel',
+                'required' => false
+            ])
+            ->add('niveau', IntegerType::class, [
+                'label' => 'Niveau',
+                'attr' => ['min' => 1, 'max' => 5]
+            ])
+            ->add('nbStagiairesPrevisionnel', IntegerType::class, [
+                'label' => 'Nombre de stagiaires',
+                'attr' => ['min' => 1]
+            ])
+            ->add('groupeRattachement', TextType::class, [
+                'label' => 'Groupe de rattachement'
+            ])
+            ->add('dateDebut', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de début',
+                'html5' => true
+            ])
+            ->add('dateFin', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de fin',
+                'html5' => true
+            ])
             ->add('formateur', EntityType::class, [
-    'class' => Formateur::class,
-    'choice_label' => function (Formateur $formateur) {
-        return $formateur->getNom() . ' ' . $formateur->getPrenom(); // shows the instructor's full name
-    },
-    'placeholder' => 'Sélectionner un formateur',
-
-
+                'class' => Formateur::class,
+                'choice_label' => function (Formateur $formateur) {
+                    return $formateur->getPrenom() . ' ' . $formateur->getNom();
+                },
+                'label' => 'Formateur',
+                'placeholder' => 'Sélectionner un formateur',
+                'attr' => ['class' => 'select2']
             ]);
     }
 
@@ -40,6 +77,13 @@ class FormationForm extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Formation::class,
+            'attr' => ['novalidate' => 'novalidate']
         ]);
     }
 }
+
+
+
+
+
+

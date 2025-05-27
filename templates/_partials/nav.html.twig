@@ -1,56 +1,70 @@
-<nav class="navbar navbar-expand-lg bg-body-tertiary">
-  <div class="container-fluid">
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+	<div class="container-fluid">
+		{# <a class="navbar-brand" href="{{ path('app_planning') }}">Planning App</a> #}
 
+		<!-- Mobile Toggler -->
+			<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent" aria-expanded="false"> <span class="navbar-toggler-icon"></span>
+		</button>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-        {# <a class="navbar-brand" href="{{ path('app_planning') }}">
-        <img src="{{ asset('upload/logo.png') }}" alt="logo" width="150" height="140">
-        </a> #}
+		<!-- Navbar Content -->
+		<div class="collapse navbar-collapse" id="navbarContent">
+			<ul
+				class="navbar-nav me-auto mb-2 mb-lg-0">
+				<!-- Common Links -->
+				<li class="nav-item">
+					<a class="nav-link" href="{{ path('app_planning') }}">🗓️ Planning</a>
+				</li>
 
-    <div class="collapse navbar-collapse d-none d-lg-flex" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+				<!-- Admin Links -->
+				{% if is_granted('ROLE_ADMIN') %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_invitation_new') }}">👤 Invitations</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_formation_index') }}">🎓 Formations</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_jour_ferie_index') }}">🌴 Jours Fériés</a>
+					</li>
+				{% endif %}
+			</ul>
 
-        <li class="nav-item">
-          <a class="nav-link mx-md-4" aria-current="page" href="{{ path('app_planning') }}">🗓️Planning</a>
-        </li>
-      
+			<!-- Right Side - User Section -->
+			<ul class="navbar-nav ms-auto">
+				{% if app.user %}
+					<!-- User Dropdown -->
+					<li class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+							👤
+							{{ app.user.prenom }}
+						</a>
+						<ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
+							<li>
+								<a class="dropdown-item" href="{{ path('app_profile') }}">Mon Profil</a>
+							</li>
+							<li><hr class="dropdown-divider"></li>
+							<li>
+								<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+									<i class="fas fa-power-off me-2"></i>
+									Déconnexion
+								</a>
+							</li>
+						</ul>
+					</li>
 
-      {% if is_granted('ROLE_ADMIN') %}
-      <li class="nav-item">
-    <a class="nav-link mx-md-4" href="{{ path('app_invitation_new') }}">👤Inviter un utilisateur</a>
- 
-       <li class="nav-item">
-          <a class="nav-link mx-md-4" href="{{ path('app_formation_index') }}">🎓Formation</a>
-        </li>
-        
-        <li class="nav-item">
-          <a class="nav-link mx-md-4" href="{{ path('app_jour_ferie_index') }}">🌴🍹🍉⛱️🥥Jours Ferie</a>
-        </li>
-        
-        {% elseif is_granted('ROLE_GESTIONNAIRE') %}
-        <li class="nav-item">
-          <a class="nav-link mx-md-4" href="{{path('app_formation_index') }}">👨🏻‍🎓Mes Formation</a>
-        </li>
-          {% endif %}
-      </ul>
-
-            <ul class="navbar-nav ms-auto">
-            {% if app.user %}
-            <li class="nav-item">
-            <a class="nav-link" href="#"👤 {{ app.user.userIdentifier }} </a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link text-danger" href="{{ path('app_logout') }}">🔓Déconnexion</a>
-            </li>
-            {% else %}
-            <li class="nav-item">
-            <a class="nav-link" href="{{ path('app_login') }}">🔑CONNEXION</a>
-            </li>
-            {% endif %}
-            </ul>
-     
-    </div>
-  </div>
+					<!-- Always visible logout -->
+					<li class="nav-item d-block d-lg-none">
+						<a class="nav-link text-danger" href="{{ path('app_logout') }}">
+							<i class="fas fa-power-off me-2"></i>
+							Déconnexion
+						</a>
+					</li>
+				{% else %}
+					<li class="nav-item">
+						<a class="nav-link" href="{{ path('app_login') }}">🔑 Connexion</a>
+					</li>
+				{% endif %}
+			</ul>
+		</div>
+	</div>
 </nav>

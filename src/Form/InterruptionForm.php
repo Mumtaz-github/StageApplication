@@ -1,27 +1,45 @@
 <?php
 
+
 namespace App\Form;
 
 use App\Entity\Formation;
 use App\Entity\Interruption;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Validator\Constraints\LessThanOrEqual;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class InterruptionForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('dateDebutInt')
-            ->add('dateFinInt')
-            ->add('formation', EntityType::class, [
-                    'class' => Formation::class,
-                    'choice_label' => 'nom', // or create a getDisplayName() in Formation
-                    'placeholder' => 'Choisir une formation'
+            ->add('dateDebutInt', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de début',
+                'constraints' => [
+                    new NotBlank(),
+                    new LessThanOrEqual([
+                        'propertyPath' => 'parent.all[dateFinInt].data',
+                        'message' => 'La date de début doit être avant la date de fin'
+                    ])
+                ]
             ])
-        ;
+            ->add('dateFinInt', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de fin'
+            ])
+            ->add('formation', EntityType::class, [
+                'class' => Formation::class,
+                'choice_label' => 'nom',
+                'label' => 'Formation associée',
+                'placeholder' => 'Choisir une formation',
+                'constraints' => [new NotBlank()]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void
@@ -31,3 +49,14 @@ class InterruptionForm extends AbstractType
         ]);
     }
 }
+
+
+
+
+
+
+
+
+
+
+

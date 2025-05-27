@@ -35,7 +35,7 @@ class Formation
     private ?int $niveau = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $nbStagiairesPrevisionnel = null;
+    private ?int $nbStagiairesPrevisionnel = null;
 
     #[ORM\Column(length: 255)]
     private ?string $groupeRattachement = null;
