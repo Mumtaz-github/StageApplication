@@ -21,18 +21,32 @@ class UsersAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator) {}
+    private UrlGeneratorInterface $urlGenerator;
+
+    public function __construct(UrlGeneratorInterface $urlGenerator)
+    {
+        $this->urlGenerator = $urlGenerator;
+    }
+
+    public function supports(Request $request): bool
+    {
+        return $request->attributes->get('_route') === self::LOGIN_ROUTE
+            && $request->isMethod('POST');
+    }
 
     public function authenticate(Request $request): Passport
     {
         $email = $request->getPayload()->getString('email');
+        $password = $request->getPayload()->getString('password');
+        $csrfToken = $request->getPayload()->getString('_csrf_token');
+
         $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
         return new Passport(
             new UserBadge($email),
-            new PasswordCredentials($request->getPayload()->getString('password')),
+            new PasswordCredentials($password),
             [
-                new CsrfTokenBadge('authenticate', $request->getPayload()->getString('_csrf_token')),
+                new CsrfTokenBadge('authenticate', $csrfToken),
             ]
         );
     }
@@ -58,6 +72,7 @@ class UsersAuthenticator extends AbstractLoginFormAuthenticator
             return new RedirectResponse($this->urlGenerator->generate('app_planning'));
         }
 
+        // Default fallback
         return new RedirectResponse($this->urlGenerator->generate(self::LOGIN_ROUTE));
     }
 
