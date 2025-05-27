@@ -1,43 +1,56 @@
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
   <div class="container-fluid">
-    <a class="navbar-brand" href="#">Navbar</a>
+
+
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="{{ path('app_planning') }}">Planning</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="#">Link</a>
-        </li>
-        <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-            Dropdown
-          </a>
-          <ul class="dropdown-menu">
-            <li><a class="dropdown-item" href="#">Action</a></li>
-            <li><a class="dropdown-item" href="#">Another action</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#">Something else here</a></li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link" href="{{path('app_login') }}">Connexion</a>
-        </li>
-      </ul>
-      {% if is_granted('ROLE_ADMIN') %}
-    <a class="nav-link" href="{{ path('app_invite_user') }}">Inviter un utilisateur</a>
-{% endif %}
+        <a class="navbar-brand" href="{{ path('app_planning') }}">
+        <img src="{{ asset('upload/logo.png') }}" alt="logo" width="150" height="140">
+        </a>
 
-      {# <form class="d-flex" role="search">
-        <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search"/>
-        <button class="btn btn-outline-success" type="submit">Search</button>
-      </form> #}
+    <div class="collapse navbar-collapse d-none d-lg-flex" id="navbarSupportedContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+        <li class="nav-item">
+          <a class="nav-link mx-md-4" aria-current="page" href="{{ path('app_planning') }}">🗓️Planning</a>
+        </li>
+      
+
+      {% if is_granted('ROLE_ADMIN') %}
+      <li class="nav-item">
+    <a class="nav-link mx-md-4" href="{{ path('app_invitation_new') }}">👤Inviter un utilisateur</a>
+ 
+       <li class="nav-item">
+          <a class="nav-link mx-md-4" href="{{ path('app_formation_index') }}">🎓Formation</a>
+        </li>
+        
+        <li class="nav-item">
+          <a class="nav-link mx-md-4" href="{{ path('app_jour_ferie_index') }}">🌴🍹🍉⛱️🥥Jours Ferie</a>
+        </li>
+        
+        {% elseif is_granted('ROLE_GESTIONNAIRE') %}
+        <li class="nav-item">
+          <a class="nav-link mx-md-4" href="{{path('app_formation_index') }}">👨🏻‍🎓Mes Formation</a>
+        </li>
+          {% endif %}
+      </ul>
+
+            <ul class="navbar-nav ms-auto">
+            {% if app.user %}
+            <li class="nav-item">
+            <a class="nav-link" href="#"👤 {{ app.user.userIdentifier }} </a>
+            </li>
+            <li class="nav-item">
+            <a class="nav-link text-danger" href="{{ path('app_logout') }}">🔓Déconnexion</a>
+            </li>
+            {% else %}
+            <li class="nav-item">
+            <a class="nav-link" href="{{ path('app_login') }}">🔑CONNEXION</a>
+            </li>
+            {% endif %}
+            </ul>
+     
     </div>
   </div>
 </nav>

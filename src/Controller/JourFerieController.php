@@ -15,10 +15,25 @@ use Symfony\Component\Routing\Attribute\Route;
 final class JourFerieController extends AbstractController
 {
     #[Route(name: 'app_jour_ferie_index', methods: ['GET'])]
-    public function index(JourFerieRepository $jourFerieRepository): Response
+    public function index(JourFerieRepository $jourFerieRepository, Request $request): Response
     {
+        $zone = $request->query->get('zone');
+        $annee = $request->query->get('annee');
+
+        $criteria = [];
+
+        if ($zone) {
+            $criteria['zone'] = $zone;
+        }
+
+        if ($annee) {
+            $criteria['annee'] = $annee;
+        }
+
+        $jourFeries = $jourFerieRepository->findBy($criteria, ['date' => 'ASC']);
+
         return $this->render('jour_ferie/index.html.twig', [
-            'jour_feries' => $jourFerieRepository->findAll(),
+            'jour_feries' => $jourFeries,
         ]);
     }
 
@@ -33,7 +48,7 @@ final class JourFerieController extends AbstractController
             $entityManager->persist($jourFerie);
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_jour_ferie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_jour_ferie_index');
         }
 
         return $this->render('jour_ferie/new.html.twig', [
@@ -59,7 +74,7 @@ final class JourFerieController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
-            return $this->redirectToRoute('app_jour_ferie_index', [], Response::HTTP_SEE_OTHER);
+            return $this->redirectToRoute('app_jour_ferie_index');
         }
 
         return $this->render('jour_ferie/edit.html.twig', [
@@ -71,11 +86,12 @@ final class JourFerieController extends AbstractController
     #[Route('/{id}', name: 'app_jour_ferie_delete', methods: ['POST'])]
     public function delete(Request $request, JourFerie $jourFerie, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$jourFerie->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $jourFerie->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($jourFerie);
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('app_jour_ferie_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('app_jour_ferie_index');
     }
 }
+

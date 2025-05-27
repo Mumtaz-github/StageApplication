@@ -1,28 +1,66 @@
 <?php
+
 namespace App\Service;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class JourFerieFetcher
 {
     private HttpClientInterface $client;
+    private ?LoggerInterface $logger;
 
-    public function __construct(HttpClientInterface $client)
+    public function __construct(HttpClientInterface $client, ?LoggerInterface $logger = null)
     {
         $this->client = $client;
+        $this->logger = $logger;
     }
 
-    public function fetchHolidays(int $year = null, string $zone = 'metropole'): array
+    public function fetchAllZones(int $year): array
     {
-        $year = $year ?? date('Y');
-        $url = "https://calendrier.api.gouv.fr/jours-feries/{$zone}/{$year}.json";
+        $zones = [
+            'metropole',
+            'guadeloupe',
+            'guyane',
+            'martinique',
+            'mayotte',
+            'la-reunion',
+            'saint-barthelemy',
+            'saint-martin',
+            'saint-pierre-et-miquelon',
+            'wallis-et-futuna',
+            'nouvelle-caledonie',
+            'alsace-moselle',
+            'polynesie-francaise',
+        ];
 
-        $response = $this->client->request('GET', $url);
+        $all = [];
 
-        if ($response->getStatusCode() !== 200) {
-            throw new \RuntimeException("Failed to fetch holidays for year {$year}");
+        foreach ($zones as $zone) {
+            $url = "https://calendrier.api.gouv.fr/jours-feries/{$zone}/{$year}.json";
+
+            try {
+                $response = $this->client->request('GET', $url);
+
+                if ($response->getStatusCode() !== 200) {
+                    $content = $response->getContent(false);
+                    throw new \RuntimeException("HTTP {$response->getStatusCode()} - Response: {$content}");
+                }
+
+                $data = $response->toArray();
+
+                foreach ($data as $date => $name) {
+                    $all[] = [
+                        'date' => $date,
+                        'nom' => $name,
+                        'zone' => $zone,
+                    ];
+                }
+            } catch (\Throwable $e) {
+                $this->logger?->error("Failed to fetch holidays for zone '{$zone}' and year {$year}: " . $e->getMessage());
+            }
         }
 
-        return $response->toArray();
+        return $all;
     }
 }

@@ -2,29 +2,44 @@
     .table {
         table-layout: fixed;
         width: 100%;
-        border-collapse: collapse; /* remove double borders */
-        box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* subtle shadow */
+        border-collapse: collapse;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     }
     .table th, .table td {
         width: 16.66%;
         text-align: center;
         vertical-align: middle;
         padding: 0.75rem 1rem;
-        border: 1px solid #dee2e6; /* light border */
+        border: 1px solid #dee2e6;
         word-wrap: break-word;
     }
     .table thead th {
-        background-color: #f8f9fa; /* light gray header */
-        border-bottom: 2px solid #adb5bd; /* thicker border under header */
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #adb5bd;
     }
     .table tbody tr:hover {
-        background-color: #e9f5ff; /* subtle blue hover effect */
+        background-color: #e9f5ff;
         cursor: pointer;
     }
     .btn-group a.btn {
-        min-width: 60px; /* make action buttons uniform size */
+        min-width: 70px;
     }
 </style>
+
+<h1 class="my-4">Liste des Jours Fériés</h1>
+
+<form method="get" class="mb-3 d-flex align-items-center gap-3 flex-wrap">
+    <div>
+        <label for="zone">Zone:</label>
+        <select name="zone" id="zone" class="form-select" onchange="this.form.submit()">
+            <option value="">-- Toutes --</option>
+            {% for zone in ['metropole', 'guadeloupe', 'guyane', 'martinique', 'mayotte', 'reunion', 'saint_barthelemy', 'saint_martin', 
+                  'saint_pierre_et_miquelon', 'wallis_et_futuna','nouvelle-caledonie','polynesie-francaise','alsace-moselle'] %}
+                <option value="{{ zone }}" {{ app.request.get('zone') == zone ? 'selected' : '' }}>{{ zone|capitalize }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
 
 <div class="table-responsive">
     <table class="table table-striped table-hover">
@@ -42,30 +57,20 @@
             {% for jour_ferie in jour_feries %}
                 <tr>
                     <td>{{ jour_ferie.id }}</td>
-                    <td>
-                        {% if jour_ferie.date is not null %}
-                            {{ jour_ferie.date|date('d/m/Y') }}
-                        {% else %}
-                            N/A
-                        {% endif %}
-                    </td>
+                    <td>{{ jour_ferie.date ? jour_ferie.date|date('d/m/Y') : 'N/A' }}</td>
                     <td>{{ jour_ferie.annee }}</td>
                     <td>{{ jour_ferie.zone }}</td>
                     <td>{{ jour_ferie.nom }}</td>
                     <td>
                         <div class="btn-group" role="group">
-						<a href="{{ path('app_jour_ferie_show', {'id': jour_ferie.id}) }}" class="btn btn-info rounded-pill">Voir</a>
-						<a href="{{ path('app_jour_ferie_edit', {'id': jour_ferie.id}) }}" class="btn btn-warning rounded-pill">Modifier</a>
-
-
-							{#   <a href="{{ path('app_jour_ferie_show', {'id': jour_ferie.id}) }}" class="btn btn-sm btn-info">Voir</a>
-                            <a href="{{ path('app_jour_ferie_edit', {'id': jour_ferie.id}) }}" class="btn btn-sm btn-warning">Modifier</a>#}
+                            <a href="{{ path('app_jour_ferie_show', {'id': jour_ferie.id}) }}" class="btn btn-info rounded-pill">Voir</a>
+                            <a href="{{ path('app_jour_ferie_edit', {'id': jour_ferie.id}) }}" class="btn btn-warning rounded-pill">Modifier</a>
                         </div>
                     </td>
                 </tr>
             {% else %}
                 <tr>
-                    <td colspan="6" class="text-center">Aucun jour férié trouvé</td>
+                    <td colspan="6" class="text-center text-muted">Aucun jour férié trouvé pour cette zone.</td>
                 </tr>
             {% endfor %}
         </tbody>
