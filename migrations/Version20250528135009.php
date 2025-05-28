@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250528092544 extends AbstractMigration
+final class Version20250528135009 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -24,10 +24,16 @@ final class Version20250528092544 extends AbstractMigration
             CREATE TABLE formateur (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE formation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, formateur_id INTEGER NOT NULL, actif_formation BOOLEAN NOT NULL, nom VARCHAR(255) NOT NULL, numero VARCHAR(255) NOT NULL, etat VARCHAR(255) NOT NULL, titre_professionnel VARCHAR(255) NOT NULL, niveau INTEGER NOT NULL, nb_stagiaires_previsionnel INTEGER NOT NULL, groupe_rattachement VARCHAR(255) NOT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL, CONSTRAINT FK_404021BF155D8F51 FOREIGN KEY (formateur_id) REFERENCES formateur (id) NOT DEFERRABLE INITIALLY IMMEDIATE)
+            CREATE TABLE formation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, actif_formation BOOLEAN NOT NULL, nom VARCHAR(255) NOT NULL, numero VARCHAR(255) NOT NULL, etat VARCHAR(255) NOT NULL, titre_professionnel VARCHAR(255) NOT NULL, niveau INTEGER NOT NULL, nb_stagiaires_previsionnel INTEGER NOT NULL, groupe_rattachement VARCHAR(255) NOT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE INDEX IDX_404021BF155D8F51 ON formation (formateur_id)
+            CREATE TABLE formation_formateur (formation_id INTEGER NOT NULL, formateur_id INTEGER NOT NULL, PRIMARY KEY(formation_id, formateur_id), CONSTRAINT FK_270B2E925200282E FOREIGN KEY (formation_id) REFERENCES formation (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_270B2E92155D8F51 FOREIGN KEY (formateur_id) REFERENCES formateur (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE INDEX IDX_270B2E925200282E ON formation_formateur (formation_id)
+        SQL);
+        $this->addSql(<<<'SQL'
+            CREATE INDEX IDX_270B2E92155D8F51 ON formation_formateur (formateur_id)
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE interruption (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, formation_id INTEGER NOT NULL, date_debut_int DATE NOT NULL, date_fin_int DATE NOT NULL, CONSTRAINT FK_F9511BC05200282E FOREIGN KEY (formation_id) REFERENCES formation (id) NOT DEFERRABLE INITIALLY IMMEDIATE)
@@ -78,6 +84,9 @@ final class Version20250528092544 extends AbstractMigration
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE formation
+        SQL);
+        $this->addSql(<<<'SQL'
+            DROP TABLE formation_formateur
         SQL);
         $this->addSql(<<<'SQL'
             DROP TABLE interruption
