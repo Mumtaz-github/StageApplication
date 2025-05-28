@@ -1,7 +1,6 @@
 body {
-    background-color: rgb(126, 211, 211);
+  background-color: rgb(212, 146, 23);
 }
-
 
 .nav-link {
   color: white;
@@ -18,7 +17,20 @@ body {
   background-color: #ff8c00;
   border-radius: 5px;
 }
-.navbar{
-  background-color: rgb(49, 13, 13); /*#00c9a7, rgb(228, 65, 65) #9e363a*/
+.navbar {
+  background-color: #9e363a; /*#00c9a7, rgb(228, 65, 65) #9e363a     rgb(49, 13, 13)        */
   height: 100px;
+}
+
+label {
+  font-size: 20px;
+  font-family: Arial, Helvetica, sans-serif;
+  color: black;
+}
+input {
+  border-radius: 20px;
+}
+
+p {
+  color: white;
 }
