@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PlanningController extends AbstractController
 {
-    #[Route('/planning', name: 'app_planning')]
+    #[Route('/', name: 'app_planning')]
     public function index(FormationRepository $formationRepository): Response
     {
         $formations = $formationRepository->findAll();

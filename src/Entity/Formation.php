@@ -43,22 +43,15 @@ class Formation
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateDebut = null;
 
-     #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateFin = null;
 
-    #[ORM\ManyToOne(inversedBy: 'formations')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Formateur $formateur = null;
+    #[ORM\ManyToMany(targetEntity: Formateur::class, inversedBy: 'formations')]
+    private Collection $formateurs;
 
-    /**
-     * @var Collection<int, Interruption>
-     */
     #[ORM\OneToMany(targetEntity: Interruption::class, mappedBy: 'formation')]
     private Collection $interruptions;
 
-    /**
-     * @var Collection<int, PeriodEnEntreprise>
-     */
     #[ORM\OneToMany(targetEntity: PeriodEnEntreprise::class, mappedBy: 'formation')]
     private Collection $periodEnEntreprises;
 
@@ -66,6 +59,7 @@ class Formation
     {
         $this->interruptions = new ArrayCollection();
         $this->periodEnEntreprises = new ArrayCollection();
+        $this->formateurs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -81,7 +75,6 @@ class Formation
     public function setActifFormation(bool $actifFormation): static
     {
         $this->actifFormation = $actifFormation;
-
         return $this;
     }
 
@@ -93,7 +86,6 @@ class Formation
     public function setNom(string $nom): static
     {
         $this->nom = $nom;
-
         return $this;
     }
 
@@ -105,7 +97,6 @@ class Formation
     public function setNumero(string $numero): static
     {
         $this->numero = $numero;
-
         return $this;
     }
 
@@ -117,7 +108,6 @@ class Formation
     public function setEtat(string $etat): static
     {
         $this->etat = $etat;
-
         return $this;
     }
 
@@ -129,7 +119,6 @@ class Formation
     public function setTitreProfessionnel(string $titreProfessionnel): static
     {
         $this->titreProfessionnel = $titreProfessionnel;
-
         return $this;
     }
 
@@ -141,19 +130,17 @@ class Formation
     public function setNiveau(int $niveau): static
     {
         $this->niveau = $niveau;
-
         return $this;
     }
 
-    public function getNbStagiairesPrevisionnel(): ?string
+    public function getNbStagiairesPrevisionnel(): ?int
     {
         return $this->nbStagiairesPrevisionnel;
     }
 
-    public function setNbStagiairesPrevisionnel(string $nbStagiairesPrevisionnel): static
+    public function setNbStagiairesPrevisionnel(int $nbStagiairesPrevisionnel): static
     {
         $this->nbStagiairesPrevisionnel = $nbStagiairesPrevisionnel;
-
         return $this;
     }
 
@@ -162,10 +149,9 @@ class Formation
         return $this->groupeRattachement;
     }
 
-    public function setGroupeRattachement(string $groupe_rattachement): static
+    public function setGroupeRattachement(string $groupeRattachement): static
     {
-        $this->groupeRattachement = $groupe_rattachement;
-
+        $this->groupeRattachement = $groupeRattachement;
         return $this;
     }
 
@@ -177,34 +163,40 @@ class Formation
     public function setDateDebut(\DateTime $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
-
         return $this;
     }
 
-
-  public function getDateFin(): ?\DateTime
+    public function getDateFin(): ?\DateTime
     {
         return $this->dateFin;
     }
 
     public function setDateFin(\DateTime $dateFin): static
     {
-        $this->dateDebut = $dateFin;
+        $this->dateFin = $dateFin;
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Formateur>
+     */
+    public function getFormateurs(): Collection
+    {
+        return $this->formateurs;
+    }
+
+    public function addFormateur(Formateur $formateur): static
+    {
+        if (!$this->formateurs->contains($formateur)) {
+            $this->formateurs[] = $formateur;
+        }
 
         return $this;
     }
 
-
-
-    public function getFormateur(): ?Formateur
+    public function removeFormateur(Formateur $formateur): static
     {
-        return $this->formateur;
-    }
-
-    public function setFormateur(?Formateur $formateur): static
-    {
-        $this->formateur = $formateur;
-
+        $this->formateurs->removeElement($formateur);
         return $this;
     }
 
@@ -229,7 +221,6 @@ class Formation
     public function removeInterruption(Interruption $interruption): static
     {
         if ($this->interruptions->removeElement($interruption)) {
-            // set the owning side to null (unless already changed)
             if ($interruption->getFormation() === $this) {
                 $interruption->setFormation(null);
             }
@@ -259,7 +250,6 @@ class Formation
     public function removePeriodEnEntreprise(PeriodEnEntreprise $periodEnEntreprise): static
     {
         if ($this->periodEnEntreprises->removeElement($periodEnEntreprise)) {
-            // set the owning side to null (unless already changed)
             if ($periodEnEntreprise->getFormation() === $this) {
                 $periodEnEntreprise->setFormation(null);
             }
@@ -268,3 +258,4 @@ class Formation
         return $this;
     }
 }
+

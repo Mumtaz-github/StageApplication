@@ -62,14 +62,17 @@ class FormationForm extends AbstractType
                 'label' => 'Date de fin',
                 'html5' => true
             ])
-            ->add('formateur', EntityType::class, [
+        ->add('formateurs', EntityType::class, [
                 'class' => Formateur::class,
-                'choice_label' => function (Formateur $formateur) {
-                    return $formateur->getPrenom() . ' ' . $formateur->getNom();
-                },
-                'label' => 'Formateur',
-                'placeholder' => 'Sélectionner un formateur',
-                'attr' => ['class' => 'select2']
+                'multiple' => true,
+                'expanded' => false, // Set to true for checkboxes
+                'choice_label' => fn(Formateur $formateur) => $formateur->getPrenom() . ' ' . $formateur->getNom(),
+                'label' => 'Formateurs disponibles',
+                'placeholder' => 'Sélectionner un ou plusieurs formateurs',
+                'required' => false,
+                'attr' => ['class' => 'select2'] // Optional: for nicer UI
+
+
             ]);
     }
 

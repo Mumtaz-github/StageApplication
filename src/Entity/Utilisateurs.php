@@ -96,7 +96,7 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     // Needed for PasswordAuthenticatedUserInterface
     public function getPassword(): string
     {
-        return $this->password;
+        return $this->password ?? '';
     }
 
     public function setPassword(string $password): static
@@ -105,26 +105,25 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+    // Needed for UserInterface
     public function getRoles(): array
     {
-        // Wrap the string role into an array for Symfony
         return [$this->role ?: 'ROLE_USER'];
     }
 
     public function getUserIdentifier(): string
     {
-        return $this->email;
+        return $this->email ?? '';
     }
 
     public function getSalt(): ?string
     {
-        // No salt needed with modern algorithms (bcrypt, sodium)
         return null;
     }
 
     public function eraseCredentials(): void
     {
-        // Clear sensitive data if needed
+        // If needed, clean sensitive data (e.g. plain password)
     }
 }
 
