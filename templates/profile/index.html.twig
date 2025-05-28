@@ -8,11 +8,7 @@
 				<h2 class="card-title">
 					{{ app.user.prenom }}
 					{{ app.user.nom }}
-
-					<a href="{{ path('app_profile_edit') }}" class="btn btn-primary float-end">
-						Modifier
-					</a>
-				</h2>
+                 </h2>
 				<hr>
 				<p>
 					<strong>Email:</strong>
@@ -20,6 +16,10 @@
 				<p>
 					<strong>Rôle:</strong>
 					{{ app.user.role }}</p>
+
+					<a href="{{ path('app_profile_edit') }}" class="btn btn-primary float-end">
+						Modifier
+					</a>
 			</div>
 		</div>
 	</div>

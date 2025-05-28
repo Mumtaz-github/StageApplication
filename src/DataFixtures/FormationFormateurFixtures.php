@@ -11,7 +11,7 @@ class FormationFormateurFixtures extends Fixture
 {
     public function load(ObjectManager $manager): void
     {
-        // Create formateurs
+        // Crée formateurs
         $formateurs = [];
         $formateurData = [
             ['nom' => 'François', 'prenom' => 'Regis', 'email' => 'regis@example.com'],
@@ -27,7 +27,7 @@ class FormationFormateurFixtures extends Fixture
             $formateurs[$data['nom'] . ' ' . $data['prenom']] = $formateur;
         }
 
-        // Create formations linked to formateurs
+        // Crée formations linked to formateurs
         $formations = [
             ['name' => 'CDA', 'formateur' => $formateurs['François Regis']],
             ['name' => 'Développement Web et Web Mobile', 'formateur' => $formateurs['François Regis']],
@@ -37,9 +37,9 @@ class FormationFormateurFixtures extends Fixture
             $formation = new Formation();
             $formation->setNom($data['name']);
 
-            // Set required fields with some dummy data to avoid null constraint errors
+            
             $formation->setActifFormation(true);
-            $formation->setNumero('001'); // or any dummy string
+            $formation->setNumero('001'); 
             $formation->setEtat('Active');
             $formation->setTitreProfessionnel('Titre Pro Example');
             $formation->setNiveau(1);
