@@ -1,5 +1,6 @@
 <?php
 
+// src/Command/UpdateJourFerieCommand.php
 namespace App\Command;
 
 use App\Entity\JourFerie;
@@ -11,7 +12,10 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[AsCommand(name: 'app:update-jours-feries')]
+#[AsCommand(
+    name: 'app:update-jours-feries',
+    description: 'Updates public holidays from API for all French zones'
+)]
 class UpdateJourFerieCommand extends Command
 {
     public function __construct(
@@ -23,38 +27,50 @@ class UpdateJourFerieCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Updates public holidays from the API')
-            ->addArgument('year', InputArgument::OPTIONAL, 'The year to update', date('Y'));
+        $this->addArgument(
+            'year',
+            InputArgument::OPTIONAL,
+            'The year to update',
+            date('Y')
+        );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $year = (int)$input->getArgument('year');
-        $data = $this->fetcher->fetchAllZones($year);
+        $output->writeln("⌛ Updating public holidays for year {$year}...");
 
-        foreach ($data as $row) {
-            $date = new \DateTime($row['date']);
+        try {
+            $holidays = $this->fetcher->fetchAllZones($year);
+            $importedCount = 0;
 
-            // Prevent duplicate import for same date & zone
-            $existing = $this->em->getRepository(JourFerie::class)->findOneBy([
-                'date' => $date,
-                'zone' => $row['zone'],
-            ]);
+            foreach ($holidays as $holiday) {
+                $date = new \DateTime($holiday['date']);
+                
+                $existing = $this->em->getRepository(JourFerie::class)->findOneBy([
+                    'date' => $date,
+                    'zone' => $holiday['zone']
+                ]);
 
-            if (!$existing) {
-                $jourFerie = new JourFerie();
-                $jourFerie->setNom($row['nom']);
-                $jourFerie->setDate($date);
-                $jourFerie->setAnnee((string) $year);
-                $jourFerie->setZone($row['zone']);
-                $this->em->persist($jourFerie);
+                if (!$existing) {
+                    $entity = new JourFerie();
+                    $entity->setDate($date);
+                    $entity->setNom($holiday['nom']);
+                    $entity->setZone($holiday['zone']);
+                    $entity->setAnnee((string)$year);
+                    
+                    $this->em->persist($entity);
+                    $importedCount++;
+                }
             }
+
+            $this->em->flush();
+            $output->writeln("✅ Successfully imported {$importedCount} holidays for {$year}");
+            
+            return Command::SUCCESS;
+        } catch (\Exception $e) {
+            $output->writeln("<error>❌ Error: {$e->getMessage()}</error>");
+            return Command::FAILURE;
         }
-
-        $this->em->flush();
-        $output->writeln("✅ Jours fériés pour {$year} importés avec succès.");
-
-        return Command::SUCCESS;
     }
 }

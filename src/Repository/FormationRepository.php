@@ -1,14 +1,12 @@
 <?php
 
+// src/Repository/FormationRepository.php
 namespace App\Repository;
 
 use App\Entity\Formation;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
-/**
- * @extends ServiceEntityRepository<Formation>
- */
 class FormationRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -16,28 +14,17 @@ class FormationRepository extends ServiceEntityRepository
         parent::__construct($registry, Formation::class);
     }
 
-    //    /**
-    //     * @return Formation[] Returns an array of Formation objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('f.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
-
-    //    public function findOneBySomeField($value): ?Formation
-    //    {
-    //        return $this->createQueryBuilder('f')
-    //            ->andWhere('f.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    /**
+     * Custom method to find all formations with relations
+     */
+    public function findAllWithRelations(): array
+    {
+        return $this->createQueryBuilder('f')
+            ->leftJoin('f.interruptions', 'i')
+            ->leftJoin('f.periodEnEntreprises', 'p')
+            ->leftJoin('f.formateurs', 'form')
+            ->addSelect('i', 'p', 'form')
+            ->getQuery()
+            ->getResult();
+    }
 }

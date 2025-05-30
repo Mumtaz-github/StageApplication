@@ -1,48 +1,192 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Planning des formations{% endblock %}
-
-{% block body %}
-    <h1>Planning des formations</h1>
-
-    <div id="gantt"></div>
-
-    <script>
-        const tasks = [
-            {% for formation in formations %}
-                {
-                    id: '{{ formation.id }}',
-                    name: '{{ formation.nom|e('js') }}',
-                    start: '{{ formation.dateDebut|date('Y-m-d') }}',
-                    end: '{{ formation.dateFin|date('Y-m-d') }}',
-                    progress: 100,
-                    custom_class: 'bar-class'
-                },
-            {% endfor %}
-        ];
-
-        const gantt = new Gantt("#gantt", tasks, {
-            view_mode: 'Month',
-            date_format: 'YYYY-MM-DD',
-            custom_popup_html: function(task) {
-                return `<div class="details">
-                          <strong>${task.name}</strong><br>
-                          Du ${task.start} au ${task.end}
-                        </div>`;
-            }
-        });
-    </script>
-
-
-
-    <style>
-        #gantt {
-            overflow-x: scroll;
-            padding: 20px;
-        }
-        .bar-class {
-            fill:rgb(175, 96, 43);  /*#6c63ff*/
-        }
-    </style>
+{% block title %}Planning des Formations
 {% endblock %}
 
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		/* Gantt Container */
+		#gantt-container {
+			font-family: Arial, sans-serif;
+			margin: 20px;
+			overflow-x: auto;
+		}
+
+		/* Timeline Header */
+		.timeline-header {
+			position: sticky;
+			top: 0;
+			background: white;
+			z-index: 100;
+		}
+
+		.timeline-years,
+		.timeline-months,
+		.timeline-days {
+			display: flex;
+			height: 30px;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.year-column,
+		.month-column {
+			text-align: center;
+			font-weight: bold;
+			border-right: 1px solid #eee;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+
+		.day-column {
+			font-size: 0.8em;
+			text-align: center;
+			border-right: 1px dotted #f0f0f0;
+		}
+
+		.month-column {
+			min-width: 60px;
+			text-align: center;
+			font-weight: bold;
+		}
+
+		/* Rows */
+		.gantt-row {
+			display: flex;
+			align-items: center;
+			height: 40px;
+			border-bottom: 1px solid #eee;
+			position: relative;
+		}
+
+		.formation-name {
+			width: 200px;
+			padding-right: 10px;
+			position: absolute;
+			left: 0;
+		}
+
+		/* Bars */
+		.formation-bar-container {
+			margin-left: 200px;
+			height: 100%;
+			position: relative;
+		}
+
+		.formation-bar {
+			position: absolute;
+			height: 20px;
+			background-color: #4e73df;
+			border-radius: 3px;
+			top: 10px;
+		}
+
+		.interruption {
+			position: absolute;
+			height: 20px;
+			background-color: #e74a3b;
+			opacity: 0.5;
+			top: 10px;
+		}
+
+		.entreprise-period {
+			position: absolute;
+			height: 10px;
+			background-color: #1cc88a;
+			border-radius: 3px;
+			top: 30px;
+		}
+
+		.holiday-marker {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 2px;
+			background-color: #f6c23e;
+			z-index: 10;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div
+		id="gantt-container">
+		<!-- TIMELINE HEADER -->
+		<div
+			class="timeline-header">
+			<!-- Year Row -->
+			<div class="timeline-years">
+				{% set currentYear = '' %}
+				{% for month in months %}
+					{% set year = month|split('-')[0] %}
+					{% if year != currentYear %}
+						<div class="year-column" style="width: {{ months_in_year[year] * dayWidth }}px">
+							{{ year }}
+						</div>
+						{% set currentYear = year %}
+					{% endif %}
+				{% endfor %}
+			</div>
+
+			<!-- Month Row -->
+			<div class="timeline-months">
+				{% for month in months %}
+					<div class="month-column" style="width: {{ days_in_months[month] * dayWidth }}px">
+						{{ month|split('-')[1]|month_name_fr }}
+					</div>
+				{% endfor %}
+			</div>
+
+			<!-- Days Row -->
+			<div class="timeline-days">
+				{% for month in months %}
+					{% for day in 1..days_in_months[month] %}
+						<div class="day-column" style="width: {{ dayWidth }}px">
+							{{ day }}
+						</div>
+					{% endfor %}
+				{% endfor %}
+			</div>
+		</div>
+
+		<!-- Gantt Rows -->
+		{% for formation in formations %}
+			<div class="gantt-row">
+				<div class="formation-name">{{ formation.nom }}</div>
+
+				<div class="formation-bar-container">
+					{% set barLeft = date_service.getDaysBetween(start_date, formation.dateDebut) * dayWidth %}
+					{% set barWidth = date_service.getDaysBetween(formation.dateDebut, formation.dateFin) * dayWidth %}
+
+					<!-- Main Formation Bar -->
+					<div class="formation-bar" style="left: {{ barLeft }}px; width: {{ barWidth }}px"></div>
+
+					<!-- Interruptions -->
+					{% for interruption in formation.interruptions %}
+						{% set intLeft = date_service.getDaysBetween(formation.dateDebut, interruption.dateDebut) * dayWidth %}
+						{% set intWidth = date_service.getDaysBetween(interruption.dateDebut, interruption.dateFin) * dayWidth %}
+
+						<div class="interruption" style="left: {{ barLeft + intLeft }}px; width: {{ intWidth }}px"></div>
+					{% endfor %}
+
+					<!-- Enterprise Periods -->
+					{% for periode in formation.periodEnEntreprises %}
+						{% set entLeft = date_service.getDaysBetween(start_date, periode.dateDebut) * dayWidth %}
+						{% set entWidth = date_service.getDaysBetween(periode.dateDebut, periode.dateFin) * dayWidth %}
+
+						<div class="entreprise-period" style="left: {{ entLeft }}px; width: {{ entWidth }}px"></div>
+					{% endfor %}
+				</div>
+			</div>
+		{% endfor %}
+
+		<!-- Holiday Markers -->
+		<!-- Holiday Markers -->
+		{% for holiday in holidays %}
+			{% set holidayDate = holiday.timestamp is defined ? holiday : date(holiday) %}
+			{% set holidayLeft = date_service.getDaysBetween(start_date, holidayDate) * dayWidth %}
+			<div class="holiday-marker" style="left: {{ holidayLeft }}px"></div>
+		{% endfor %}
+	</div>
+{% endblock %}

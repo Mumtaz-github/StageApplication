@@ -1,8 +1,9 @@
 <?php
-
 namespace App\Service\DateLibrary;
 
 use App\Repository\JourFerieRepository;
+use DateTime;
+use DateTimeInterface;
 
 class DateService
 {
@@ -13,95 +14,98 @@ class DateService
         $this->jourFerieRepository = $jourFerieRepository;
     }
 
-    public function getIsoWeekNumber(\DateTimeInterface $date): int
+    /**
+     * Get number of days between two dates (inclusive)
+     */
+    public function getDaysBetween(DateTimeInterface $date1, DateTimeInterface $date2): int
     {
-        return (int)$date->format('W');
+        return abs($date1->diff($date2)->days) + 1;
     }
 
-    public function getFirstDayOfWeek(\DateTimeInterface $date): \DateTimeInterface
+    /**
+     * Get all months between two dates (format: Y-m)
+     */
+    public function getMonthsBetweenDates(DateTimeInterface $start, DateTimeInterface $end): array
     {
-        $day = clone $date;
-        return $day->modify('Monday this week');
-    }
-
-    public function getFirstDayOfMonth(\DateTimeInterface $date): \DateTimeInterface
-    {
-        $day = clone $date;
-        return $day->modify('first day of this month')->setTime(0, 0);
-    }
-
-    public function getNextWorkingDay(
-        \DateTimeInterface $date,
-        string $zone = 'metropole',
-        ?int $year = null
-    ): \DateTimeInterface {
-        $next = clone $date;
-
-        // default to current year if not specified
-        if (!$year) {
-            $year = (int)$next->format('Y');
-        }
-
-        // fetch holidays from DB
-        $joursFeries = $this->jourFerieRepository->findBy([
-            'annee' => (string)$year,
-            'zone' => $zone
-        ]);
-
-        $holidayDates = array_map(
-            fn($j) => $j->getDate()->format('Y-m-d'),
-            $joursFeries
-        );
-
-        do {
-            $next = $next->modify('+1 day');
-        } while (
-            in_array($next->format('Y-m-d'), $holidayDates, true) ||
-            in_array((int)$next->format('N'), [6, 7]) // weekends
-        );
-
-        return $next;
-    }
-
-    public function getMonthsBetween(\DateTimeInterface $start, \DateTimeInterface $end): array
-    {
-        $start = (clone $start)->modify('first day of this month');
-        $end = (clone $end)->modify('first day of this month');
-
+        $start = (new DateTime())->setTimestamp($start->getTimestamp());
+        $end = (new DateTime())->setTimestamp($end->getTimestamp());
+        
         $months = [];
-        while ($start <= $end) {
-            $months[] = $start->format('Y-m');
-            $start = $start->modify('+1 month');
+        $current = clone $start;
+        $current->modify('first day of this month');
+        
+        while ($current <= $end) {
+            $months[] = $current->format('Y-m');
+            $current->modify('+1 month');
         }
-
+        
         return $months;
     }
 
-    public function getWeeksBetween(\DateTimeInterface $start, \DateTimeInterface $end): array
+    /**
+     * Get days from project start to target date
+     */
+    public function getDaysFromStart(DateTimeInterface $startDate, DateTimeInterface $targetDate): int
     {
-        $start = (clone $start)->modify('Monday this week');
-        $end = (clone $end)->modify('Monday this week');
-
-        $weeks = [];
-        while ($start <= $end) {
-            $weeks[] = $start->format('Y-\WW');
-            $start = $start->modify('+1 week');
-        }
-
-        return $weeks;
+        return $startDate->diff($targetDate)->days;
     }
 
-    public function getHolidaysForYearAndZone(int $year, string $zone = 'metropole'): array
-    {
-        $joursFeries = $this->jourFerieRepository->findBy([
-            'annee' => (string)$year,
-            'zone' => $zone
-        ]);
+    /**
+     * Get next working day (skips weekends and holidays)
+     */
+    public function getNextWorkday(
+        DateTimeInterface $date,
+        string $zone = 'metropole',
+        ?string $year = null
+    ): DateTimeInterface {
+        $date = $this->convertToDateTime($date);
+        $year = $year ?? $date->format('Y');
+        $nextDay = clone $date;
 
-        return array_map(
-            fn($j) => $j->getDate()->format('Y-m-d'),
-            $joursFeries
+        do {
+            $nextDay->modify('+1 day');
+        } while (
+            $this->isWeekend($nextDay) || 
+            $this->isHoliday($nextDay, $zone, $year)
         );
+
+        return $nextDay;
+    }
+
+    /**
+     * Check if date is weekend (Saturday/Sunday)
+     */
+    private function isWeekend(DateTimeInterface $date): bool
+    {
+        return in_array($date->format('N'), ['6', '7']);
+    }
+
+    /**
+     * Check if a date is a holiday
+     */
+    public function isHoliday(
+        DateTimeInterface $date,
+        string $zone,
+        ?string $year = null
+    ): bool {
+        $year = $year ?? $date->format('Y');
+        
+        return $this->jourFerieRepository->createQueryBuilder('j')
+            ->where('j.date = :date')
+            ->andWhere('j.zone = :zone')
+            ->andWhere('j.annee = :year')
+            ->setParameter('date', $date->format('Y-m-d'))
+            ->setParameter('zone', $zone)
+            ->setParameter('year', $year)
+            ->getQuery()
+            ->getOneOrNullResult() !== null;
+    }
+
+    /**
+     * Convert DateTimeInterface to DateTime for modification
+     */
+    private function convertToDateTime(DateTimeInterface $date): DateTime
+    {
+        return $date instanceof DateTime ? $date : new DateTime($date->format('Y-m-d'));
     }
 }
-
