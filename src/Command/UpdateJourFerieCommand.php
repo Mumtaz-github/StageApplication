@@ -65,11 +65,11 @@ class UpdateJourFerieCommand extends Command
             }
 
             $this->em->flush();
-            $output->writeln("✅ Successfully imported {$importedCount} holidays for {$year}");
+            $output->writeln(" Successfully imported {$importedCount} holidays for {$year}");
             
             return Command::SUCCESS;
         } catch (\Exception $e) {
-            $output->writeln("<error>❌ Error: {$e->getMessage()}</error>");
+            $output->writeln("<error> Error: {$e->getMessage()}</error>");
             return Command::FAILURE;
         }
     }
