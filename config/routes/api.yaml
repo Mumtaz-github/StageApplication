@@ -1,0 +1,4 @@
+api_jours_feries:
+    resource: ../../src/Controller/JourFerieController.php
+    type: attribute
+    prefix: /api

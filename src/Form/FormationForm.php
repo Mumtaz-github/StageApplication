@@ -67,10 +67,10 @@ class FormationForm extends AbstractType
                 'multiple' => true,
                 'expanded' => false, // Set to true for checkboxes
                 'choice_label' => fn(Formateur $formateur) => $formateur->getPrenom() . ' ' . $formateur->getNom(),
-                'label' => 'Formateurs disponibles',
+                'label' => 'Formateur',
                 'placeholder' => 'Sélectionner un ou plusieurs formateurs',
                 'required' => false,
-                'attr' => ['class' => 'select2'] // Optional: for nicer UI
+                'attr' => ['class' => 'select2']
 
 
             ]);

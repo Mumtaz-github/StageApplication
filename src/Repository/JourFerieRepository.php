@@ -16,28 +16,21 @@ class JourFerieRepository extends ServiceEntityRepository
         parent::__construct($registry, JourFerie::class);
     }
 
-    //    /**
-    //     * @return JourFerie[] Returns an array of JourFerie objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('j')
-    //            ->andWhere('j.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('j.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+public function findDistinctZones(): array
+{
+    return $this->createQueryBuilder('j')
+        ->select('DISTINCT j.zone')
+        ->orderBy('j.zone', 'ASC')
+        ->getQuery()
+        ->getSingleColumnResult();
+}
 
-    //    public function findOneBySomeField($value): ?JourFerie
-    //    {
-    //        return $this->createQueryBuilder('j')
-    //            ->andWhere('j.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+public function findDistinctAnnees(): array
+{
+    return $this->createQueryBuilder('j')
+        ->select('DISTINCT j.annee')
+        ->orderBy('j.annee', 'ASC')
+        ->getQuery()
+        ->getSingleColumnResult();
+}
 }

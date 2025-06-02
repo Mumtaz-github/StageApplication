@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250529165833 extends AbstractMigration
+final class Version20250602114039 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -54,7 +54,8 @@ final class Version20250529165833 extends AbstractMigration
             CREATE INDEX IDX_92E223D25200282E ON period_en_entreprise (formation_id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE utilisateurs (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, role VARCHAR(255) NOT NULL, date_invitation DATETIME NOT NULL, password VARCHAR(255) NOT NULL)
+            CREATE TABLE utilisateurs (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, role VARCHAR(255) NOT NULL, date_invitation DATETIME NOT NULL --(DC2Type:datetime_immutable)
+            , password VARCHAR(255) NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
             CREATE UNIQUE INDEX UNIQ_497B315EE7927C74 ON utilisateurs (email)

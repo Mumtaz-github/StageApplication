@@ -190,3 +190,36 @@
 		{% endfor %}
 	</div>
 {% endblock %}
+{% block javascripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const bars = document.querySelectorAll('.formation-bar');
+    
+    bars.forEach(bar => {
+        bar.draggable = true;
+        
+        bar.addEventListener('dragstart', (e) => {
+            e.dataTransfer.setData('text/plain', bar.dataset.formationId);
+        });
+    });
+
+    // Handle drops to update dates
+    document.querySelector('.formation-bar-container').addEventListener('drop', async (e) => {
+        e.preventDefault();
+        const formationId = e.dataTransfer.getData('text/plain');
+        const newStartDate = calculateDateFromPosition(e.clientX); // Implement this
+        
+        try {
+            const response = await fetch(`/api/formations/${formationId}`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ start_date: newStartDate })
+            });
+            if (!response.ok) throw new Error('Update failed');
+        } catch (error) {
+            console.error(error);
+        }
+    });
+});
+</script>
+{% endblock %}

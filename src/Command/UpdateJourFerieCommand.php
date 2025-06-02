@@ -4,7 +4,7 @@
 namespace App\Command;
 
 use App\Entity\JourFerie;
-use App\Service\JourFerieFetcher;
+use App\Service\JourFerieApiService; // Make sure this use statement exists
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -18,10 +18,17 @@ use Symfony\Component\Console\Output\OutputInterface;
 )]
 class UpdateJourFerieCommand extends Command
 {
+    private JourFerieApiService $apiService;
+    private EntityManagerInterface $em;
+
     public function __construct(
-        private JourFerieFetcher $fetcher,
-        private EntityManagerInterface $em
+        JourFerieApiService $apiService, 
+        EntityManagerInterface $em
     ) {
+        // Properly assign the services
+        $this->apiService = $apiService;
+        $this->em = $em;
+        
         parent::__construct();
     }
 
@@ -41,33 +48,28 @@ class UpdateJourFerieCommand extends Command
         $output->writeln("⌛ Updating public holidays for year {$year}...");
 
         try {
-            $holidays = $this->fetcher->fetchAllZones($year);
-            $importedCount = 0;
+            $zones = [
+                'metropole',
+                'guadeloupe',
+                'guyane',
+                'martinique',
+                'mayotte',
+                'reunion',
+                'alsace-moselle'
+            ];
+            
+            $totalImported = 0;
 
-            foreach ($holidays as $holiday) {
-                $date = new \DateTime($holiday['date']);
-                
-                $existing = $this->em->getRepository(JourFerie::class)->findOneBy([
-                    'date' => $date,
-                    'zone' => $holiday['zone']
-                ]);
-
-                if (!$existing) {
-                    $entity = new JourFerie();
-                    $entity->setDate($date);
-                    $entity->setNom($holiday['nom']);
-                    $entity->setZone($holiday['zone']);
-                    $entity->setAnnee((string)$year);
-                    
-                    $this->em->persist($entity);
-                    $importedCount++;
-                }
+            foreach ($zones as $zone) {
+                $output->writeln(" Processing zone: {$zone}");
+                $count = $this->apiService->syncHolidaysForZone($zone, $year);
+                $totalImported += $count;
+                $output->writeln("  → Imported {$count} holidays");
             }
 
-            $this->em->flush();
-            $output->writeln(" Successfully imported {$importedCount} holidays for {$year}");
-            
+            $output->writeln("✅ Successfully imported {$totalImported} holidays total");
             return Command::SUCCESS;
+            
         } catch (\Exception $e) {
             $output->writeln("<error> Error: {$e->getMessage()}</error>");
             return Command::FAILURE;

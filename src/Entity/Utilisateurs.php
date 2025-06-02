@@ -25,10 +25,10 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $role = null;
+    private string $role = 'ROLE_CONSULTATION';
 
     #[ORM\Column]
-    private ?\DateTime $dateInvitation = null;
+    private ?\DateTimeImmutable $dateInvitation = null;
 
     #[ORM\Column(length: 255)]
     private ?string $password = null;
@@ -71,7 +71,7 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getRole(): ?string
+    public function getRole(): string
     {
         return $this->role;
     }
@@ -82,18 +82,17 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getDateInvitation(): ?\DateTime
+    public function getDateInvitation(): ?\DateTimeImmutable
     {
         return $this->dateInvitation;
     }
 
-    public function setDateInvitation(\DateTime $dateInvitation): static
+    public function setDateInvitation(\DateTimeImmutable $dateInvitation): static
     {
         $this->dateInvitation = $dateInvitation;
         return $this;
     }
 
-    // Needed for PasswordAuthenticatedUserInterface
     public function getPassword(): string
     {
         return $this->password ?? '';
@@ -105,15 +104,19 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    // Needed for UserInterface
     public function getRoles(): array
     {
-        return [$this->role ?: 'ROLE_USER'];
+        return [$this->role];
+    }
+
+    public function eraseCredentials(): void
+    {
+        // Clear any temporary sensitive data
     }
 
     public function getUserIdentifier(): string
     {
-        return $this->email ?? '';
+        return $this->email;
     }
 
     public function getSalt(): ?string
@@ -121,11 +124,34 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
         return null;
     }
 
-    public function eraseCredentials(): void
+    public function isAdmin(): bool
     {
-        // If needed, clean sensitive data (e.g. plain password)
+        return $this->role === 'ROLE_ADMIN';
+    }
+
+    public function isGestionnaire(): bool
+    {
+        return $this->role === 'ROLE_GESTIONNAIRE';
+    }
+
+    public function isConsultation(): bool
+    {
+        return $this->role === 'ROLE_CONSULTATION';
+    }
+
+    public function hasRole(string $role): bool
+    {
+        $hierarchy = [
+            'ROLE_ADMIN' => ['ROLE_ADMIN', 'ROLE_GESTIONNAIRE', 'ROLE_CONSULTATION'],
+            'ROLE_GESTIONNAIRE' => ['ROLE_GESTIONNAIRE', 'ROLE_CONSULTATION'],
+            'ROLE_CONSULTATION' => ['ROLE_CONSULTATION']
+        ];
+
+        return in_array($role, $hierarchy[$this->role] ?? [], true);
     }
 }
+
+
 
 
 

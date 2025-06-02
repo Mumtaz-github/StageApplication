@@ -2,6 +2,8 @@
 
 namespace App\Security;
 
+use App\Entity\Utilisateurs;
+use App\Repository\UtilisateursRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -9,6 +11,7 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Http\Authenticator\AbstractLoginFormAuthenticator;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\CsrfTokenBadge;
+use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
@@ -21,25 +24,31 @@ class UsersAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(private UrlGeneratorInterface $urlGenerator) {}
-    
-public function authenticate(Request $request): Passport
-{
-    $email = $request->request->get('email', '');
-    $password = $request->request->get('password', '');
-    $csrfToken = $request->request->get('_csrf_token');
+    public function __construct(
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly UtilisateursRepository $userRepository, // ✅ Injected here
+    ) {}
 
-    $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
+    public function authenticate(Request $request): Passport
+    {
+        $email = $request->request->getString('email', '');
+        $password = $request->request->getString('password', '');
+        $csrfToken = $request->request->getString('_csrf_token', '');
 
-    return new Passport(
-        new UserBadge($email),
-        new PasswordCredentials($password),
-        [
-            new CsrfTokenBadge('authenticate', $csrfToken),
-        ]
-    );
-}
+        $request->getSession()->set(SecurityRequestAttributes::LAST_USERNAME, $email);
 
+        return new Passport(
+            new UserBadge($email, function ($userIdentifier) {
+                // ✅ Use injected userRepository to load user by email
+                return $this->userRepository->findOneBy(['email' => $userIdentifier]);
+            }),
+            new PasswordCredentials($password),
+            [
+                new CsrfTokenBadge('authenticate', $csrfToken),
+                new RememberMeBadge(), // Enable remember me functionality
+            ]
+        );
+    }
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
@@ -47,22 +56,15 @@ public function authenticate(Request $request): Passport
             return new RedirectResponse($targetPath);
         }
 
+        /** @var Utilisateurs $user */
         $user = $token->getUser();
-        $roles = $user->getRoles();
 
-        if (in_array('ROLE_ADMIN', $roles, true)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_invitation_index'));
-        }
-
-        if (in_array('ROLE_GESTIONNAIRE', $roles, true)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_planning'));
-        }
-
-        if (in_array('ROLE_CONSULTATION', $roles, true)) {
-            return new RedirectResponse($this->urlGenerator->generate('app_planning'));
-        }
-
-        return new RedirectResponse($this->urlGenerator->generate(self::LOGIN_ROUTE));
+        return match (true) {
+            $user->isAdmin() => new RedirectResponse($this->urlGenerator->generate('app_formation_index')),
+            $user->isGestionnaire() => new RedirectResponse($this->urlGenerator->generate('app_formation_new')),
+            $user->isConsultation() => new RedirectResponse($this->urlGenerator->generate('app_planning')),
+            default => throw new \LogicException('Unknown user role'),
+        };
     }
 
     protected function getLoginUrl(Request $request): string

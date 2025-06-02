@@ -20,7 +20,7 @@ class AppFixtures extends Fixture
         $admin->setRole('ROLE_ADMIN');
         $admin->setNom('Admin');
         $admin->setPrenom('Admin');
-        $admin->setDateInvitation(new \DateTime());
+    $admin->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($admin);
 
         // ROLE_GESTIONNAIRE user
@@ -30,7 +30,7 @@ class AppFixtures extends Fixture
         $gestionnaire->setRole('ROLE_GESTIONNAIRE');
         $gestionnaire->setNom('Gestionnaire');
         $gestionnaire->setPrenom('Gestionnaire');
-        $gestionnaire->setDateInvitation(new \DateTime());
+$gestionnaire->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($gestionnaire);
 
         // ROLE_CONSULTATION user
@@ -40,7 +40,7 @@ class AppFixtures extends Fixture
         $consultation->setRole('ROLE_CONSULTATION');
         $consultation->setNom('Consultation');
         $consultation->setPrenom('Consultation');
-        $consultation->setDateInvitation(new \DateTime());
+$consultation->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($consultation);
 
         $manager->flush();
