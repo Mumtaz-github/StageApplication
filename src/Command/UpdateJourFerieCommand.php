@@ -4,7 +4,7 @@
 namespace App\Command;
 
 use App\Entity\JourFerie;
-use App\Service\JourFerieApiService; // Make sure this use statement exists
+use App\Service\JourFerieApiService; // Assurez que cette déclaration d'utilisation existe
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -14,7 +14,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 #[AsCommand(
     name: 'app:update-jours-feries',
-    description: 'Updates public holidays from API for all French zones'
+    description: 'Mise à jour des jours fériés depuis l api pour toutes les zones françaises '
 )]
 class UpdateJourFerieCommand extends Command
 {
@@ -25,7 +25,7 @@ class UpdateJourFerieCommand extends Command
         JourFerieApiService $apiService, 
         EntityManagerInterface $em
     ) {
-        // Properly assign the services
+        // attribuer correctement les services
         $this->apiService = $apiService;
         $this->em = $em;
         
@@ -67,7 +67,7 @@ class UpdateJourFerieCommand extends Command
                 $output->writeln("  → Imported {$count} holidays");
             }
 
-            $output->writeln("✅ Successfully imported {$totalImported} holidays total");
+            $output->writeln(" Successfully imported {$totalImported} holidays total");
             return Command::SUCCESS;
             
         } catch (\Exception $e) {

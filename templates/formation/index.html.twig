@@ -3,6 +3,7 @@
 {% block title %}Liste des Formations{% endblock %}
 
 {% block body %}
+<div class="col-md-12 mt-4">
     <h1>Liste des Formations</h1>
 
     <table class="table table-bordered table-striped mt-4">
@@ -60,4 +61,5 @@
     </table>
 
     <a href="{{ path('app_formation_new') }}" class="btn btn-success">Créer une nouvelle formation</a>
+    </div>
 {% endblock %}

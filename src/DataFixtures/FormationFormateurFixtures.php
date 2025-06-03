@@ -29,8 +29,10 @@ class FormationFormateurFixtures extends Fixture
 
         // Crée formations linked to formateurs
         $formations = [
-            ['name' => 'CDA', 'formateur' => $formateurs['François Regis']],
-            ['name' => 'Développement Web et Web Mobile', 'formateur' => $formateurs['François Regis']],
+            // ['name' => 'CDA', 'formateur' => $formateurs['François Regis']],
+           ['name' => $formateurs['François Regis']]
+
+            // ['name' => 'Développement Web et Web Mobile', 'formateur' => $formateurs['François Regis']],
         ];
 
         foreach ($formations as $data) {

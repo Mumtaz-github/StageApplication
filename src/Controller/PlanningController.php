@@ -11,61 +11,62 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PlanningController extends AbstractController
 {
-    #[Route('/', name: 'app_planning')]
-    public function index(
-        FormationRepository $formationRepository,
-        JourFerieRepository $jourFerieRepository,
-        DateService $dateService
-    ): Response {
-        // 1. Get formations with optimized query
-        $formations = $formationRepository->findAllWithRelations();
-        
-        // 2. Calculate 24-month date range as per cahier des charges
-        $today = new \DateTime();
-        $startDate = $today;
-        $endDate = (clone $today)->modify('+24 months');
-        
-        // 3. Adjust range if formations exist outside this window
-        if (!empty($formations)) {
-            $minDate = min(array_map(fn($f) => $f->getDateDebut(), $formations));
-            $maxDate = max(array_map(fn($f) => $f->getDateFin(), $formations));
-            
-            $startDate = min($startDate, $minDate);
-            $endDate = max($endDate, $maxDate);
-        }
+// CONTROLLER
+#[Route('/', name: 'app_planning')]
+public function index(
+    FormationRepository $formationRepository,
+    JourFerieRepository $jourFerieRepository,
+    DateService $dateService
+): Response {
+    $formations = $formationRepository->findAllWithRelations();
+    $today = new \DateTime();
 
-        // 4. Get months and holidays data
-        $months = $dateService->getMonthsBetweenDates($startDate, $endDate);
-        
-        // 5. Calculate days per month and months per year
-        $daysInMonths = [];
-        $monthsInYear = [];
-        
-        foreach ($months as $month) {
-            $year = explode('-', $month)[0];
-            $days = date('t', strtotime($month . '-01'));
-            
-            $daysInMonths[$month] = $days;
-            $monthsInYear[$year] = ($monthsInYear[$year] ?? 0) + $days;
-        }
+    $startDate = new \DateTime('2024-01-01');
+    $endDate = new \DateTime('2025-12-31'); // fixed 24 months = full calendar years
 
-        // 6. Get holidays for the entire date range
-        $holidays = $jourFerieRepository->findForDateRange($startDate, $endDate);
-
-        return $this->render('planning/index.html.twig', [
-            'formations' => $formations,
-            'holidays' => array_map(fn($h) => $h->getDate(), $holidays),
-            'months' => $months,
-            'days_in_months' => $daysInMonths,
-            'months_in_year' => $monthsInYear, // Add this missing variable
-            'start_date' => $startDate,
-            'dayWidth' => 2, // pixels per day
-            'date_service' => $dateService,
-            'current_year' => $today->format('Y')
-        ]);
+    // Expand range if needed
+    foreach ($formations as $f) {
+        $startDate = min($startDate, $f->getDateDebut());
+        $endDate = max($endDate, $f->getDateFin());
     }
+
+    $months = $dateService->getMonthsBetweenDates($startDate, $endDate);
+
+    // Days per month, months per year
+    $daysInMonths = [];
+    $monthsInYear = [];
+    foreach ($months as $month) {
+        $year = explode('-', $month)[0];
+        $days = date('t', strtotime($month . '-01'));
+        $daysInMonths[$month] = $days;
+        $monthsInYear[$year] = ($monthsInYear[$year] ?? 0) + 1;
+    }
+
+    // Group formations by GRN
+ $groupedFormations = [];
+foreach ($formations as $f) {
+    $group = $f->getGroupeRattachement() ?? 'Non groupé';
+    $groupedFormations[$group][] = $f;
 }
 
+
+    $holidays = $jourFerieRepository->findForDateRange($startDate, $endDate);
+    $currentDayOffset = $dateService->getOffsetDaysBetween($startDate, $today);
+
+    return $this->render('planning/index.html.twig', [
+        'grouped_formations' => $groupedFormations,
+        'holidays' => array_map(fn($h) => $h->getDate(), $holidays),
+        'months' => $months,
+        'days_in_months' => $daysInMonths,
+        'months_in_year' => $monthsInYear,
+        'start_date' => $startDate,
+        'end_date' => $endDate,
+        'dayWidth' => 2,
+        'current_day_position' => $currentDayOffset * 2,
+        'date_service' => $dateService
+    ]);
+}
+}
 
 
 

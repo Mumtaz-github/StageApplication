@@ -42,6 +42,12 @@ class DateService
         return $months;
     }
 
+public function getOffsetDaysBetween(DateTimeInterface $start, DateTimeInterface $end): int
+{
+    return (int) $start->diff($end)->days;
+}
+
+
     /**
      * Get days from project start to target date
      */
@@ -71,6 +77,8 @@ class DateService
 
         return $nextDay;
     }
+
+    
 
     /**
      * Check if date is weekend (Saturday/Sunday)
