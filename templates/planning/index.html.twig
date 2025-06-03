@@ -5,11 +5,11 @@
 
 {% block stylesheets %}
 	{{ parent() }}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.2/dist/frappe-gantt.min.css">
 	<style>
-		/* Gantt Container */
-		#gantt-container {
-			font-family: Arial, sans-serif;
+		.gantt-container {
 			margin: 30px;
+			font-family: Arial, sans-serif;
 			overflow-x: auto;
 		}
 
@@ -19,60 +19,74 @@
 			top: 0;
 			background: white;
 			z-index: 100;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 		}
 
 		.timeline-years,
 		.timeline-months,
 		.timeline-days {
 			display: flex;
-			height: 50px;
+			height: 40px;
 			border-bottom: 1px solid #ddd;
 		}
 
-		.year-column,
-		.month-column {
+		.year-column {
 			text-align: center;
 			font-weight: bold;
 			border-right: 1px solid #eee;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			margin: 30px;
-		}
-
-		.day-column {
-			font-size: 0.8em;
-			text-align: center;
-			border-right: 1px;
+			padding: 0 15px;
+			background: #f8f9fa;
 		}
 
 		.month-column {
 			min-width: 60px;
 			text-align: center;
 			font-weight: bold;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-right: 1px solid #eee;
 		}
 
-		/* Rows */
+		.day-column {
+			font-size: 0.8em;
+			text-align: center;
+			border-right: 1px solid #f0f0f0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			width: {{dayWidth}}
+			px;
+		}
+
+		/* Gantt Rows */
 		.gantt-row {
 			display: flex;
 			align-items: center;
-			height: 40px;
+			height: 60px;
 			border-bottom: 1px solid #eee;
 			position: relative;
 		}
 
 		.formation-name {
-			width: 200px;
-			padding-right: 10px;
-			position: absolute;
+			width: 250px;
+			padding: 0 15px;
+			position: sticky;
 			left: 0;
+			background: white;
+			z-index: 5;
+			font-weight: 500;
 		}
 
 		/* Bars */
 		.formation-bar-container {
-			margin-left: 200px;
+			margin-left: 250px;
 			height: 100%;
 			position: relative;
+			min-width: calc(100% - 250px);
 		}
 
 		.formation-bar {
@@ -80,15 +94,24 @@
 			height: 20px;
 			background-color: #4e73df;
 			border-radius: 3px;
-			top: 10px;
+			top: 20px;
+			cursor: move;
+		}
+
+		.formation-validated {
+			background-color: #28a745;
+		}
+
+		.formation-pending {
+			background-color: #ffc107;
 		}
 
 		.interruption {
 			position: absolute;
 			height: 20px;
 			background-color: #e74a3b;
-			opacity: 0.5;
-			top: 10px;
+			opacity: 0.7;
+			top: 20px;
 		}
 
 		.entreprise-period {
@@ -96,7 +119,7 @@
 			height: 10px;
 			background-color: #1cc88a;
 			border-radius: 3px;
-			top: 30px;
+			top: 45px;
 		}
 
 		.holiday-marker {
@@ -107,119 +130,194 @@
 			background-color: #f6c23e;
 			z-index: 10;
 		}
+
+		/* Frappe Gantt Overrides */
+		.gantt .bar-progress {
+			fill: #4e73df !important;
+		}
+
+		.gantt .bar-wrapper:hover .bar-progress {
+			fill: #3a56b0 !important;
+		}
 	</style>
 {% endblock %}
 
 {% block body %}
-	<div
-		id="gantt-container">
-		<!-- TIMELINE HEADER -->
+	<div class="container-fluid">
+		<h1 class="h3 mb-4 text-gray-800">Planning des Formations</h1>
+
+		<!-- Interactive Gantt Chart -->
+		<div id="gantt"></div>
+
+		<!-- Printable Timeline Version -->
 		<div
-			class="timeline-header">
-			<!-- Year Row -->
-			<div class="timeline-years">
-				{% set currentYear = '' %}
-				{% for month in months %}
-					{% set year = month|split('-')[0] %}
-					{% if year != currentYear %}
-						<div class="year-column" style="width: {{ months_in_year[year] * dayWidth }}px">
-							{{ year }}
-						</div>
-						{% set currentYear = year %}
-					{% endif %}
-				{% endfor %}
-			</div>
+			id="gantt-container" class="mt-4">
+			<!-- TIMELINE HEADER -->
+			<div
+				class="timeline-header">
+				<!-- Year Row -->
+				<div class="timeline-years">
+					{% set currentYear = '' %}
+					{% for month in months %}
+						{% set year = month|split('-')[0] %}
+						{% if year != currentYear %}
+							<div class="year-column" style="width: {{ months_in_year[year] * dayWidth }}px">
+								{{ year }}
+							</div>
+							{% set currentYear = year %}
+						{% endif %}
+					{% endfor %}
+				</div>
 
-			<!-- Month Row -->
-			<div class="timeline-months">
-				{% for month in months %}
-					<div class="month-column" style="width: {{ days_in_months[month] * dayWidth }}px">
-						{{ month|split('-')[1]|month_name_fr }}
-					</div>
-				{% endfor %}
-			</div>
-
-			<!-- Days Row -->
-			<div class="timeline-days">
-				{% for month in months %}
-					{% for day in 1..days_in_months[month] %}
-						<div class="day-column" style="width: {{ dayWidth }}px">
-							{{ day }}
+				<!-- Month Row -->
+				<div class="timeline-months">
+					{% for month in months %}
+						<div class="month-column" style="width: {{ days_in_months[month] * dayWidth }}px">
+							{{ month|split('-')[1]|month_name_fr }}
 						</div>
 					{% endfor %}
-				{% endfor %}
-			</div>
-		</div>
+				</div>
 
-		<!-- Gantt Rows -->
-		{% for formation in formations %}
-			<div class="gantt-row">
-				<div class="formation-name">{{ formation.nom }}</div>
-
-				<div class="formation-bar-container">
-					{% set barLeft = date_service.getDaysBetween(start_date, formation.dateDebut) * dayWidth %}
-					{% set barWidth = date_service.getDaysBetween(formation.dateDebut, formation.dateFin) * dayWidth %}
-
-					<!-- Main Formation Bar -->
-					<div class="formation-bar" style="left: {{ barLeft }}px; width: {{ barWidth }}px"></div>
-
-					<!-- Interruptions -->
-					{% for interruption in formation.interruptions %}
-						{% set intLeft = date_service.getDaysBetween(formation.dateDebut, interruption.dateDebut) * dayWidth %}
-						{% set intWidth = date_service.getDaysBetween(interruption.dateDebut, interruption.dateFin) * dayWidth %}
-
-						<div class="interruption" style="left: {{ barLeft + intLeft }}px; width: {{ intWidth }}px"></div>
-					{% endfor %}
-
-					<!-- Enterprise Periods -->
-					{% for periode in formation.periodEnEntreprises %}
-						{% set entLeft = date_service.getDaysBetween(start_date, periode.dateDebut) * dayWidth %}
-						{% set entWidth = date_service.getDaysBetween(periode.dateDebut, periode.dateFin) * dayWidth %}
-
-						<div class="entreprise-period" style="left: {{ entLeft }}px; width: {{ entWidth }}px"></div>
+				<!-- Days Row -->
+				<div class="timeline-days">
+					{% for month in months %}
+						{% for day in 1..days_in_months[month] %}
+							<div class="day-column">
+								{{ day }}
+							</div>
+						{% endfor %}
 					{% endfor %}
 				</div>
 			</div>
-		{% endfor %}
 
-		<!-- Holiday Markers -->
-		{% for holiday in holidays %}
-			{% set holidayDate = holiday.timestamp is defined ? holiday : date(holiday) %}
-			{% set holidayLeft = date_service.getDaysBetween(start_date, holidayDate) * dayWidth %}
-			<div class="holiday-marker" style="left: {{ holidayLeft }}px"></div>
-		{% endfor %}
+			<!-- Gantt Rows -->
+			{% for formation in formations %}
+				<div class="gantt-row">
+					<div class="formation-name">
+						{{ formation.nom }}
+						<small class="text-muted d-block">{{ formation.titreProfessionnel }}</small>
+					</div>
+
+					<div class="formation-bar-container">
+						{% set barLeft = date_service.getDaysBetween(start_date, formation.dateDebut) * dayWidth %}
+						{% set barWidth = date_service.getDaysBetween(formation.dateDebut, formation.dateFin) * dayWidth %}
+
+						<!-- Main Formation Bar -->
+						<div class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" style="left: {{ barLeft }}px; width: {{ barWidth }}px" data-toggle="tooltip" title="{{ formation.nom }} ({{ formation.dateDebut|date('d/m/Y') }} - {{ formation.dateFin|date('d/m/Y') }})"></div>
+
+						<!-- Interruptions -->
+						{% for interruption in formation.interruptions %}
+							{% set intLeft = date_service.getDaysBetween(formation.dateDebut, interruption.dateDebut) * dayWidth %}
+							{% set intWidth = date_service.getDaysBetween(interruption.dateDebut, interruption.dateFin) * dayWidth %}
+
+							<div class="interruption" style="left: {{ barLeft + intLeft }}px; width: {{ intWidth }}px" data-toggle="tooltip" title="Interruption: {{ interruption.dateDebut|date('d/m/Y') }} - {{ interruption.dateFin|date('d/m/Y') }}"></div>
+						{% endfor %}
+
+						<!-- Enterprise Periods -->
+						{% for periode in formation.periodEnEntreprises %}
+							{% set entLeft = date_service.getDaysBetween(start_date, periode.dateDebut) * dayWidth %}
+							{% set entWidth = date_service.getDaysBetween(periode.dateDebut, periode.dateFin) * dayWidth %}
+
+							<div class="entreprise-period" style="left: {{ entLeft }}px; width: {{ entWidth }}px" data-toggle="tooltip" title="Période en entreprise: {{ periode.dateDebut|date('d/m/Y') }} - {{ periode.dateFin|date('d/m/Y') }}"></div>
+						{% endfor %}
+					</div>
+				</div>
+			{% endfor %}
+
+			<!-- Holiday Markers -->
+			{% for holiday in holidays %}
+				{% set holidayLeft = date_service.getDaysBetween(start_date, holiday) * dayWidth %}
+				<div class="holiday-marker" style="left: {{ holidayLeft }}px" data-toggle="tooltip" title="Jour férié: {{ holiday|date('d/m/Y') }}"></div>
+			{% endfor %}
+		</div>
 	</div>
 {% endblock %}
-{% block javascripts %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const bars = document.querySelectorAll('.formation-bar');
-    
-    bars.forEach(bar => {
-        bar.draggable = true;
-        
-        bar.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', bar.dataset.formationId);
-        });
-    });
 
-    // Handle drops to update dates
-    document.querySelector('.formation-bar-container').addEventListener('drop', async (e) => {
-        e.preventDefault();
-        const formationId = e.dataTransfer.getData('text/plain');
-        const newStartDate = calculateDateFromPosition(e.clientX); // Implement this
-        
-        try {
-            const response = await fetch(`/api/formations/${formationId}`, {
-                method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ start_date: newStartDate })
-            });
-            if (!response.ok) throw new Error('Update failed');
-        } catch (error) {
-            console.error(error);
-        }
-    });
+{% block javascripts %}
+	{{ parent() }}
+	<script src="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.2/dist/frappe-gantt.min.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', () => { // Initialize tooltips
+$('[data-toggle="tooltip"]').tooltip();
+
+// Initialize interactive Gantt chart
+const tasks = [{% for formation in formations %}{
+id: '{{ formation.id }}',
+name: '{{ formation.nom }}',
+start: '{{ formation.dateDebut|date('Y-m-d') }}',
+end: '{{ formation.dateFin|date('Y-m-d') }}',
+progress: 100,
+custom_class: '{{ formation.etat == "validée" ? "formation-validated" : "formation-pending" }}',
+interruptions: {{ formation.interruptions|map(i => ({
+                        start: i.dateDebut|date('Y-m-d'),
+                        end: i.dateFin|date('Y-m-d')
+                    }))|json_encode|raw }},
+enterprise_periods: {{ formation.periodEnEntreprises|map(p => ({
+                        start: p.dateDebut|date('Y-m-d'),
+                        end: p.dateFin|date('Y-m-d')
+                    }))|json_encode|raw }}
+},{% endfor %}];
+
+const gantt = new Gantt("#gantt", tasks, {
+view_mode: 'Month',
+date_format: 'YYYY-MM-DD',
+on_click: function (task) {
+console.log("Task clicked:", task);
+},
+on_date_change: async function (task, start, end) {
+try {
+const response = await fetch (`/api/formations/${
+task.id
+}`, {
+method: 'PATCH',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify(
+{start_date: start, end_date: end}
+)
 });
-</script>
+
+if (! response.ok) {
+throw new Error('Update failed');
+}
+
+// Refresh the printable view
+window.location.reload();
+} catch (error) {
+console.error("Update error:", error);
+gantt.refresh();
+}
+},
+custom_popup_html: function (task) {
+return `
+                        <div class="gantt-popup">
+                            <strong>${
+task.name
+}</strong><br>
+                            ${
+task.start
+} → ${
+task.end
+}<br>
+                            Statut: ${
+task.custom_class.includes('validated') ? 'Validée' : 'En cours'
+}
+                        </div>
+                    `;
+}
+});
+
+// Sync holidays on load
+fetch('{{ path('app_jour_ferie_sync_api') }}', {
+method: 'POST',
+headers: {
+'Content-Type': 'application/json'
+},
+body: JSON.stringify(
+{zone: 'metropole', year: new Date().getFullYear()}
+)
+}).catch(err => console.log("Holiday sync skipped:", err));
+});
+	</script>
 {% endblock %}

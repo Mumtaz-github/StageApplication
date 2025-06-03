@@ -4,13 +4,16 @@ namespace App\Controller;
 
 use App\Entity\JourFerie;
 use App\Form\JourFerieForm;
+use App\Message\SyncHolidaysMessage;
 use App\Repository\JourFerieRepository;
+use App\Service\JourFerieApiService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Messenger\MessageBusInterface;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Route('/jour/ferie')]
@@ -23,29 +26,20 @@ final class JourFerieController extends AbstractController
         $annee = $request->query->get('annee');
 
         $criteria = [];
-
-        if ($zone) {
-            $criteria['zone'] = $zone;
-        }
-
-        if ($annee) {
-            $criteria['annee'] = $annee;
-        }
+        if ($zone) $criteria['zone'] = $zone;
+        if ($annee) $criteria['annee'] = $annee;
 
         $jourFeries = $jourFerieRepository->findBy($criteria, ['date' => 'ASC']);
 
-        // Add JSON response support
         if ($request->getPreferredFormat() === 'json') {
             return $this->json([
-                'jour_feries' => array_map(function(JourFerie $jourFerie) {
-                    return [
-                        'id' => $jourFerie->getId(),
-                        'date' => $jourFerie->getDate()->format('Y-m-d'),
-                        'nom' => $jourFerie->getNom(),
-                        'zone' => $jourFerie->getZone(),
-                        'annee' => $jourFerie->getAnnee(),
-                    ];
-                }, $jourFeries)
+                'jour_feries' => array_map(fn(JourFerie $j) => [
+                    'id' => $j->getId(),
+                    'date' => $j->getDate()->format('Y-m-d'),
+                    'nom' => $j->getNom(),
+                    'zone' => $j->getZone(),
+                    'annee' => $j->getAnnee(),
+                ], $jourFeries)
             ]);
         }
 
@@ -57,33 +51,25 @@ final class JourFerieController extends AbstractController
     }
 
     #[Route('/new', name: 'app_jour_ferie_new', methods: ['GET', 'POST'])]
-    public function new(
-        Request $request, 
-        EntityManagerInterface $entityManager,
-        ValidatorInterface $validator
-    ): Response {
+    public function new(Request $request, EntityManagerInterface $em, ValidatorInterface $validator): Response
+    {
         $jourFerie = new JourFerie();
         $form = $this->createForm(JourFerieForm::class, $jourFerie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Check for duplicate dates in the same zone and year
-            $existing = $entityManager->getRepository(JourFerie::class)->findOneBy([
+            if ($em->getRepository(JourFerie::class)->findOneBy([
                 'date' => $jourFerie->getDate(),
                 'zone' => $jourFerie->getZone(),
                 'annee' => $jourFerie->getAnnee(),
-            ]);
-
-            if ($existing) {
+            ])) {
                 $this->addFlash('error', 'Un jour férié existe déjà pour cette date, zone et année.');
                 return $this->redirectToRoute('app_jour_ferie_new');
             }
 
-            $entityManager->persist($jourFerie);
-            $entityManager->flush();
-
+            $em->persist($jourFerie);
+            $em->flush();
             $this->addFlash('success', 'Jour férié créé avec succès.');
-
             return $this->redirectToRoute('app_jour_ferie_index');
         }
 
@@ -96,27 +82,20 @@ final class JourFerieController extends AbstractController
     #[Route('/{id}', name: 'app_jour_ferie_show', methods: ['GET'])]
     public function show(JourFerie $jourFerie): Response
     {
-        return $this->render('jour_ferie/show.html.twig', [
-            'jour_ferie' => $jourFerie,
-        ]);
+        return $this->render('jour_ferie/show.html.twig', ['jour_ferie' => $jourFerie]);
     }
 
     #[Route('/{id}/edit', name: 'app_jour_ferie_edit', methods: ['GET', 'POST'])]
-    public function edit(
-        Request $request, 
-        JourFerie $jourFerie, 
-        EntityManagerInterface $entityManager
-    ): Response {
+    public function edit(Request $request, JourFerie $jourFerie, EntityManagerInterface $em): Response
+    {
         $form = $this->createForm(JourFerieForm::class, $jourFerie);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Check for duplicate dates in the same zone and year
-            $existing = $entityManager->getRepository(JourFerie::class)->findOneBy([
+            $existing = $em->getRepository(JourFerie::class)->findOneBy([
                 'date' => $jourFerie->getDate(),
                 'zone' => $jourFerie->getZone(),
                 'annee' => $jourFerie->getAnnee(),
-                'id' => $jourFerie->getId(),
             ]);
 
             if ($existing && $existing->getId() !== $jourFerie->getId()) {
@@ -124,9 +103,8 @@ final class JourFerieController extends AbstractController
                 return $this->redirectToRoute('app_jour_ferie_edit', ['id' => $jourFerie->getId()]);
             }
 
-            $entityManager->flush();
+            $em->flush();
             $this->addFlash('success', 'Jour férié mis à jour avec succès.');
-
             return $this->redirectToRoute('app_jour_ferie_index');
         }
 
@@ -136,65 +114,43 @@ final class JourFerieController extends AbstractController
         ]);
     }
 
-// In JourFerieController add this new route
-#[Route('/sync-api', name: 'app_jour_ferie_sync_api', methods: ['POST'])]
-public function syncFromApi(
-    Request $request,
-    JourFerieApiService $apiService
-): Response {
-    $this->denyAccessUnlessGranted('ROLE_ADMIN');
-    
-    $zone = $request->request->get('zone', 'metropole');
-    $year = $request->request->get('year', date('Y'));
+    #[Route('/sync-api', name: 'app_jour_ferie_sync_api', methods: ['POST'])]
+    public function syncFromApi(Request $request, MessageBusInterface $messageBus): Response
+    {
+        $this->denyAccessUnlessGranted('ROLE_ADMIN');
+        
+        $zone = $request->request->get('zone', 'metropole');
+        $year = $request->request->get('year', date('Y'));
 
-    try {
-        $count = $apiService->syncHolidaysForZone($zone, $year);
-        $this->addFlash('success', sprintf('Successfully synchronized %d holidays for %s/%s', $count, $zone, $year));
-    } catch (\Exception $e) {
-        $this->addFlash('error', 'Failed to sync holidays: ' . $e->getMessage());
-    }
-
-    return $this->redirectToRoute('app_jour_ferie_index');
-}
-
-
-
-
-    #[Route('/{id}', name: 'app_jour_ferie_delete', methods: ['POST', 'DELETE'])]
-    public function delete(
-        Request $request, 
-        JourFerie $jourFerie, 
-        EntityManagerInterface $entityManager
-    ): Response {
-        if ($this->isCsrfTokenValid('delete' . $jourFerie->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($jourFerie);
-            $entityManager->flush();
-            $this->addFlash('success', 'Jour férié supprimé avec succès.');
-        }
-
-        // Support both regular form submission and AJAX requests
-        if ($request->isXmlHttpRequest()) {
-            return new JsonResponse(['status' => 'success']);
-        }
-
+        $messageBus->dispatch(new SyncHolidaysMessage($zone, $year));
+        $this->addFlash('success', 'Synchronisation des jours fériés démarrée en arrière-plan');
+        
         return $this->redirectToRoute('app_jour_ferie_index');
     }
 
-    #[Route('/api/list', name: 'app_jour_ferie_api', methods: ['GET'])]
-    public function apiList(JourFerieRepository $jourFerieRepository): JsonResponse
+    #[Route('/{id}', name: 'app_jour_ferie_delete', methods: ['POST', 'DELETE'])]
+    public function delete(Request $request, JourFerie $jourFerie, EntityManagerInterface $em): Response
     {
-        $jourFeries = $jourFerieRepository->findAll();
+        if ($this->isCsrfTokenValid('delete'.$jourFerie->getId(), $request->getPayload()->get('_token'))) {
+            $em->remove($jourFerie);
+            $em->flush();
+            $this->addFlash('success', 'Jour férié supprimé avec succès.');
+        }
 
-        $data = array_map(function(JourFerie $jourFerie) {
-            return [
-                'id' => $jourFerie->getId(),
-                'date' => $jourFerie->getDate()->format('Y-m-d'),
-                'nom' => $jourFerie->getNom(),
-                'zone' => $jourFerie->getZone(),
-                'annee' => $jourFerie->getAnnee(),
-            ];
-        }, $jourFeries);
+        return $request->isXmlHttpRequest() 
+            ? new JsonResponse(['status' => 'success']) 
+            : $this->redirectToRoute('app_jour_ferie_index');
+    }
 
-        return $this->json($data);
+    #[Route('/api/list', name: 'app_jour_ferie_api', methods: ['GET'])]
+    public function apiList(JourFerieRepository $repo): JsonResponse
+    {
+        return $this->json(array_map(fn(JourFerie $j) => [
+            'id' => $j->getId(),
+            'date' => $j->getDate()->format('Y-m-d'),
+            'nom' => $j->getNom(),
+            'zone' => $j->getZone(),
+            'annee' => $j->getAnnee(),
+        ], $repo->findAll()));
     }
 }

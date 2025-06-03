@@ -1,54 +1,48 @@
 <?php
-// src/Service/JourFerieApiService.php
+
 namespace App\Service;
 
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Entity\JourFerie;
 use Psr\Log\LoggerInterface;
+use App\Entity\JourFerie;
 
 class JourFerieApiService
 {
-    private $httpClient;
-    private $entityManager;
-    private $logger;
-    private $apiBaseUrl = 'https://calendrier.api.gouv.fr/jours-feries';
+    private HttpClientInterface $httpClient;
+    private EntityManagerInterface $entityManager;
+    private ?LoggerInterface $logger;
 
     public function __construct(
         HttpClientInterface $httpClient,
         EntityManagerInterface $entityManager,
-        LoggerInterface $logger = null
+        ?LoggerInterface $logger = null
     ) {
         $this->httpClient = $httpClient;
         $this->entityManager = $entityManager;
         $this->logger = $logger;
     }
 
-    public function syncHolidaysForZone(string $zone, int $year): int
+    public function syncHolidaysForZone(string $zone, string $year): int
     {
         try {
-            $response = $this->httpClient->request(
-                'GET',
-                "{$this->apiBaseUrl}/{$zone}/{$year}.json"
-            );
-
+            $apiUrl = "https://calendrier.api.gouv.fr/jours-feries/{$zone}/{$year}.json";
+            $response = $this->httpClient->request('GET', $apiUrl);
             $holidays = $response->toArray();
-            $importedCount = 0;
 
+            $importedCount = 0;
             foreach ($holidays as $date => $name) {
-                $existing = $this->entityManager->getRepository(JourFerie::class)->findOneBy([
+                if (!$this->entityManager->getRepository(JourFerie::class)->findOneBy([
                     'date' => new \DateTime($date),
                     'zone' => $zone
-                ]);
-
-                if (!$existing) {
-                    $jourFerie = new JourFerie();
-                    $jourFerie->setDate(new \DateTime($date));
-                    $jourFerie->setNom($name);
-                    $jourFerie->setZone($zone);
-                    $jourFerie->setAnnee($year);
-
-                    $this->entityManager->persist($jourFerie);
+                ])) {
+                    $holiday = new JourFerie();
+                    $holiday->setDate(new \DateTime($date))
+                           ->setNom($name)
+                           ->setZone($zone)
+                           ->setAnnee($year);
+                    
+                    $this->entityManager->persist($holiday);
                     $importedCount++;
                 }
             }
@@ -57,7 +51,7 @@ class JourFerieApiService
             return $importedCount;
 
         } catch (\Exception $e) {
-            $this->logger?->error("API Sync Error for zone {$zone}: " . $e->getMessage());
+            $this->logger?->error("Holiday sync failed: " . $e->getMessage());
             throw $e;
         }
     }
