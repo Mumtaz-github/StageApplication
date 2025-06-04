@@ -14,13 +14,19 @@ class DateService
         $this->jourFerieRepository = $jourFerieRepository;
     }
 
-    /**
-     * Get number of days between two dates (inclusive)
-     */
-    public function getDaysBetween(DateTimeInterface $date1, DateTimeInterface $date2): int
-    {
-        return abs($date1->diff($date2)->days) + 1;
-    }
+public function getDaysBetween(DateTimeInterface $date1, DateTimeInterface $date2): int
+{
+    return abs($date1->diff($date2)->days) + 1;
+}
+
+/**
+ * Get number of days in a given month and year
+ */
+public function getDaysInMonth(int $month, int $year): int
+{
+    return cal_days_in_month(CAL_GREGORIAN, $month, $year);
+}
+
 
     /**
      * Get all months between two dates (format: Y-m)

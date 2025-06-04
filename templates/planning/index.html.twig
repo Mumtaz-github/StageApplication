@@ -13,7 +13,7 @@
   overflow-y: auto; */
   height: 60vh;
   position: relative;
-  width:1500px;
+  width:1490px;
 }
 
 .timeline-header {
@@ -21,7 +21,6 @@
   top: 0;
   background: white;
   z-index: 100;
-
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
 
@@ -29,7 +28,7 @@
 .timeline-months,
 .timeline-days {
   display: flex;
-  height: 40px;
+  height: 50px;
   border-bottom: 1px solid #ddd;
 }
 
@@ -53,7 +52,7 @@
 }
 
 .day-column {
-  width: {{ dayWidth }}px;
+  /* width: {{ dayWidth }}px; */
   font-size: 10px;
   text-align: left;
   border-right: 15px solid #eee;
@@ -63,9 +62,10 @@
 .gantt-row {
   display: flex;
   align-items: center;
-  height: 60px;
+  height: 130px;
   border-bottom: 1px solid #eee;
   position: relative;
+    background: #f8f9fc;
 }
 
 .formation-name {
@@ -73,7 +73,7 @@
   padding: 5px 10px;
   position: sticky;
   left: 0;
-  background: white;
+  background:#;
   z-index: 10;
   cursor: pointer;
 }
