@@ -26,11 +26,15 @@ class UsersAuthenticator extends AbstractLoginFormAuthenticator
 
     public function __construct(
         private readonly UrlGeneratorInterface $urlGenerator,
+
         private readonly UtilisateursRepository $userRepository, // ✅ Injected here
-    ) {}
+    ) {
+
+    }
 
     public function authenticate(Request $request): Passport
     {
+
         $email = $request->request->getString('email', '');
         $password = $request->request->getString('password', '');
         $csrfToken = $request->request->getString('_csrf_token', '');

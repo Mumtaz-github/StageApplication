@@ -18,18 +18,18 @@ class InterruptionForm extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('dateDebutInt', DateType::class, [
+            ->add('dateDebut', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de début',
                 'constraints' => [
                     new NotBlank(),
                     new LessThanOrEqual([
-                        'propertyPath' => 'parent.all[dateFinInt].data',
+                        'propertyPath' => 'parent.all[dateFin].data',
                         'message' => 'La date de début doit être avant la date de fin'
                     ])
                 ]
             ])
-            ->add('dateFinInt', DateType::class, [
+            ->add('dateFin', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de fin'
             ])

@@ -1,46 +1,47 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Utilisateurs{% endblock %}
+{% block title %}Utilisateurs
+{% endblock %}
 
 {% block body %}
-    <h1>Utilisateurs</h1>
+	<h1>Utilisateurs</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ utilisateur.id }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ utilisateur.nom }}</td>
-            </tr>
-            <tr>
-                <th>Prenom</th>
-                <td>{{ utilisateur.prenom }}</td>
-            </tr>
-            <tr>
-                <th>Email</th>
-                <td>{{ utilisateur.email }}</td>
-            </tr>
-            <tr>
-                <th>Role</th>
-                <td>{{ utilisateur.role }}</td>
-            </tr>
-            <tr>
-                <th>DateInvitation</th>
-                <td>{{ utilisateur.dateInvitation ? utilisateur.dateInvitation|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-            <tr>
-                <th>Password</th>
-                <td>{{ utilisateur.password }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ utilisateur.id }}</td>
+			</tr>
+			<tr>
+				<th>Nom</th>
+				<td>{{ utilisateur.nom }}</td>
+			</tr>
+			<tr>
+				<th>Prenom</th>
+				<td>{{ utilisateur.prenom }}</td>
+			</tr>
+			<tr>
+				<th>Email</th>
+				<td>{{ utilisateur.email }}</td>
+			</tr>
+			<tr>
+				<th>Role</th>
+				<td>{{ utilisateur.role }}</td>
+			</tr>
+			<tr>
+				<th>DateInvitation</th>
+				<td>{{ utilisateur.dateInvitation ? utilisateur.dateInvitation|date('Y-m-d H:i:s') : '' }}</td>
+			</tr>
+			<tr>
+				<th>Password</th>
+				<td>{{ utilisateur.password }}</td>
+			</tr>
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_utilisateurs_index') }}">back to list</a>
+	<a href="{{ path('app_utilisateurs_index') }}">back to list</a>
 
-    <a href="{{ path('app_utilisateurs_edit', {'id': utilisateur.id}) }}">edit</a>
+	<a href="{{ path('app_utilisateurs_edit', {'id': utilisateur.id}) }}">edit</a>
 
-    {{ include('utilisateurs/_delete_form.html.twig') }}
+	{{ include('admin/utilisateurs/_delete_form.html.twig') }}
 {% endblock %}

@@ -1,201 +1,248 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Planning des Formations{% endblock %}
+{% block title %}Planning des Formations
+{% endblock %}
 
 {% block stylesheets %}
-{{ parent() }}
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.2/dist/frappe-gantt.min.css">
-<style>
-.gantt-container {
-  margin: 0px;
-  font-family: Arial, sans-serif;
-  /* overflow-x: auto;
+	{{ parent() }}
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/frappe-gantt@0.6.2/dist/frappe-gantt.min.css">
+	<style>
+		.gantt-container {
+			margin: 0;
+			font-family: Arial, sans-serif;
+			/* overflow-x: auto;
   overflow-y: auto; */
-  height: 60vh;
-  position: relative;
-  width:1490px;
-}
+			height: 60vh;
+			position: relative;
+			width: 1490px;
+		}
 
-.timeline-header {
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 100;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
+		.timeline-header {
+			position: sticky;
+			top: 0;
+			background: white;
+			z-index: 100;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+		}
 
-.timeline-years,
-.timeline-months,
-.timeline-days {
-  display: flex;
-  height: 50px;
-  border-bottom: 1px solid #ddd;
-}
+		.timeline-years,
+		.timeline-months,
+		.timeline-days {
+			display: flex;
+			height: 50px;
+			border-bottom: 1px solid #ddd;
+		}
 
-.year-column {
-  font-weight: bold;
-  border-right: 1px solid #ddd;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #f8f9fc;
-}
+		.year-column {
+			font-weight: bold;
+			border-right: 1px solid #ddd;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: #f8f9fc;
+		}
 
-.month-column {
-  min-width: 62px;
-  font-size: 12px;
-  border-right: 1px solid #eee;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  
-}
+		.month-column {
+			min-width: 62px;
+			font-size: 12px;
+			border-right: 1px solid #eee;
+			display: flex;
+			align-items: center;
+			justify-content: center;
 
-.day-column {
-  /* width: {{ dayWidth }}px; */
-  font-size: 10px;
-  text-align: left;
-  border-right: 15px solid #eee;
+		}
 
-}
+		.day-column {
+			/* width: {{ dayWidth }}px; */
+			font-size: 10px;
+			text-align: left;
+			border-right: 15px solid #eee;
 
-.gantt-row {
-  display: flex;
-  align-items: center;
-  height: 130px;
-  border-bottom: 1px solid #eee;
-  position: relative;
-    background: #f8f9fc;
-}
+		}
 
-.formation-name {
-  width: 250px;
-  padding: 5px 10px;
-  position: sticky;
-  left: 0;
-  background:#;
-  z-index: 10;
-  cursor: pointer;
-}
+		.gantt-row {
+			display: flex;
+			align-items: center;
+			height: 130px;
+			border-bottom: 1px solid #eee;
+			position: relative;
+			background: #f8f9fc;
+		}
 
-.formation-bar-container {
-  margin-left: 250px;
-  position: relative;
-  min-width: calc(100% - 250px);
-}
+		.formation-name {
+			width: 250px;
+			padding: 5px 10px;
+			position: sticky;
+			left: 0;
+			background: #;
+			z-index: 10;
+			cursor: pointer;
+		}
 
-.formation-bar {
-  position: absolute;
-  height: 20px;
-  background-color: #4e73df;
-  border-radius: 3px;
-  top: 10px;
-}
+		.formation-bar-container {
+			margin-left: 0;
+			position: relative;
+			min-width: calc(100% - 0px);
+		}
 
-.formation-validated { background-color: #28a745; }
-.formation-pending { background-color: orange; }
-.interruption { position: absolute; height: 20px; background-color: #e74a3b; opacity: 0.7; top: 10px; }
-.entreprise-period { position: absolute; height: 10px; background-color: #1cc88a; border-radius: 3px; top: 35px; }
+		.formation-bar {
+			position: absolute;
+			height: 20px;
+			background-color: #4e73df;
+			border-radius: 3px;
+			top: 10px;
+		}
 
-.holiday-marker, .today-marker {
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 2px;
-  z-index: 5;
-}
-.holiday-marker { background-color: red; }
-.today-marker { background-color: blue; }
+		.formation-validated {
+			background-color: #28a745;
+		}
+		.formation-pending {
+			background-color: orange;
+		}
+		.interruption {
+			position: absolute;
+			height: 20px;
+			background-color: #e74a3b;
+			opacity: 0.7;
+			top: 10px;
+		}
+		.entreprise-period {
+			position: absolute;
+			height: 10px;
+			background-color: #1cc88a;
+			border-radius: 3px;
+			top: 35px;
+		}
 
-.group-header {
-  background-color:;
-  font-weight: bold;
-  padding: 5px 10px;
-  cursor: pointer;
-}
+		.holiday-marker,
+		.today-marker {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 2px;
+			z-index: 5;
+		}
+		.holiday-marker {
+			background-color: red;
+		}
+		.today-marker {
+			background-color: blue;
+		}
 
-.group-collapsed .gantt-row { display: none; }
-</style>
+		.group-header {
+			background-color: ;
+			font-weight: bold;
+			padding: 5px 10px;
+			cursor: pointer;
+		}
+
+		.group-collapsed .gantt-row {
+			display: none;
+		}
+	</style>
 {% endblock %}
 
 {% block body %}
-<div class="container-fluid">
-  <h1 class="h3 mb-4 text-gray-800 text-center">Planning des Formations</h1>
-  <div class="gantt-container">
-    <!-- Timeline Header -->
-    <div class="timeline-header">
-      <div class="timeline-years">
-        {% set currentYear = '' %}
-        {% for month in months %}
-          {% set year = month|split('-')[0] %}
-          {% if year != currentYear %}
-            <div class="year-column" style="width: {{ months_in_year[year] * 62 }}px">{{ year }}</div>
-            {% set currentYear = year %}
-          {% endif %}
-        {% endfor %}
-      </div>
-      <div class="timeline-months">
-        {% for month in months %}
-          <div class="month-column">{{ month|split('-')[1]|month_name_fr }}</div>
-        {% endfor %}
-      </div>
-      <div class="timeline-days">
-        {% for month in months %}
-          {% for day in 1..days_in_months[month] %}
-            <div class="day-column">{{ day }}</div>
-          {% endfor %}
-        {% endfor %}
-      </div>
-    </div>
+	<div class="container-fluid">
+		<h1 class="h3 mb-4 text-gray-800 text-center">Planning des Formations</h1>
+		<div
+			class="gantt-container">
 
-    <!-- Gantt Rows -->
-    {% for group, formations in grouped_formations %}
-      <div class="group-header" onclick="toggleGroup('{{ group|e('html_attr') }}')">{{ group }}</div>
-      <div id="group-{{ group|e('html_attr') }}">
-        {% for formation in formations %}
-          <div class="gantt-row">
-            <div class="formation-name">
-              {{ formation.nom }}<br>
-              <small>{{ formation.titreProfessionnel }}</small>
-            </div>
-            <div class="formation-bar-container">
-              {% set barLeft = date_service.getDaysBetween(start_date, formation.dateDebut) * dayWidth %}
-              {% set barWidth = date_service.getDaysBetween(formation.dateDebut, formation.dateFin) * dayWidth %}
-              <div class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" style="left: {{ barLeft }}px; width: {{ barWidth }}px"></div>
-              {% for interruption in formation.interruptions %}
-                {% set intLeft = date_service.getDaysBetween(formation.dateDebut, interruption.dateDebut) * dayWidth %}
-                {% set intWidth = date_service.getDaysBetween(interruption.dateDebut, interruption.dateFin) * dayWidth %}
-                <div class="interruption" style="left: {{ barLeft + intLeft }}px; width: {{ intWidth }}px"></div>
-              {% endfor %}
-              {% for periode in formation.periodEnEntreprises %}
-                {% set entLeft = date_service.getDaysBetween(start_date, periode.dateDebut) * dayWidth %}
-                {% set entWidth = date_service.getDaysBetween(periode.dateDebut, periode.dateFin) * dayWidth %}
-                <div class="entreprise-period" style="left: {{ entLeft }}px; width: {{ entWidth }}px"></div>
-              {% endfor %}
-            </div>
-          </div>
-        {% endfor %}
-      </div>
-    {% endfor %}
+			<!-- Timeline Header -->
+			<div
+				class="timeline-header">
 
-    <!-- Holiday Markers -->
-    {% for holiday in holidays %}
-      {% set left = date_service.getOffsetDaysBetween(start_date, holiday) * dayWidth %}
-      <div class="holiday-marker" style="left: {{ left }}px" title="Jour férié: {{ holiday|date('d/m/Y') }}"></div>
-    {% endfor %}
 
-    <!-- Today Marker -->
-    <div class="today-marker" style="left: {{ current_day_position }}px" title="Aujourd'hui"></div>
-  </div>
-</div>
+				<!-- Année ou years -->
+				<div class="timeline-years">
+					{% set currentYear = '' %}
+					{% for month in months %}
+						{% set year = month|split('-')[0] %}
+						{% if year != currentYear %}
+							<div class="year-column" style="width: {{ months_in_year[year] * 62 }}px">{{ year }}</div>
+							{% set currentYear = year %}
+						{% endif %}
+					{% endfor %}
+				</div>
+
+
+				<!-- Mois ou Months -->
+				<div class="timeline-months">
+					{% for month in months %}
+						<div class="month-column">{{ month|split('-')[1]|month_name_fr }}</div>
+					{% endfor %}
+				</div>
+
+
+				<!-- Jours or Days -->
+				<div class="timeline-days">
+					{% for month in months %}
+						{% for day in 1..days_in_months[month] %}
+							<div class="day-column">{{ day }}</div>
+						{% endfor %}
+					{% endfor %}
+				</div>
+			</div>
+
+			<!-- Gantt Rows -->
+			{% for group, formations in grouped_formations %}
+				<div class="group-header" onclick="toggleGroup('{{ group|e('html_attr') }}')">{{ group }}</div>
+				<div id="group-{{ group|e('html_attr') }}">
+					{% for formation in formations %}
+
+
+						<!-- Gantt rows sur chart -->
+						<div class="gantt-row">
+							<div class="formation-name">
+								{{ formation.nom }}<br>
+								<small>{{ formation.titreProfessionnel }}</small>
+							</div>
+
+							<!-- Gantt bar sur chart -->
+							<div class="formation-bar-container">
+								{% set barLeft = date_service.getDaysBetween(start_date, formation.dateDebut) * dayWidth %}
+								{% set barWidth = date_service.getDaysBetween(formation.dateDebut, formation.dateFin) * dayWidth %}
+								<div class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" style="left: {{ barLeft }}px; width: {{ barWidth }}px"></div>
+
+
+								<!-- interruption -->
+								{% for interruption in formation.interruptions %}
+									{% set intLeft = date_service.getDaysBetween(formation.dateDebut, interruption.dateDebut) * dayWidth %}
+									{% set intWidth = date_service.getDaysBetween(interruption.dateDebut, interruption.dateFin) * dayWidth %}
+									<div class="interruption" style="left: {{ barLeft + intLeft }}px; width: {{ intWidth }}px"></div>
+								{% endfor %}
+
+
+								<!-- Period en Entreprises -->
+								{% for periode in formation.periodEnEntreprises %}
+									{% set entLeft = date_service.getDaysBetween(start_date, periode.dateDebut) * dayWidth %}
+									{% set entWidth = date_service.getDaysBetween(periode.dateDebut, periode.dateFin) * dayWidth %}
+									<div class="entreprise-period" style="left: {{ entLeft }}px; width: {{ entWidth }}px"></div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% endfor %}
+
+			<!-- Holiday Markers -->
+			{% for holiday in holidays %}
+				{% set left = date_service.getOffsetDaysBetween(start_date, holiday) * dayWidth %}
+				<div class="holiday-marker" style="left: {{ left }}px" title="Jour férié: {{ holiday|date('d/m/Y') }}"></div>
+			{% endfor %}
+
+			<!-- Today Marker -->
+			<div class="today-marker" style="left: {{ current_day_position }}px" title="Aujourd'hui"></div>
+		</div>
+	</div>
 {% endblock %}
 
 {% block javascripts %}
-{{ parent() }}
-<script>
-function toggleGroup(groupId) {
-  const group = document.getElementById('group-' + groupId);
-  group.classList.toggle('group-collapsed');
+	{{ parent() }}
+	<script>
+		function toggleGroup(groupId) {
+const group = document.getElementById('group-' + groupId);
+group.classList.toggle('group-collapsed');
 }
-</script>
+	</script>
 {% endblock %}
