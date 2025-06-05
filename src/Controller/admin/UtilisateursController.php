@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller\admin;
+namespace App\Controller\Admin;
 
 use App\Entity\Utilisateurs;
 use App\Form\UtilisateursForm;
@@ -17,7 +17,7 @@ final class UtilisateursController extends AbstractController
     #[Route(name: 'app_utilisateurs_index', methods: ['GET'])]
     public function index(UtilisateursRepository $utilisateursRepository): Response
     {
-        return $this->render('utilisateurs/index.html.twig', [
+        return $this->render('admin/utilisateurs/index.html.twig', [
             'utilisateurs' => $utilisateursRepository->findAll(),
         ]);
     }
@@ -36,7 +36,7 @@ final class UtilisateursController extends AbstractController
             return $this->redirectToRoute('app_utilisateurs_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('utilisateurs/new.html.twig', [
+        return $this->render('admin/utilisateurs/new.html.twig', [
             'utilisateur' => $utilisateur,
             'form' => $form,
         ]);
@@ -45,7 +45,7 @@ final class UtilisateursController extends AbstractController
     #[Route('/{id}', name: 'app_utilisateurs_show', methods: ['GET'])]
     public function show(Utilisateurs $utilisateur): Response
     {
-        return $this->render('utilisateurs/show.html.twig', [
+        return $this->render('admin/utilisateurs/show.html.twig', [
             'utilisateur' => $utilisateur,
         ]);
     }
@@ -62,7 +62,7 @@ final class UtilisateursController extends AbstractController
             return $this->redirectToRoute('app_utilisateurs_index', [], Response::HTTP_SEE_OTHER);
         }
 
-        return $this->render('utilisateurs/edit.html.twig', [
+        return $this->render('admin/utilisateurs/edit.html.twig', [
             'utilisateur' => $utilisateur,
             'form' => $form,
         ]);
