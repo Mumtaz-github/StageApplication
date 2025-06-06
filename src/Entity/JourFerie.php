@@ -17,14 +17,15 @@ class JourFerie
 #[ORM\Column(type: 'date')]
 private ?\DateTimeInterface $date = null;
 
- #[ORM\Column(length: 4)]
-    private ?string $annee = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $zone = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
+
+     #[ORM\Column(length: 50)]
+     private ?string $zone = 'metropole';
+
+#[ORM\Column(type: 'integer', nullable: true)]
+private ?int $annee = null;
 
     public function getId(): ?int
     {
@@ -39,19 +40,21 @@ private ?\DateTimeInterface $date = null;
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
+        $this->annee = (int)$date->format('Y');
         return $this;
     }
 
-    public function getAnnee(): ?string
+   public function getNom(): ?string
     {
-        return $this->annee;
+        return $this->nom;
     }
 
-    public function setAnnee(string $annee): static
+    public function setNom(string $nom): static
     {
-        $this->annee = $annee;
+        $this->nom = $nom;
         return $this;
     }
+  
 
     public function getZone(): ?string
     {
@@ -64,15 +67,10 @@ private ?\DateTimeInterface $date = null;
         return $this;
     }
 
-    public function getNom(): ?string
+   // The only helper method you might actually need
+    public function getYear(): int
     {
-        return $this->nom;
-    }
-
-    public function setNom(string $nom): static
-    {
-        $this->nom = $nom;
-        return $this;
+        return (int)$this->date->format('Y');
     }
 }
 
@@ -86,83 +84,6 @@ private ?\DateTimeInterface $date = null;
 
 
 
-
-
-// namespace App\Entity;
-// use DateTimeInterface;
-
-// use App\Repository\JourFerieRepository;
-// use Doctrine\ORM\Mapping as ORM;
-
-// #[ORM\Entity(repositoryClass: JourFerieRepository::class)]
-// class JourFerie
-// {
-//     #[ORM\Id]
-//     #[ORM\GeneratedValue]
-//     #[ORM\Column]
-//     private ?int $id = null;
-
-// #[ORM\Column(type: 'date')]
-// private ?\DateTimeInterface $date = null;
-
-//  #[ORM\Column(length: 4)]
-//     private ?string $annee = null;
-
-//     #[ORM\Column(length: 50)]
-//     private ?string $zone = null;
-
-//     #[ORM\Column(length: 255)]
-//     private ?string $nom = null;
-
-//     public function getId(): ?int
-//     {
-//         return $this->id;
-//     }
-
-//     public function getDate(): ?DateTimeInterface
-//     {
-//         return $this->date;
-//     }
-
-//     public function setDate(\DateTimeInterface $date): static
-//     {
-//         $this->date = $date;
-//         return $this;
-//     }
-
-//     public function getAnnee(): ?string
-//     {
-//         return $this->annee;
-//     }
-
-//     public function setAnnee(string $annee): static
-//     {
-//         $this->annee = $annee;
-//         return $this;
-//     }
-
-//     public function getZone(): ?string
-//     {
-//         return $this->zone;
-//     }
-
-//     public function setZone(string $zone): static
-//     {
-//         $this->zone = $zone;
-//         return $this;
-//     }
-
-//     public function getNom(): ?string
-//     {
-//         return $this->nom;
-//     }
-
-//     public function setNom(string $nom): static
-//     {
-//         $this->nom = $nom;
-//         return $this;
-//     }
-// }
 
 
 

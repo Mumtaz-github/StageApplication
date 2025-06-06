@@ -31,21 +31,22 @@ class JourFerieRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    public function findDistinctZones(): array
-    {
-        return $this->createQueryBuilder('j')
-            ->select('DISTINCT j.zone')
-            ->orderBy('j.zone', 'ASC')
-            ->getQuery()
-            ->getSingleColumnResult();
-    }
+public function findDistinctAnnees(): array
+{
+    return $this->createQueryBuilder('j')
+        ->select('DISTINCT YEAR(j.date) as year')
+        ->orderBy('year', 'ASC')
+        ->getQuery()
+        ->getSingleColumnResult();
+}
 
-    public function findDistinctAnnees(): array
-    {
-        return $this->createQueryBuilder('j')
-            ->select('DISTINCT j.annee')
-            ->orderBy('j.annee', 'ASC')
-            ->getQuery()
-            ->getSingleColumnResult();
-    }
+public function findByYear(int $year): array
+{
+    return $this->createQueryBuilder('j')
+        ->where('YEAR(j.date) = :year')
+        ->setParameter('year', $year)
+        ->orderBy('j.date', 'ASC')
+        ->getQuery()
+        ->getResult();
+}
 }

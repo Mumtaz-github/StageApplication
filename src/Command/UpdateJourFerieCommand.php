@@ -1,78 +1,68 @@
 <?php
 
-// src/Command/UpdateJourFerieCommand.php
+// src/Command/ImportJourFerieCommand.php
 namespace App\Command;
 
 use App\Entity\JourFerie;
-use App\Service\JourFerieApiService; // Assurez que cette déclaration d'utilisation existe
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use League\Csv\Reader;
 
 #[AsCommand(
-    name: 'app:update-jours-feries',
-    description: 'Mise à jour des jours fériés depuis l api pour toutes les zones françaises '
+    name: 'app:import-jours-feries',
+    description: 'Import holidays from CSV file'
 )]
 class UpdateJourFerieCommand extends Command
 {
-    private JourFerieApiService $apiService;
-    private EntityManagerInterface $em;
-
     public function __construct(
-        JourFerieApiService $apiService, 
-        EntityManagerInterface $em
+        private EntityManagerInterface $em,
+        private string $projectDir
     ) {
-        // attribuer correctement les services
-        $this->apiService = $apiService;
-        $this->em = $em;
-        
         parent::__construct();
     }
 
     protected function configure(): void
     {
         $this->addArgument(
-            'year',
+            'file',
             InputArgument::OPTIONAL,
-            'The year to update',
-            date('Y')
+            'CSV file path',
+            'conception/ApiJourFerie/jours_feries_metropole.csv'
         );
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $year = (int)$input->getArgument('year');
-        $output->writeln("⌛ Updating public holidays for year {$year}...");
+        $filePath = $this->projectDir.'/'.$input->getArgument('file');
+        $csv = Reader::createFromPath($filePath);
+        $csv->setHeaderOffset(0);
 
-        try {
-            $zones = [
-                'metropole',
-                'guadeloupe',
-                'guyane',
-                'martinique',
-                'mayotte',
-                'reunion',
-                'alsace-moselle'
-            ];
-            
-            $totalImported = 0;
+        $imported = 0;
+        foreach ($csv as $record) {
+            $date = \DateTime::createFromFormat('Y-m-d', $record['date']);
+            $year = $date->format('Y');
 
-            foreach ($zones as $zone) {
-                $output->writeln(" Processing zone: {$zone}");
-                $count = $this->apiService->syncHolidaysForZone($zone, $year);
-                $totalImported += $count;
-                $output->writeln("  → Imported {$count} holidays");
+            if (!$this->em->getRepository(JourFerie::class)->findOneBy([
+                'date' => $date,
+                'zone' => 'metropole'
+            ])) {
+                $jourFerie = new JourFerie();
+                $jourFerie->setDate($date)
+                    ->setNom($record['nom'])
+                    ->setZone('metropole');
+                    //  ->setAnnee($year);
+
+                $this->em->persist($jourFerie);
+                $imported++;
             }
-
-            $output->writeln(" Successfully imported {$totalImported} holidays total");
-            return Command::SUCCESS;
-            
-        } catch (\Exception $e) {
-            $output->writeln("<error> Error: {$e->getMessage()}</error>");
-            return Command::FAILURE;
         }
+
+        $this->em->flush();
+        $output->writeln("Imported {$imported} holidays");
+        return Command::SUCCESS;
     }
 }

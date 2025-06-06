@@ -1,110 +1,164 @@
+{# templates/jour_ferie/index.html.twig #}
 <style>
-    .table {
-        table-layout: fixed;
-        width: 100%;
-        border-collapse: collapse;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-    .table th, .table td {
-        width: 16.66%;
-        text-align: center;
-        vertical-align: middle;
-        padding: 0.75rem 1rem;
-        border: 1px solid #dee2e6;
-        word-wrap: break-word;
-    }
-    .table thead th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #adb5bd;
-    }
-    .table tbody tr:hover {
-        background-color: #e9f5ff;
-        cursor: pointer;
-    }
-    .btn-group a.btn {
-        min-width: 70px;
-    }
+	.table {
+		table-layout: fixed;
+		width: 100%;
+		border-collapse: collapse;
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	}
+	.table th,
+	.table td {
+		text-align: center;
+		vertical-align: middle;
+		padding: 0.75rem;
+		border: 1px solid #dee2e6;
+	}
+	.table thead th {
+		background-color: #f8f9fa;
+		border-bottom: 2px solid #adb5bd;
+	}
+	.badge-zone {
+		font-size: 0.8rem;
+		padding: 0.35em 0.65em;
+	}
+	.import-export-box {
+		border-left: 3px solid #0d6efd;
+	}
 </style>
 
-<h1 class="my-4">Liste des Jours Fériés</h1>
-
+<h1 class="my-4">Jours Fériés Officiels</h1>
 
 {% if is_granted('ROLE_ADMIN') %}
-<div class="card mb-4">
-    <div class="card-header bg-primary text-white">
-        <i class="fas fa-sync me-2"></i>Synchronisation API
-    </div>
-    <div class="card-body">
-        <form method="post" action="{{ path('app_jour_ferie_sync_api') }}">
-            <div class="row g-3 align-items-end">
-                <div class="col-md-4">
-                    <label for="sync-zone" class="form-label">Zone</label>
-                    <select name="zone" id="sync-zone" class="form-select" required>
-                        {% for zone in ['metropole', 'guadeloupe', 'guyane', 'martinique', 'mayotte', 'reunion', 'alsace-moselle'] %}
-                            <option value="{{ zone }}">{{ zone|capitalize }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-                <div class="col-md-4">
-                    <label for="sync-year" class="form-label">Année</label>
-                    <input type="number" name="year" id="sync-year"  value="{{ "now"|date('Y') }}"  min="2000" max="{{ "now"|date('Y') + 5 }}" class="form-control" required>
-                </div>
-                <div class="col-md-4">
-                    <button type="submit" class="btn btn-primary">
-                        <i class="fas fa-sync me-1"></i> Synchroniser
-                    </button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
+	<div
+		class="row mb-4">
+		{# API Sync Card #}
+		<div class="col-md-6">
+			<div class="card h-100">
+				<div class="card-header bg-primary text-white">
+					<i class="fas fa-cloud-download-alt me-2"></i>Synchronisation API
+				</div>
+				<div class="card-body">
+					<form method="post" action="{{ path('app_jour_ferie_sync_api') }}">
+						<div class="row g-2">
+							<div class="col-md-6">
+								<label class="form-label">Zone</label>
+								<select name="zone" class="form-select" required>
+									{% for zone in ['metropole', 'alsace-moselle', 'guadeloupe', 'martinique', 'guyane', 'reunion', 'mayotte'] %}
+										<option value="{{ zone }}">{{ zone|replace({'-': ' '})|title }}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="col-md-4">
+								<label class="form-label">Année</label>
+								<input type="number" name="year" value="{{ "now"|date('Y') }}" min="2000" max="{{ "now"|date('Y')+2 }}" class="form-control" required>
+							</div>
+							<div class="col-md-2 d-flex align-items-end">
+								<button type="submit" class="btn btn-primary w-100">
+									<i class="fas fa-sync"></i>
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+
+		{# CSV Import Card #}
+		<div class="col-md-6">
+			<div class="card h-100 import-export-box">
+				<div class="card-header bg-success text-white">
+					<i class="fas fa-file-import me-2"></i>Import CSV
+				</div>
+				<div class="card-body">
+					<form method="post" action="{{ path('app_jour_ferie_import_csv') }}" enctype="multipart/form-data">
+						<div class="row g-2">
+							<div class="col-md-8">
+								<label class="form-label">Fichier CSV</label>
+								<input type="file" name="csv_file" accept=".csv" class="form-control" required>
+							</div>
+							<div class="col-md-4 d-flex align-items-end">
+								<button type="submit" class="btn btn-success w-100">
+									<i class="fas fa-upload"></i>
+									Importer
+								</button>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 {% endif %}
 
-<form method="get" class="mb-3 d-flex align-items-center gap-3 flex-wrap">
-    <div>
-        <label for="zone">Zone:</label>
-        <select name="zone" id="zone" class="form-select" onchange="this.form.submit()">
-            <option value="">-- Toutes --</option>
-            {% for zone in ['metropole', 'guadeloupe', 'guyane', 'martinique', 'mayotte', 'reunion', 'saint_barthelemy', 'saint_martin', 
-                  'saint_pierre_et_miquelon', 'wallis_et_futuna','nouvelle-caledonie','polynesie-francaise','alsace-moselle'] %}
-                <option value="{{ zone }}" {{ app.request.get('zone') == zone ? 'selected' : '' }}>{{ zone|capitalize }}</option>
-            {% endfor %}
-        </select>
-    </div>
-</form>
+{# Filtering Section #}
+<div class="card mb-4">
+	<div class="card-body p-2">
+		<form method="get" class="row g-2 align-items-center">
+			<div class="col-md-4">
+				<select name="zone" class="form-select" onchange="this.form.submit()">
+					<option value="">Toutes zones</option>
+					{% for zone in zones %}
+						<option value="{{ zone }}" {{ app.request.query.get('zone') == zone ? 'selected' : '' }}>
+							{{ zone|replace({'_': ' ', '-': ' '})|title }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-md-4">
+				<select name="year" class="form-select" onchange="this.form.submit()">
+					<option value="">Toutes années</option>
+					{% for year in annees|sort|reverse %}
+						<option value="{{ year }}" {{ app.request.query.get('year') == year ? 'selected' : '' }}>
+							{{ year }}
+						</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="col-md-4">
+				<a href="{{ path('app_jour_ferie_api') }}" class="btn btn-outline-secondary w-100">
+					<i class="fas fa-download"></i>
+					Export JSON
+				</a>
+			</div>
+		</form>
+	</div>
+</div>
 
+{# Holidays Table #}
 <div class="table-responsive">
-    <table class="table table-striped table-hover">
-        <thead>
-            <tr>
-                <th scope="col">Id</th>
-                <th scope="col">Date</th>
-                <th scope="col">Année</th>
-                <th scope="col">Zone</th>
-                <th scope="col">Nom</th>
-                <th scope="col">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for jour_ferie in jour_feries %}
-                <tr>
-                    <td>{{ jour_ferie.id }}</td>
-                    <td>{{ jour_ferie.date ? jour_ferie.date|date('d/m/Y') : 'N/A' }}</td>
-                    <td>{{ jour_ferie.annee }}</td>
-                    <td>{{ jour_ferie.zone }}</td>
-                    <td>{{ jour_ferie.nom }}</td>
-                    <td>
-                        <div class="btn-group" role="group">
-                            <a href="{{ path('app_jour_ferie_show', {'id': jour_ferie.id}) }}" class="btn btn-info rounded-pill">Voir</a>
-                            <a href="{{ path('app_jour_ferie_edit', {'id': jour_ferie.id}) }}" class="btn btn-warning rounded-pill">Modifier</a>
-                        </div>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="6" class="text-center text-muted">Aucun jour férié trouvé pour cette zone.</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+	<table class="table table-striped">
+		<thead>
+			<tr>
+				<th style="width: 25%">Date</th>
+				<th style="width: 40%">Nom</th>
+				<th style="width: 20%">Zone</th>
+				<th style="width: 15%"></th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for jour_ferie in jour_feries %}
+				<tr>
+					<td>{{ jour_ferie.date|date('d/m/Y') }}</td>
+					<td>{{ jour_ferie.nom }}</td>
+					<td>
+						<span class="badge bg-secondary badge-zone">
+							{{ jour_ferie.zone|replace({'_': ' ', '-': ' '})|title }}
+						</span>
+					</td>
+					<td>
+						<a href="{{ path('app_jour_ferie_show', {'id': jour_ferie.id}) }}" class="btn btn-sm btn-outline-primary">
+							<i class="fas fa-info-circle"></i>
+						</a>
+					</td>
+				</tr>
+			{% else %}
+				<tr>
+					<td colspan="4" class="text-center text-muted py-4">
+						<i class="fas fa-calendar-times fa-2x mb-2"></i><br>
+						Aucun jour férié trouvé
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 </div>
