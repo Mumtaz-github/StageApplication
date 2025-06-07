@@ -1,15 +1,12 @@
 <?php
 
+
 namespace App\Repository;
 
 use App\Entity\JourFerie;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use DateTimeInterface;
 
-/**
- * @extends ServiceEntityRepository<JourFerie>
- */
 class JourFerieRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -18,35 +15,54 @@ class JourFerieRepository extends ServiceEntityRepository
     }
 
     /**
-     * Finds holidays within a specific date range
+     * @return string[] Array of distinct zone values
      */
-    public function findForDateRange(DateTimeInterface $startDate, DateTimeInterface $endDate): array
+    public function findDistinctZones(): array
     {
         return $this->createQueryBuilder('j')
-            ->where('j.date BETWEEN :start AND :end')
-            ->setParameter('start', $startDate->format('Y-m-d'))
-            ->setParameter('end', $endDate->format('Y-m-d'))
-            ->orderBy('j.date', 'ASC')
+            ->select('DISTINCT j.zone')
+            ->orderBy('j.zone', 'ASC')
             ->getQuery()
-            ->getResult();
+            ->getSingleColumnResult();
     }
 
-public function findDistinctAnnees(): array
-{
-    return $this->createQueryBuilder('j')
-        ->select('DISTINCT YEAR(j.date) as year')
-        ->orderBy('year', 'ASC')
-        ->getQuery()
-        ->getSingleColumnResult();
-}
+    /**
+     * @return int[] Array of distinct year values
+     */
+    public function findDistinctAnnees(): array
+    {
+        return $this->createQueryBuilder('j')
+            ->select('DISTINCT j.annee')
+            ->where('j.annee IS NOT NULL')
+            ->orderBy('j.annee', 'DESC')
+            ->getQuery()
+            ->getSingleColumnResult();
+    }
 
-public function findByYear(int $year): array
-{
-    return $this->createQueryBuilder('j')
-        ->where('YEAR(j.date) = :year')
-        ->setParameter('year', $year)
-        ->orderBy('j.date', 'ASC')
-        ->getQuery()
-        ->getResult();
-}
+    /**
+     * Finds holidays between two dates, optionally filtered by zone
+     *
+     * @param \DateTimeInterface $start Start date
+     * @param \DateTimeInterface $end End date
+     * @param string|null $zone Optional zone filter
+     * @return JourFerie[]
+     */
+    public function findBetweenDates(
+        \DateTimeInterface $start, 
+        \DateTimeInterface $end,
+        ?string $zone = null
+    ): array {
+        $qb = $this->createQueryBuilder('j')
+            ->where('j.date BETWEEN :start AND :end')
+            ->setParameter('start', $start)
+            ->setParameter('end', $end)
+            ->orderBy('j.date', 'ASC');
+
+        if ($zone) {
+            $qb->andWhere('j.zone = :zone')
+               ->setParameter('zone', $zone);
+        }
+
+        return $qb->getQuery()->getResult();
+    }
 }

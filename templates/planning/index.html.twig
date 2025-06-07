@@ -226,9 +226,10 @@
 			{% endfor %}
 
 			<!-- Holiday Markers -->
+			<!-- Holiday Markers -->
 			{% for holiday in holidays %}
-				{% set left = date_service.getOffsetDaysBetween(start_date, holiday) * dayWidth %}
-				<div class="holiday-marker" style="left: {{ left }}px" title="Jour férié: {{ holiday|date('d/m/Y') }}"></div>
+				{% set left = date_service.getOffsetDaysBetween(start_date, holiday.date) * dayWidth %}
+				<div class="holiday-marker" style="left: {{ left }}px" title="Jour férié: {{ holiday.nom }} ({{ holiday.date|date('d/m/Y') }})"></div>
 			{% endfor %}
 
 			<!-- Today Marker -->

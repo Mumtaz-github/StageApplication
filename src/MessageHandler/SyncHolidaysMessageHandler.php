@@ -1,48 +1,23 @@
 <?php
-
+// src/MessageHandler/SyncHolidaysMessageHandler.php
 namespace App\MessageHandler;
 
 use App\Message\SyncHolidaysMessage;
 use App\Service\JourFerieApiService;
-use Symfony\Component\Messenger\Attribute\AsMessageHandler;
-use Psr\Log\LoggerInterface;
+use Symfony\Component\Messenger\Handler\MessageHandlerInterface;
 
-#[AsMessageHandler]
-class SyncHolidaysMessageHandler
+class SyncHolidaysMessageHandler implements MessageHandlerInterface
 {
     public function __construct(
-        private readonly JourFerieApiService $holidayService,
-        private readonly ?LoggerInterface $logger = null
+        private JourFerieApiService $apiService
     ) {}
 
-    public function __invoke(SyncHolidaysMessage $message): void
+    public function __invoke(SyncHolidaysMessage $message)
     {
-        try {
-            $this->logger?->info('Starting holiday synchronization', [
-                'zone' => $message->getZone(),
-                'year' => $message->getYear()
-            ]);
-
-            $count = $this->holidayService->syncHolidaysForZone(
-                $message->getZone(),
-                $message->getYear()
-            );
-
-            $this->logger?->info('Successfully synchronized holidays', [
-                'count' => $count,
-                'zone' => $message->getZone(),
-                'year' => $message->getYear()
-            ]);
-            
-        } catch (\Exception $e) {
-            $this->logger?->error('Failed to synchronize holidays', [
-                'error' => $e->getMessage(),
-                'zone' => $message->getZone(),
-                'year' => $message->getYear()
-            ]);
-            
-            // You might want to throw the exception again to trigger retry logic
-            throw $e;
-        }
+        $this->apiService->syncHolidaysForZone(
+            $message->getZone(),
+            $message->getYear(),
+            // $message->getForce() // Add this to your message class if needed
+        );
     }
 }

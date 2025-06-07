@@ -21,8 +21,9 @@ private ?\DateTimeInterface $date = null;
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-     #[ORM\Column(length: 50)]
-     private ?string $zone = 'metropole';
+// src/Entity/JourFerie.php
+#[ORM\Column(length: 50)]
+private ?string $zone = 'metropole';
 
 #[ORM\Column(type: 'integer', nullable: true)]
 private ?int $annee = null;
@@ -40,7 +41,7 @@ private ?int $annee = null;
     public function setDate(\DateTimeInterface $date): static
     {
         $this->date = $date;
-        $this->annee = (int)$date->format('Y');
+      
         return $this;
     }
 
@@ -67,14 +68,18 @@ private ?int $annee = null;
         return $this;
     }
 
-   // The only helper method you might actually need
-    public function getYear(): int
+     public function getAnnee(): ?int
     {
-        return (int)$this->date->format('Y');
+        return $this->annee;
     }
+
+    public function setAnnee(?int $annee): static
+    {
+        $this->annee = $annee;
+        return $this;
+    }
+
 }
-
-
 
 
 
