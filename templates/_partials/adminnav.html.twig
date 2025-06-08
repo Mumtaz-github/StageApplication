@@ -14,10 +14,11 @@
 					</a>
 				</p>
 				<p>
-					<a href="{{ path('admin_invitation_new') }}" class="text-decoration-none">
+					<a href="{{ path('app_invitation_index') }}" class="text-decoration-none">
 						<i class="fas fa-envelope me-1"></i>
 						Envoyer invitation
 					</a>
+
 				</p>
 			</div>
 		</article>
@@ -31,30 +32,32 @@
 			</div>
 			<div class="card-body">
 				<p>
-					<a href="{{ path('formation_index') }}" class="text-decoration-none">
+					<a href="{{ path('app_formation_index') }}" class="text-decoration-none">
 						<i class="fas fa-list me-1"></i>
 						Liste des formations
 					</a>
+
 				</p>
 				{% if is_granted('ROLE_ADMIN') %}
 					<p>
-						<a href="{{ path('formation_new') }}" class="text-decoration-none">
+						<a href="{{ path('app_formation_new') }}" class="text-decoration-none">
 							<i class="fas fa-plus me-1"></i>
 							Créer formation
 						</a>
+
 					</p>
 				{% endif %}
 				<p>
-					<a href="{{ path('formation_interruptions') }}" class="text-decoration-none">
-						<i class="fas fa-pause me-1"></i>
-						Interruptions
-					</a>
+					{# <a href="{{ path('formation_interruptions') }}" class="text-decoration-none">
+																																																								<i class="fas fa-pause me-1"></i>
+																																																								Interruptions
+																																																							</a> #}
 				</p>
 				<p>
-					<a href="{{ path('formation_periodes') }}" class="text-decoration-none">
-						<i class="fas fa-building me-1"></i>
-						Périodes en entreprise
-					</a>
+					{# <a href="{{ path('formation_periodes') }}" class="text-decoration-none">
+																																																			<i class="fas fa-building me-1"></i>
+																																																			Périodes en entreprise
+																																																		</a> #}
 				</p>
 			</div>
 		</article>
@@ -68,25 +71,26 @@
 			</div>
 			<div class="card-body">
 				<p>
-					<a href="{{ path('jour_ferie_index') }}" class="text-decoration-none">
+					<a href="{{ path('app_jour_ferie_index') }}" class="text-decoration-none">
 						<i class="fas fa-calendar me-1"></i>
 						Calendrier
 					</a>
+
 				</p>
 				{% if is_granted('ROLE_ADMIN') %}
 					<p>
-						<a href="{{ path('jour_ferie_sync') }}" class="text-decoration-none">
-							<i class="fas fa-sync-alt me-1"></i>
-							Synchroniser API
-						</a>
+						{# <a href="{{ path('jour_ferie_sync') }}" class="text-decoration-none">
+																																											<i class="fas fa-sync-alt me-1"></i>
+																																											Synchroniser API
+																																										</a> #}
 					</p>
 				{% endif %}
 				{% if is_granted('ROLE_GESTIONNAIRE') %}
 					<p>
-						<a href="{{ path('jour_ferie_local_new') }}" class="text-decoration-none">
-							<i class="fas fa-plus me-1"></i>
-							Ajouter local
-						</a>
+						{# <a href="{{ path('jour_ferie_local_new') }}" class="text-decoration-none">
+																																																							<i class="fas fa-plus me-1"></i>
+																																																							Ajouter local
+																																																						</a> #}
 					</p>
 				{% endif %}
 			</div>
