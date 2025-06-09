@@ -18,7 +18,7 @@ class AppFixtures extends Fixture
         $admin->setEmail('admin@example.fr');
         $admin->setPassword($this->hasher->hashPassword($admin, 'admin1234'));
         $admin->setRole('ROLE_ADMIN');
-        $admin->setNom('add');
+        $admin->setNom('Admin');
         $admin->setPrenom('Admin');
     $admin->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($admin);
@@ -28,7 +28,7 @@ class AppFixtures extends Fixture
         $gestionnaire->setEmail('gestionnaire@example.fr');
         $gestionnaire->setPassword($this->hasher->hashPassword($gestionnaire, 'gestionnaire123'));
         $gestionnaire->setRole('ROLE_GESTIONNAIRE');
-        $gestionnaire->setNom('add');
+        $gestionnaire->setNom('Gestionnaire');
         $gestionnaire->setPrenom('Gestionnaire');
 $gestionnaire->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($gestionnaire);
@@ -38,7 +38,7 @@ $gestionnaire->setDateInvitation(new \DateTimeImmutable());
         $consultation->setEmail('consultation@example.fr');
         $consultation->setPassword($this->hasher->hashPassword($consultation, 'consultation123'));
         $consultation->setRole('ROLE_CONSULTATION');
-        $consultation->setNom('add');
+        $consultation->setNom('Consultation');
         $consultation->setPrenom('Consultation');
 $consultation->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($consultation);

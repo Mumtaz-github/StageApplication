@@ -1,58 +1,59 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Formation{% endblock %}
+{% block title %}Formation
+{% endblock %}
 
 {% block body %}
-    <h1>Formation</h1>
+	<h1>Formation</h1>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ formation.id }}</td>
-            </tr>
-            <tr>
-                <th>Actif_formation</th>
-                <td>{{ formation.actifFormation ? 'Yes' : 'No' }}</td>
-            </tr>
-            <tr>
-                <th>Nom</th>
-                <td>{{ formation.nom }}</td>
-            </tr>
-            <tr>
-                <th>Numero</th>
-                <td>{{ formation.numero }}</td>
-            </tr>
-            <tr>
-                <th>Etat</th>
-                <td>{{ formation.etat }}</td>
-            </tr>
-            <tr>
-                <th>Titre_Professionnel</th>
-                <td>{{ formation.titreProfessionnel }}</td>
-            </tr>
-            <tr>
-                <th>Niveau</th>
-                <td>{{ formation.niveau }}</td>
-            </tr>
-            <tr>
-                <th>Nb_Stagiaires_previsionnel</th>
-                <td>{{ formation.nbStagiairesPrevisionnel }}</td>
-            </tr>
-            <tr>
-                <th>Groupe_rattachement</th>
-                <td>{{ formation.groupeRattachement }}</td>
-            </tr>
-            <tr>
-                <th>Date_debut</th>
-                <td>{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+	<table class="table">
+		<tbody>
+			<tr>
+				<th>Id</th>
+				<td>{{ formation.id }}</td>
+			</tr>
+			<tr>
+				<th>Actif_formation</th>
+				<td>{{ formation.actifFormation ? 'Yes' : 'No' }}</td>
+			</tr>
+			<tr>
+				<th>Nom</th>
+				<td>{{ formation.nom }}</td>
+			</tr>
+			<tr>
+				<th>Numero</th>
+				<td>{{ formation.numero }}</td>
+			</tr>
+			<tr>
+				<th>Etat</th>
+				<td>{{ formation.etat }}</td>
+			</tr>
+			<tr>
+				<th>Titre_Professionnel</th>
+				<td>{{ formation.titreProfessionnel }}</td>
+			</tr>
+			<tr>
+				<th>Niveau</th>
+				<td>{{ formation.niveau }}</td>
+			</tr>
+			<tr>
+				<th>Nb_Stagiaires_previsionnel</th>
+				<td>{{ formation.nbStagiairesPrevisionnel }}</td>
+			</tr>
+			<tr>
+				<th>Groupe_rattachement</th>
+				<td>{{ formation.groupeRattachement }}</td>
+			</tr>
+			<tr>
+				<th>Date_debut</th>
+				<td>{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}</td>
+			</tr>
+		</tbody>
+	</table>
 
-    <a href="{{ path('app_formation_index') }}">back to list</a>
+	<a href="{{ path('app_formation_index') }}">back to list</a>
 
-    <a href="{{ path('app_formation_edit', {'id': formation.id}) }}">edit</a>
+	<a href="{{ path('app_formation_edit', {'id': formation.id}) }}">edit</a>
 
-    {{ include('formation/_delete_form.html.twig') }}
+	{{ include('admin/formation/_delete_form.html.twig') }}
 {% endblock %}

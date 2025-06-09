@@ -43,7 +43,7 @@
 							<div class="col-md-6">
 								<label class="form-label">Zone</label>
 								<select name="zone" class="form-select" required>
-									{% for zone in ['metropole', 'alsace-moselle', 'guadeloupe', 'martinique', 'guyane', 'reunion', 'mayotte'] %}
+									{% for zone in ['metropole', 'alsace-moselle', 'guadeloupe', 'martinique', 'guyane', 'la-reunion', 'mayotte','nouvelle-caledonie','polynesie-francaise','saint-barthelemy','saint-martin','saint-pierre-et-miquelon','wallis-et-futuna'] %}
 										<option value="{{ zone }}">{{ zone|replace({'-': ' '})|title }}</option>
 									{% endfor %}
 								</select>

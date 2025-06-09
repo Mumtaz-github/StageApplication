@@ -2,24 +2,26 @@
 {% extends 'base.html.twig' %}
 
 {% block body %}
-	<div class="container mt-4">
-		<div class="card">
-			<div class="card-body">
-				<h2 class="card-title">
-					{{ app.user.prenom }}
-					{{ app.user.nom }}
-                 </h2>
-				<hr>
-				<p>
-					<strong>Email:</strong>
-					{{ app.user.email }}</p>
-				<p>
-					<strong>Rôle:</strong>
-					{{ app.user.role }}</p>
+	<div class="container mt-4 d-flex justify-content-center">
+		<div class="col-md-8">
+			<div class="card">
+				<div class="card-body">
+					<h2 class="card-title" style=" text-align:center;">
+						{{ app.user.prenom }}
+						{{ app.user.nom }}
+					</h2>
+					<hr>
+					<p>
+						<strong>Email:</strong>
+						{{ app.user.email }}</p>
+					<p>
+						<strong>Rôle:</strong>
+						{{ app.user.role }}</p>
 
 					<a href="{{ path('app_profile_edit') }}" class="btn btn-primary float-end">
 						Modifier
 					</a>
+				</div>
 			</div>
 		</div>
 	</div>

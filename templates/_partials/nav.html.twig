@@ -13,59 +13,23 @@
 
 		<!-- Main Navigation -->
 		<div class="collapse navbar-collapse" id="mainNavbar">
-			<ul
-				class="navbar-nav me-auto">
-				<!-- Always visible -->
+			<ul class="navbar-nav me-auto">
 				{% set currentRoute = app.request.attributes.get('_route') %}
+
+				<!-- Planning -->
 				<li class="nav-item">
-					<a class="nav-link {% if app.current_route == 'app_planning' %}active{% endif %} espace" href="{{ path('app_planning') }}">
+					<a class="nav-link {% if currentRoute == 'app_planning' %}active{% endif %}" href="{{ path('app_planning') }}">
 						🗓️ Planning
 					</a>
 				</li>
 
 				<!-- Admin Section -->
 				{% if is_granted('ROLE_ADMIN') %}
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="adminDropdown" data-bs-toggle="dropdown">
+					<li class="nav-item">
+						<a class="nav-link {% if currentRoute starts with 'admin_' %}active{% endif %}" href="{{ path('admin_index') }}">
 							⚙️ Administration
 						</a>
-						<ul class="dropdown-menu">
-							<li>
-								<a class="dropdown-item" href="{{ path('app_formation_index') }}">
-									🎓 Gestion des Formations
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('app_jour_ferie_index') }}">
-									🌴 Jours Fériés
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('app_interruption_index') }}">
-									⏸️ Interruptions
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('app_invitation_new') }}">
-									✉️ Invitations
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('app_utilisateurs_index') }}">
-									👥 Utilisateurs
-								</a>
-							</li>
-						</ul>
 					</li>
-				{% endif %}
-
-				<!-- Gestionnaire Section -->
-				{% if is_granted('ROLE_GESTIONNAIRE') %}
-					{# <li class="nav-item">
-																																									<a class="nav-link" href="{{ path('app_jour_ferie_index') }}">
-																																										➕ Ajout Congés Locaux
-																																									</a>
-																																								</li> #}
 				{% endif %}
 			</ul>
 
@@ -75,140 +39,129 @@
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
 							👤
-							{# {{ app.user.prenom }}
-																																																																						{{ app.user.nom }} #}
-							<span class="badge bg-{{ is_granted('ROLE_ADMIN') ? 'danger' : (is_granted('ROLE_GESTIONNAIRE') ? 'warning' : 'success')
-																																																																																																																														                            }}">
+							<span class="badge bg-{{ is_granted('ROLE_ADMIN') ? 'danger' : (is_granted('ROLE_GESTIONNAIRE') ? 'warning' : 'success') }}">
 								{{ app.user.roles|first|replace({'ROLE_': ''}) }}
 							</span>
 						</a>
 						<ul class="dropdown-menu dropdown-menu-end">
 							<li>
-								<a class="dropdown-item" href="{{ path('app_profile') }}">
-									Mon Profil
-								</a>
+								<a class="dropdown-item" href="{{ path('app_profile') }}">Mon Compte</a>
 							</li>
 							<li><hr class="dropdown-divider"></li>
 							<li>
-								<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
-									🚪 Déconnexion
-								</a>
+								<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">🚪 Déconnexion</a>
 							</li>
 						</ul>
 					</li>
 				{% else %}
 					<li class="nav-item">
-						<a class="nav-link" href="{{ path('app_login') }}">
-							🔑 Connexion
-						</a>
+						<a class="nav-link" href="{{ path('app_login') }}">🔑 Connexion</a>
 					</li>
 				{% endif %}
 			</ul>
 		</div>
 	</div>
 </nav>
-
-
 {# <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
-	<div
-		class="container-fluid">
-		<!-- Mobile Toggler -->
-		<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
-			<span class="navbar-toggler-icon"></span>
-		</button>
-
-		<!-- Brand Logo -->
-		<a class="navbar-brand" href="{{ path('app_planning') }}">
-			<img src="{{ asset('build/images/logo.png') }}" alt="Logo" height="40">
-		</a>
-
-		<!-- Main Navigation -->
-		<div class="collapse navbar-collapse" id="mainNavbar">
-			<ul
-				class="navbar-nav me-auto">
-				<!-- Always visible -->
-				<li class="nav-item">
-					<a class="nav-link {{ app.current_route == 'app_planning' ? 'active' }}" href="{{ path('app_planning') }}">
-						🗓️ Planning
-					</a>
-				</li>
-
-				<!-- Admin Section -->
-				{% if is_granted('ROLE_ADMIN') %}
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="adminDropdown" data-bs-toggle="dropdown">
-							⚙️ Administration
-						</a>
-						<ul class="dropdown-menu">
-							<li>
-								<a class="dropdown-item" href="{{ path('app_formation_index') }}">
-									🎓 Gestion des Formations
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('app_jour_ferie_index') }}">
-									🌴 Jours Fériés
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('app_invitation_new') }}">
-									✉️ Invitations
-								</a>
-							</li>
-							<li>
-								<a class="dropdown-item" href="{{ path('app_utilisateurs_index') }}">
-									👥 Utilisateurs
-								</a>
-							</li>
-						</ul>
-					</li>
-				{% endif %}
-
-				<!-- Gestionnaire Section -->
-				{% if is_granted('ROLE_GESTIONNAIRE') %}
-					<li class="nav-item">
-						<a class="nav-link" href="{{ path('app_jour_ferie_index') }}">
-							➕ Ajout Congés Locaux
-						</a>
-					</li>
-				{% endif %}
-			</ul>
-
-			<!-- User Section -->
-			<ul class="navbar-nav ms-auto">
-				{% if app.user %}
-					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
-							👤
-							{{ app.user.prenom }}
-							{{ app.user.nom }}
-							<span class="badge bg-{{ is_granted('ROLE_ADMIN') ? 'danger' : (is_granted('ROLE_GESTIONNAIRE') ? 'warning' : 'success')
-																																				                            }}">
-								{{ app.user.roles|first|replace({'ROLE_': ''}) }}
-							</span>
-						</a>
-						<ul class="dropdown-menu dropdown-menu-end">
-							<li>
-								<a class="dropdown-item" href="{{ path('app_profile') }}">
-									Mon Profil
-								</a>
-							</li>
-							<li><hr class="dropdown-divider"></li>
-							<li>
-								<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
-									🚪 Déconnexion
-								</a>
-							</li>
-						</ul>
-					</li>
-				{% else %}
-					<li class="nav-item">
-						<a class="nav-link" href="{{ path('app_login') }}">
-							🔑 Connexion
-						</a>
-					</li>
-				{% endif %}
-			</ul>
-		</div>
-	</div>
-</nav> #}
+											<div
+												class="container-fluid">
+												<!-- Mobile Toggler -->
+												<button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNavbar">
+													<span class="navbar-toggler-icon"></span>
+												</button>
+										
+												<!-- Brand Logo -->
+												<a class="navbar-brand" href="{{ path('app_planning') }}">
+													<img src="{{ asset('build/images/logo.png') }}" alt="Logo" height="40">
+												</a>
+										
+												<!-- Main Navigation -->
+												<div class="collapse navbar-collapse" id="mainNavbar">
+													<ul
+														class="navbar-nav me-auto">
+														<!-- Always visible -->
+														<li class="nav-item">
+															<a class="nav-link {{ app.current_route == 'app_planning' ? 'active' }}" href="{{ path('app_planning') }}">
+																🗓️ Planning
+															</a>
+														</li>
+										
+														<!-- Admin Section -->
+														{% if is_granted('ROLE_ADMIN') %}
+															<li class="nav-item dropdown">
+																<a class="nav-link dropdown-toggle" href="#" id="adminDropdown" data-bs-toggle="dropdown">
+																	⚙️ Administration
+																</a>
+																<ul class="dropdown-menu">
+																	<li>
+																		<a class="dropdown-item" href="{{ path('app_formation_index') }}">
+																			🎓 Gestion des Formations
+																		</a>
+																	</li>
+																	<li>
+																		<a class="dropdown-item" href="{{ path('app_jour_ferie_index') }}">
+																			🌴 Jours Fériés
+																		</a>
+																	</li>
+																	<li>
+																		<a class="dropdown-item" href="{{ path('app_invitation_new') }}">
+																			✉️ Invitations
+																		</a>
+																	</li>
+																	<li>
+																		<a class="dropdown-item" href="{{ path('app_utilisateurs_index') }}">
+																			👥 Utilisateurs
+																		</a>
+																	</li>
+																</ul>
+															</li>
+														{% endif %}
+										
+														<!-- Gestionnaire Section -->
+														{% if is_granted('ROLE_GESTIONNAIRE') %}
+															<li class="nav-item">
+																<a class="nav-link" href="{{ path('app_jour_ferie_index') }}">
+																	➕ Ajout Congés Locaux
+																</a>
+															</li>
+														{% endif %}
+													</ul>
+										
+													<!-- User Section -->
+													<ul class="navbar-nav ms-auto">
+														{% if app.user %}
+															<li class="nav-item dropdown">
+																<a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
+																	👤
+																	{{ app.user.prenom }}
+																	{{ app.user.nom }}
+																	<span class="badge bg-{{ is_granted('ROLE_ADMIN') ? 'danger' : (is_granted('ROLE_GESTIONNAIRE') ? 'warning' : 'success')
+																																														                            }}">
+																		{{ app.user.roles|first|replace({'ROLE_': ''}) }}
+																	</span>
+																</a>
+																<ul class="dropdown-menu dropdown-menu-end">
+																	<li>
+																		<a class="dropdown-item" href="{{ path('app_profile') }}">
+																			Mon Profil
+																		</a>
+																	</li>
+																	<li><hr class="dropdown-divider"></li>
+																	<li>
+																		<a class="dropdown-item text-danger" href="{{ path('app_logout') }}">
+																			🚪 Déconnexion
+																		</a>
+																	</li>
+																</ul>
+															</li>
+														{% else %}
+															<li class="nav-item">
+																<a class="nav-link" href="{{ path('app_login') }}">
+																	🔑 Connexion
+																</a>
+															</li>
+														{% endif %}
+													</ul>
+												</div>
+											</div>
+										</nav> #}

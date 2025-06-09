@@ -139,15 +139,17 @@ class UpdateJourFerieCommand extends Command
             'metropole',
             'alsace-moselle',
             'guadeloupe',
+             'guyane',
+             'la-renion',
             'martinique',
-            'guyane',
-            'reunion',
             'mayotte',
-            'saint-barthelemy',
+              'nouvelle-caledonie',
+              'polynesie-francaise',
+             'saint-barthelemy',
             'saint-martin',
             'saint-pierre-et-miquelon',
             'wallis-et-futuna',
-            'nouvelle-caledonie'
+         
         ];
     }
 }

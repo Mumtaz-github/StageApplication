@@ -16,4 +16,4 @@ class JourFerieFetcher
         $url = "https://calendrier.api.gouv.fr/jours-feries/{$zone}/{$year}.json";
         return $this->client->request('GET', $url)->toArray();
     }
-}
+} 

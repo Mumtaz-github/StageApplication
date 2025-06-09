@@ -1,6 +1,70 @@
+{{ form_start(form) }}
+
+<div class="container mt-4 mb-5 p-4 rounded bg-light shadow-sm" style="max-width: 1000px;">
+	<h2 class="text-center mb-4">{{ button_label|default('Créer une Formation') }}</h2>
+
+	{# Actif checkbox shown as switch #}
+	<div class="form-check form-switch mb-4">
+		{{ form_widget(form.actifFormation, {'attr': {'class': 'form-check-input'}}) }}
+		{{ form_label(form.actifFormation, 'Formation Active', {'label_attr': {'class': 'form-check-label'}}) }}
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.nom) }}
+		</div>
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.numero) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.etat) }}
+		</div>
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.titreProfessionnel) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.niveau) }}
+		</div>
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.nbStagiairesPrevisionnel) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.groupeRattachement) }}
+		</div>
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.formateurs) }}
+		</div>
+	</div>
+
+	<div class="row">
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.dateDebut) }}
+		</div>
+		<div class="col-md-6 mb-3">
+			{{ form_row(form.dateFin) }}
+		</div>
+	</div>
+
+	<div class="text-center mt-4">
+		<button class="btn btn-success px-5 py-2">
+			{{ button_label|default('Enregistrer') }}
+		</button>
+	</div>
+</div>
+
+{{ form_end(form) }}
 
 
-
+{# 
 {{ form_start(form) }}
 
 <div class="container mt-3 mb-3 p-4 rounded" style="max-width: 1000px; background-color: #f1f1f1; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
@@ -73,4 +137,4 @@
     </div>
 </div>
 
-{{ form_end(form) }}
+{{ form_end(form) }} #}
