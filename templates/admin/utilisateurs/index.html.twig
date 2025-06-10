@@ -6,7 +6,7 @@
 
 {% block body %}
 	<div class="container mt-4">
-		<h1 class="mb-4">Liste des Utilisateurs</h1>
+		<h1 class="mb-4 text-center">Liste des Utilisateurs</h1>
 
 		<table class="table table-striped">
 			<thead>
@@ -16,6 +16,8 @@
 					<th>Rôle</th>
 					<th>Nom</th>
 					<th>Prénom</th>
+					<th>Codepostal</th>
+					<th>Ville</th>
 					<th>Date Invitation</th>
 					<th>Actions</th>
 				</tr>
@@ -27,14 +29,16 @@
 						<td>{{ utilisateur.email }}</td>
 						<td>
 							<span class="badge
-																		                            {% if utilisateur.role == 'ROLE_ADMIN' %}bg-danger
-																		                            {% elseif utilisateur.role == 'ROLE_GESTIONNAIRE' %}bg-warning
-																		                            {% else %}bg-primary{% endif %}">
+																																																												  {% if utilisateur.role == 'ROLE_ADMIN' %}bg-danger
+																																																													 {% elseif utilisateur.role == 'ROLE_GESTIONNAIRE' %}bg-warning
+																																																												 {% else %}bg-primary{% endif %}">
 								{{ utilisateur.role }}
 							</span>
 						</td>
 						<td>{{ utilisateur.nom }}</td>
 						<td>{{ utilisateur.prenom }}</td>
+						<td>{{ utilisateur.codepostal }}</td>
+						<td>{{ utilisateur.ville }}</td>
 						<td>{{ utilisateur.dateInvitation|date('d/m/Y H:i') }}</td>
 						<td>
 							<a href="{{ path('app_utilisateurs_show', {'id': utilisateur.id}) }}" class="btn btn-sm btn-info">

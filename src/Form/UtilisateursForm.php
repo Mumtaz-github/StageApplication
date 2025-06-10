@@ -17,6 +17,8 @@ class UtilisateursForm extends AbstractType
         $builder
             ->add('nom')
             ->add('prenom')
+            ->add('codepostal')
+            ->add('ville')
             ->add('email')
             ->add('role', ChoiceType::class, [
                 'choices' => [

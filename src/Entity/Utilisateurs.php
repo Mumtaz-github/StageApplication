@@ -21,6 +21,12 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
+    #[ORM\Column(length: 5)]
+    private ?string $codepostal = null;
+
+    #[ORM\Column(length: 150)]
+    private ?string $ville = null;
+
     #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
 
@@ -59,6 +65,32 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
         $this->prenom = $prenom;
         return $this;
     }
+
+
+    public function getCodepostal(): ?string
+    {
+        return $this->codepostal;
+    }
+
+    public function setCodepostal(string $codepostal): static
+    {
+        $this->codepostal = $codepostal;
+
+        return $this;
+    }
+
+    public function getVille(): ?string
+    {
+        return $this->ville;
+    }
+
+    public function setVille(string $ville): static
+    {
+        $this->ville = $ville;
+
+        return $this;
+    }
+
 
     public function getEmail(): ?string
     {
