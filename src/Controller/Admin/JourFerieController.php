@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\JourFerie;
 use App\Message\SyncHolidaysMessage;
@@ -15,7 +15,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Route('/jour/ferie')]
+#[Route('/admin/jour/ferie')]
 final class JourFerieController extends AbstractController
 {
     #[Route(name: 'app_jour_ferie_index', methods: ['GET'])]
@@ -28,7 +28,7 @@ final class JourFerieController extends AbstractController
         if ($zone) $criteria['zone'] = $zone;
         if ($year) $criteria['annee'] = $year;
 
-        return $this->render('jour_ferie/index.html.twig', [
+        return $this->render('admin/jour_ferie/index.html.twig', [
             'jour_feries' => $jourFerieRepository->findBy($criteria, ['date' => 'ASC']),
             'zones' => $jourFerieRepository->findDistinctZones(),
             'annees' => $jourFerieRepository->findDistinctAnnees(),
@@ -38,7 +38,7 @@ final class JourFerieController extends AbstractController
 #[Route('/{id}', name: 'app_jour_ferie_show', methods: ['GET'])]
 public function show(JourFerie $jourFerie): Response
 {
-    return $this->render('jour_ferie/show.html.twig', [
+    return $this->render('admin/jour_ferie/show.html.twig', [
         'jour_ferie' => $jourFerie,
     ]);
 }
