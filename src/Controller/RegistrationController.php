@@ -6,6 +6,7 @@ use App\Entity\Utilisateurs;
 use App\Entity\Invitation;
 use App\Form\RegistrationFormType;
 use Doctrine\ORM\EntityManagerInterface;
+use Psr\Log\LoggerInterface; // <-- Add this import
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,18 +20,38 @@ class RegistrationController extends AbstractController
         string $token,
         Request $request,
         EntityManagerInterface $em,
-        UserPasswordHasherInterface $passwordHasher
+        UserPasswordHasherInterface $passwordHasher,
+        LoggerInterface $logger
     ): Response {
+        $logger->debug('Checking invitation', ['token' => $token]);
+        
         $invitation = $em->getRepository(Invitation::class)->findOneBy(['token' => $token]);
-
-        if (!$invitation || $invitation->isUsed() || $invitation->getExpiresAt() < new \DateTime()) {
+        
+        if (!$invitation) {
+            $logger->error('Invitation not found', ['token' => $token]);
+            throw $this->createNotFoundException('Lien invalide ou expiré.');
+        }
+        
+        if ($invitation->isUsed()) {
+            $logger->error('Invitation already used', ['token' => $token]);
+            throw $this->createNotFoundException('Lien invalide ou expiré.');
+        }
+        
+        if ($invitation->getExpiresAt() < new \DateTimeImmutable()) {
+            $logger->error('Invitation expired', [
+                'token' => $token,
+                'expiresAt' => $invitation->getExpiresAt()->format('Y-m-d H:i:s'),
+                'now' => (new \DateTime())->format('Y-m-d H:i:s')
+            ]);
             throw $this->createNotFoundException('Lien invalide ou expiré.');
         }
 
+
         $utilisateur = new Utilisateurs();
         $utilisateur->setEmail($invitation->getEmail());
-        $utilisateur->setRole('$invitation->getRole'); 
-        $utilisateur->setDateInvitation(new \DateTime()); // Register date
+        // $utilisateur->setRole('$invitation->getRole'); 
+        $utilisateur->setRole($invitation->getRole());  //changed to 100625
+        $utilisateur->setDateInvitation(new \DateTimeImmutable()); // Register date
 
         $form = $this->createForm(RegistrationFormType::class, $utilisateur);
         $form->handleRequest($request);

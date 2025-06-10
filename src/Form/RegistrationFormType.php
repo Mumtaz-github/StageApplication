@@ -20,6 +20,7 @@ class RegistrationFormType extends AbstractType
         $builder
             ->add('email', EmailType::class, [
                 'label' => 'Email',
+                'disabled' => true, //prevent editing  this line added 100625
                 'constraints' => [
                     new NotBlank(['message' => 'L\'email est obligatoire']),
                     new Email(['message' => 'Veuillez entrer un email valide'])

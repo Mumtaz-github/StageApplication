@@ -57,6 +57,11 @@ security:
     ROLE_ADMIN: ROLE_GESTIONNAIRE
     ROLE_GESTIONNAIRE: ROLE_CONSULTATION
     ROLE_CONSULTATION: ROLE_USER
+  
+
+
+
+
 # security:
 #   password_hashers:
 #     Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface: "auto"
