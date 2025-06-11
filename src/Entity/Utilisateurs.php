@@ -21,7 +21,8 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 5)]
+
+   #[ORM\Column(length: 5)]
     private ?string $codepostal = null;
 
     #[ORM\Column(length: 150)]
