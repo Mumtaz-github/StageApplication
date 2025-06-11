@@ -1,4 +1,5 @@
 <nav class="navbar navbar-expand-lg bg-primary navbar-dark">
+
 	<div
 		class="container-fluid">
 		<!-- Mobile Toggler -->
@@ -8,12 +9,11 @@
 
 		<!-- Brand Logo -->
 		{# <a class="navbar-brand" href="{{ path('app_planning') }}">
-			<img src="{{ asset('build/images/logo.png') }}" alt="Logo" height="40">
-		</a> #}
+																	<img src="{{ asset('build/images/logo.png') }}" alt="Logo" height="40">
+																</a> #}
 
 		<!-- Main Navigation -->
-		<div class="collapse navbar-collapse" id="mainNavbar">
-			<ul class="navbar-nav me-auto">
+			<div class="collapse navbar-collapse" id="mainNavbar"> <ul class="navbar-nav me-auto">
 				{% set currentRoute = app.request.attributes.get('_route') %}
 
 				<!-- Planning -->

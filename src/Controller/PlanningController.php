@@ -1,5 +1,122 @@
 <?php
 
+// namespace App\Controller;
+
+// use App\Repository\FormationRepository;
+// use App\Repository\JourFerieRepository;
+// use App\Service\DateLibrary\DateService;
+// use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+// use Symfony\Component\HttpFoundation\Response;
+// use Symfony\Component\Routing\Annotation\Route;
+
+// class PlanningController extends AbstractController
+// {
+//     #[Route('/', name: 'app_planning')]
+//     public function index(
+//         FormationRepository $formationRepository,
+//         JourFerieRepository $jourFerieRepository,
+//         DateService $dateService
+//     ): Response {
+//         $formations = $formationRepository->findAllWithRelations();
+//         $today = new \DateTime();
+
+//         // Calculate date range
+//         $startDate = new \DateTime('2024-01-01');
+//         $endDate = new \DateTime('2030-12-31');
+
+//         foreach ($formations as $f) {
+//             $startDate = min($startDate, $f->getDateDebut());
+//             $endDate = max($endDate, $f->getDateFin());
+//         }
+
+//         // Get all weeks in the range
+//         $weeks = $dateService->getWeeksBetweenDates($startDate, $endDate);
+        
+//         // Group weeks by year for the years header
+//         $yearsWeeks = [];
+//         foreach ($weeks as $week) {
+//             $year = $week['year'];
+//             $yearsWeeks[$year] = ($yearsWeeks[$year] ?? 0) + 1;
+//         }
+
+//         // Group weeks by month for the months header
+//         $months = [];
+//         $currentMonth = null;
+//         $monthCount = 0;
+        
+//         foreach ($weeks as $week) {
+//             $monthKey = $week['year'] . '-' . str_pad($week['month'], 2, '0', STR_PAD_LEFT);
+            
+//             if ($monthKey !== $currentMonth) {
+//                 if ($currentMonth !== null) {
+//                     $months[] = [
+//                         'name' => $this->getMonthName($currentMonth),
+//                         'weeks' => $monthCount,
+//                         'year' => explode('-', $currentMonth)[0],
+//                         'month' => explode('-', $currentMonth)[1]
+//                     ];
+//                 }
+//                 $currentMonth = $monthKey;
+//                 $monthCount = 0;
+//             }
+//             $monthCount++;
+//         }
+        
+//         // Add the last month
+//         if ($currentMonth !== null) {
+//             $months[] = [
+//                 'name' => $this->getMonthName($currentMonth),
+//                 'weeks' => $monthCount,
+//                 'year' => explode('-', $currentMonth)[0],
+//                 'month' => explode('-', $currentMonth)[1]
+//             ];
+//         }
+
+//         // Group formations
+//         $groupedFormations = [];
+//         foreach ($formations as $f) {
+//             $group = $f->getGroupeRattachement() ?? 'Non groupé';
+//             $groupedFormations[$group][] = $f;
+//         }
+
+//         // Get holidays with their full data
+//         $holidays = $jourFerieRepository->findBetweenDates($startDate, $endDate);
+//         $currentWeekPosition = $dateService->getWeeksBetween($startDate, $today) * 30;
+
+//         return $this->render('planning/index.html.twig', [
+//             'grouped_formations' => $groupedFormations,
+//             'holidays' => $holidays,
+//             'years_weeks' => $yearsWeeks,
+//             'months' => $months,
+//             'weeks' => $weeks,
+//             'start_date' => $startDate,
+//             'end_date' => $endDate,
+//             'current_week_position' => $currentWeekPosition,
+//             'date_service' => $dateService
+//         ]);
+//     }
+
+//     private function getMonthName(string $monthKey): string
+//     {
+//         $months = [
+//             '01' => 'Janvier', '02' => 'Février', '03' => 'Mars',
+//             '04' => 'Avril', '05' => 'Mai', '06' => 'Juin',
+//             '07' => 'Juillet', '08' => 'Août', '09' => 'Septembre',
+//             '10' => 'Octobre', '11' => 'Novembre', '12' => 'Décembre'
+//         ];
+        
+//         $monthNum = explode('-', $monthKey)[1];
+//         return $months[$monthNum] ?? $monthKey;
+//     }
+// }
+
+
+
+
+
+
+
+
 namespace App\Controller;
 
 use App\Repository\FormationRepository;

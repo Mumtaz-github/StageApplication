@@ -1,3 +1,319 @@
+{# {% extends 'base.html.twig' %}
+
+{% block title %}Planning des Formations
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	<style>
+		.gantt-wrapper {
+			position: relative;
+			overflow: hidden;
+		}
+
+		.gantt-header {
+			position: sticky;
+			top: 0;
+			background: white;
+			z-index: 100;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			width: 3500px;
+		}
+
+		.gantt-scroll-body {
+			overflow: auto;
+			height: 80vh;
+		}
+
+		.gantt-container {
+			font-family: Arial, sans-serif;
+			min-width: max-content;
+
+		}
+
+		.timeline-years,
+		.timeline-months,
+		.timeline-weeks {
+			display: flex;
+			height: 30px;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.year-column {
+			font-weight: bold;
+			background: #f8f9fc;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-right: 1px solid #ddd;
+			position: relative;
+		}
+
+		.month-column {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-right: 1px solid #eee;
+			font-size: 12px;
+			position: relative;
+		}
+
+		.week-column {
+			font-size: 10px;
+			border-right: 1px solid #f5f5f5;
+			min-width: 30px;
+			text-align: center;
+			padding-top: 15px;
+		}
+
+		.gantt-row {
+			display: flex;
+			align-items: center;
+			height: 40px;
+			border-bottom: 1px solid #eee;
+			position: relative;
+		}
+
+		.formation-name {
+			width: 250px;
+			padding: 5px 10px;
+			position: sticky;
+			left: 0;
+			background: white;
+			z-index: 10;
+			border-right: 1px solid #eee;
+		}
+
+		.formation-bar-container {
+			position: relative;
+			min-width: calc(100% - 250px);
+			height: 100%;
+		}
+
+		.formation-bar {
+			position: absolute;
+			height: 25px;
+			background-color: #4e73df;
+			border-radius: 3px;
+			top: 7px;
+			cursor: pointer;
+			display: flex;
+			align-items: center;
+			padding: 0 5px;
+			color: white;
+			font-size: 11px;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			white-space: nowrap;
+			text-decoration: none;
+		}
+
+		.formation-bar:hover {
+			opacity: 0.9;
+		}
+
+		.formation-validated {
+			background-color: #28a745;
+		}
+		.formation-pending {
+			background-color: orange;
+		}
+
+		.interruption {
+			position: absolute;
+			height: 10px;
+			background-color: #e74a3b;
+			opacity: 0.7;
+			top: 15px;
+			border-radius: 2px;
+		}
+
+		.entreprise-period {
+			position: absolute;
+			height: 8px;
+			background-color: #1cc88a;
+			border-radius: 3px;
+			top: 28px;
+		}
+
+		.holiday-marker,
+		.today-marker {
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			width: 2px;
+			z-index: 5;
+		}
+
+		.holiday-marker {
+			background-color: rgba(255, 0, 0, 0.5);
+		}
+		.today-marker {
+			background-color: blue;
+		}
+
+		.group-header {
+			background-color: #f8f9fa;
+			font-weight: bold;
+			padding: 8px 10px;
+			cursor: pointer;
+			position: sticky;
+			left: 0;
+			z-index: 20;
+			border-bottom: 1px solid #ddd;
+		}
+
+		.group-collapsed .gantt-row {
+			display: none;
+		}
+
+		/* Week numbering style */
+		.week-number {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			text-align: center;
+			font-size: 9px;
+			color: #666;
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid" style="width:1600px;">
+		<h1 class="h3 mb-4 text-gray-800 text-center">Planning des Formations</h1>
+
+		<div
+			class="gantt-wrapper">
+			<!-- Sticky Header -->
+			<div
+				class="gantt-header">
+				<!-- Year row -->
+				<div class="timeline-years">
+					{% for year, weeks in years_weeks %}
+						<div class="year-column" style="width: {{ weeks * 30 }}px">
+							{{ year }}
+						</div>
+					{% endfor %}
+				</div>
+
+				<!-- Month row -->
+				<div class="timeline-months">
+					{% for month in months %}
+						<div class="month-column" style="width: {{ month.weeks * 30 }}px">
+							{{ month.name }}
+						</div>
+					{% endfor %}
+				</div>
+
+				<!-- Week row -->
+				<div class="timeline-weeks">
+					{% for week in weeks %}
+						<div class="week-column" style="width: 30px">
+							<div class="week-number">{{ week.number }}</div>
+						</div>
+					{% endfor %}
+				</div>
+			</div>
+
+			<!-- Scrollable Gantt Body -->
+			<div class="gantt-scroll-body" id="gantt-scroll-body">
+				<div class="gantt-container">
+					{% for group, formations in grouped_formations %}
+						<div class="group-header" onclick="toggleGroup('{{ group|e('html_attr') }}')">
+							{{ group }}
+						</div>
+						<div id="group-{{ group|e('html_attr') }}">
+							{% for formation in formations %}
+								<div class="gantt-row">
+									<div class="formation-name">
+										{{ formation.nom }}<br>
+										<small>{{ formation.titreProfessionnel }}</small>
+									</div>
+									<div class="formation-bar-container">
+										{% set barLeft = date_service.getWeeksBetween(start_date, formation.dateDebut) * 30 %}
+										{% set barWidth = date_service.getWeeksBetween(formation.dateDebut, formation.dateFin) * 30 %}
+										{#formation_show#}
+										{# <a href="{{ path('app_formation_show', {'id': formation.id}) }}" class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" style="left: {{ barLeft }}px; width: {{ barWidth }}px" title="{{ formation.nom }} - {{ formation.dateDebut|date('d/m/Y') }} au {{ formation.dateFin|date('d/m/Y') }}">
+											{{ formation.nom }}
+										</a>
+
+										{% for interruption in formation.interruptions %}
+											{% set intLeft = date_service.getWeeksBetween(formation.dateDebut, interruption.dateDebut) * 30 %}
+											{% set intWidth = date_service.getWeeksBetween(interruption.dateDebut, interruption.dateFin) * 30 %}
+											<div class="interruption" style="left: {{ barLeft + intLeft }}px; width: {{ intWidth }}px" title="Interruption: {{ interruption.dateDebut|date('d/m/Y') }} au {{ interruption.dateFin|date('d/m/Y') }}"></div>
+										{% endfor %}
+
+										{% for periode in formation.periodEnEntreprises %}
+											{% set entLeft = date_service.getWeeksBetween(start_date, periode.dateDebut) * 30 %}
+											{% set entWidth = date_service.getWeeksBetween(periode.dateDebut, periode.dateFin) * 30 %}
+											<div class="entreprise-period" style="left: {{ entLeft }}px; width: {{ entWidth }}px" title="Période en entreprise: {{ periode.dateDebut|date('d/m/Y') }} au {{ periode.dateFin|date('d/m/Y') }}"></div>
+										{% endfor %}
+									</div>
+								</div>
+							{% endfor %}
+						</div>
+					{% endfor %}
+
+					{% for holiday in holidays %}
+						{% set left = date_service.getWeeksBetween(start_date, holiday.date) * 30 %}
+						<div class="holiday-marker" style="left: {{ left }}px" title="Jour férié: {{ holiday.nom }} ({{ holiday.date|date('d/m/Y') }})"></div>
+					{% endfor %}
+
+					<div class="today-marker" style="left: {{ current_week_position }}px" title="Aujourd'hui"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	<script>
+		function toggleGroup(groupId) {
+const group = document.getElementById('group-' + groupId);
+group.classList.toggle('group-collapsed');
+}
+
+// Mouse drag scroll
+const ganttScroll = document.getElementById('gantt-scroll-body');
+let isDragging = false;
+let startX,
+startY,
+scrollLeft,
+scrollTop;
+
+ganttScroll.addEventListener('mousedown', (e) => {
+isDragging = true;
+startX = e.pageX - ganttScroll.offsetLeft;
+startY = e.pageY - ganttScroll.offsetTop;
+scrollLeft = ganttScroll.scrollLeft;
+scrollTop = ganttScroll.scrollTop;
+});
+
+document.addEventListener('mouseup', () => {
+isDragging = false;
+});
+
+document.addEventListener('mousemove', (e) => {
+if (! isDragging) 
+return;
+
+
+
+e.preventDefault();
+const x = e.pageX - ganttScroll.offsetLeft;
+const y = e.pageY - ganttScroll.offsetTop;
+const walkX = (x - startX);
+const walkY = (y - startY);
+ganttScroll.scrollLeft = scrollLeft - walkX;
+ganttScroll.scrollTop = scrollTop - walkY;
+});
+	</script>
+{% endblock %} #} 
+
+
 {% extends 'base.html.twig' %}
 
 {% block title %}Planning des Formations
@@ -15,7 +331,9 @@
 			position: sticky;
 			top: 0;
 			background: white;
-			z-index: 100;
+			/* z-index: 100; */
+			width: 1700px;
+
 		}
 
 		.gantt-scroll-body {
@@ -27,7 +345,7 @@
 		.gantt-container {
 			font-family: Arial, sans-serif;
 			min-width: max-content;
-			width: fit-content;
+			width: ;
 		}
 
 		.timeline-years,
@@ -44,7 +362,7 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			border-right: 1px solid #eee;
+			border-right: 1px solid black;
 		}
 
 		.year-column {
@@ -61,6 +379,7 @@
 		.day-column {
 			font-size: 10px;
 			border-right: 15px solid #eee;
+			height: 1000px;
 		}
 
 		.gantt-row {
@@ -68,7 +387,7 @@
 			align-items: center;
 			height: 130px;
 			border-bottom: 1px solid #eee;
-			background: #f8f9fc;
+			/*background: #f8f9fc;*/
 		}
 
 		.formation-name {
@@ -76,7 +395,7 @@
 			padding: 5px 10px;
 			position: sticky;
 			left: 0;
-			background: white;
+			/*background: white;*/
 			z-index: 10;
 		}
 
@@ -86,11 +405,11 @@
 		}
 
 		.formation-bar {
-			position: absolute;
+			/*position: absolute;*/
 			height: 20px;
 			background-color: #4e73df;
 			border-radius: 3px;
-			top: 10px;
+			/*top: 10px;*/
 			cursor: pointer;
 		}
 
@@ -128,13 +447,14 @@
 
 		.holiday-marker {
 			background-color: red;
+			width: 5px;
 		}
 		.today-marker {
 			background-color: blue;
 		}
 
 		.group-header {
-			background-color: #e2e6ea;
+			/*background-color: #e2e6ea;*/
 			font-weight: bold;
 			padding: 5px 10px;
 			cursor: pointer;
@@ -280,7 +600,7 @@ ganttScroll.scrollLeft = scrollLeft - walkX;
 ganttScroll.scrollTop = scrollTop - walkY;
 });
 	</script>
-{% endblock %}
+{% endblock %} 
 
 
 {# {% extends 'base.html.twig' %}
