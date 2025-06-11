@@ -23,7 +23,7 @@ public function index(
 
     // Calculate date range
     $startDate = new \DateTime('2024-01-01');
-    $endDate = new \DateTime('2025-12-31');
+    $endDate = new \DateTime('2030-12-31');
 
     foreach ($formations as $f) {
         $startDate = min($startDate, $f->getDateDebut());
