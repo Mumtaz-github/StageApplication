@@ -40,6 +40,9 @@ class Formation
     #[ORM\Column(length: 255)]
     private ?string $groupeRattachement = null;
 
+    #[ORM\Column]
+   private ?int $nombreHeures = null; // added at 12062025
+
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateDebut = null;
 
@@ -110,6 +113,23 @@ class Formation
         $this->etat = $etat;
         return $this;
     }
+
+
+
+public function getNombreHeures(): ?int
+{
+    return $this->nombreHeures;
+}
+
+public function setNombreHeures(int $nombreHeures): static
+{
+    $this->nombreHeures = $nombreHeures;
+    return $this;
+}
+
+
+
+
 
     public function getTitreProfessionnel(): ?string
     {

@@ -114,9 +114,6 @@
 
 
 
-
-
-
 namespace App\Controller;
 
 use App\Repository\FormationRepository;
@@ -128,59 +125,103 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PlanningController extends AbstractController
 {
-// CONTROLLER
 #[Route('/', name: 'app_planning')]
 public function index(
-    FormationRepository $formationRepository,
-    JourFerieRepository $jourFerieRepository,
-    DateService $dateService
+FormationRepository $formationRepository,
+JourFerieRepository $jourFerieRepository,
+DateService $dateService
 ): Response {
-    $formations = $formationRepository->findAllWithRelations();
-    $today = new \DateTime();
+$formations = $formationRepository->findAllWithRelations();
+$today = new \DateTime();
 
-    // Calculate date range
-    $startDate = new \DateTime('2024-01-01');
-    $endDate = new \DateTime('2030-12-31');
+// Calculate date range
+$startDate = new \DateTime('2024-01-01');
+$endDate = new \DateTime('2030-12-31');
 
-    foreach ($formations as $f) {
-        $startDate = min($startDate, $f->getDateDebut());
-        $endDate = max($endDate, $f->getDateFin());
-    }
+foreach ($formations as $f) {
+$startDate = min($startDate, $f->getDateDebut());
+$endDate = max($endDate, $f->getDateFin());
+}
 
-    // Get date components
-    $months = $dateService->getMonthsBetweenDates($startDate, $endDate);
-    
-    $daysInMonths = [];
-    $monthsInYear = [];
-    foreach ($months as $month) {
-        $year = explode('-', $month)[0];
-        $days = date('t', strtotime($month . '-01'));
-        $daysInMonths[$month] = $days;
-        $monthsInYear[$year] = ($monthsInYear[$year] ?? 0) + 1;
-    }
+// Months between dates
+$months = $dateService->getMonthsBetweenDates($startDate, $endDate);
 
-    // Group formations
-    $groupedFormations = [];
-    foreach ($formations as $f) {
-        $group = $f->getGroupeRattachement() ?? 'Non groupé';
-        $groupedFormations[$group][] = $f;
-    }
+// Calculate months & weeks per year
+$weekNumbersPerMonth = [];
+$monthsInYear = [];
 
-    // Get holidays with their full data
+foreach ($months as $month) {
+list($year, $monthNum) = explode('-', $month);
+$daysInMonth = date('t', strtotime($month . '-01'));
+
+$firstDay = new \DateTime("$month-01");
+$lastDay = new \DateTime("$month-$daysInMonth");
+
+$weekNumbers = [];
+for ($day = clone $firstDay; $day <= $lastDay; $day->modify('+1 day')) {
+$week = $day->format('W');
+$weekNumbers[$week] = true;
+}
+
+$weekNumbersPerMonth[$month] = array_keys($weekNumbers);
+$monthsInYear[$year] = ($monthsInYear[$year] ?? 0) + 1;
+}
+
+// Yearly weeks
+$yearlyWeeks = [];
+$current = clone $startDate;
+while ($current <= $endDate) {
+$year = (int) $current->format('Y');
+$week = (int) $current->format('W');
+$yearlyWeeks[$year] = ($yearlyWeeks[$year] ?? 0) + 1;
+$current->modify('+1 week');
+}
+
+// Build all_weeks array (week by week)
+$allWeeks = [];
+$currentWeek = clone $startDate;
+while ($currentWeek <= $endDate) {
+$weekNumber = (int) $currentWeek->format('W');
+$isoYear = (int) $currentWeek->format('o');
+$displayYear = (int) $currentWeek->format('Y');
+
+$allWeeks[] = [
+'number' => $weekNumber,
+'iso_year' => $isoYear,
+'display_year' => $displayYear,
+'total_stagiaires' => null, // Replace with real data if needed
+'active_stagiaires' => null // Replace with real data if needed
+];
+
+$currentWeek->modify('+1 week');
+}
+
+// Group formations
+$groupedFormations = [];
+foreach ($formations as $f) {
+$group = $f->getGroupeRattachement() ?? 'Non groupé';
+$groupedFormations[$group][] = $f;
+}
+
+// Get holidays
 $holidays = $jourFerieRepository->findBetweenDates($startDate, $endDate);
-    $currentDayOffset = $dateService->getOffsetDaysBetween($startDate, $today);
 
-    return $this->render('planning/index.html.twig', [
-        'grouped_formations' => $groupedFormations,
-        'holidays' => $holidays, // Pass full entities
-        'months' => $months,
-        'days_in_months' => $daysInMonths,
-        'months_in_year' => $monthsInYear,
-        'start_date' => $startDate,
-        'end_date' => $endDate,
-        'dayWidth' => 2,
-        'current_day_position' => $currentDayOffset * 2,
-        'date_service' => $dateService
-    ]);
+// Marker for today
+$currentDayOffset = $dateService->getOffsetDaysBetween($startDate, $today);
+
+return $this->render('planning/index.html.twig', [
+'grouped_formations' => $groupedFormations,
+'holidays' => $holidays,
+'months' => $months,
+'week_numbers_per_month' => $weekNumbersPerMonth,
+'months_in_year' => $monthsInYear,
+'yearly_weeks' => $yearlyWeeks,
+'all_weeks' => $allWeeks, // ✅ FIXED
+'start_date' => $startDate,
+'end_date' => $endDate,
+'dayWidth' => 2,
+'current_day_position' => $currentDayOffset * 2,
+'date_service' => $dateService
+]);
 }
 }
