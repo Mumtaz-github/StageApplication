@@ -35,27 +35,50 @@ public function load(ObjectManager $manager): void
         // Add more formations as needed
     ];
 
-    foreach ($formations as $data) {
-        $formation = new Formation();
-        $formation->setNom($data['name']); // ← Pass string to setNom()
-        
-        // Set other properties
-        $formation->setActifFormation(true);
-        $formation->setNumero('001');
-        $formation->setEtat('Active');
-        $formation->setTitreProfessionnel('Titre Pro Example');
-        $formation->setNiveau(1);
-        $formation->setNbStagiairesPrevisionnel(10);
-        $formation->setGroupeRattachement('Groupe A');
-        $formation->setDateDebut(new \DateTime('2025-01-01'));
-        $formation->setDateFin(new \DateTime('2025-06-30'));
 
-        // Add formateur using addFormateur()
-        $formation->addFormateur($data['formateur']);
-        
-        $manager->persist($formation);
-    }
+        foreach ($formations as $data) {
+    $formation = new Formation();
+    $formation->setNom($data['name']);
+    $formation->setActifFormation(true);
+    $formation->setNumero('001');
+    $formation->setEtat('Active');
+    $formation->setTitreProfessionnel('Titre Pro Example');
+    $formation->setNiveau(1);
+    $formation->setNbStagiairesPrevisionnel(10);
+    $formation->setGroupeRattachement('Groupe A');
+    $formation->setDateDebut(new \DateTime('2024-03-04'));
+    $formation->setDateFin(new \DateTime('2025-08-22'));
+    $formation->setNombreHeures(400); // ✅ Ajout de cette ligne
 
-    $manager->flush();
+    $formation->addFormateur($data['formateur']);
+
+    $manager->persist($formation);
+}
+$manager->flush();
 }
 }
+
+//     foreach ($formations as $data) {
+//         $formation = new Formation();
+//         $formation->setNom($data['name']); // ← Pass string to setNom()
+        
+//         // Set other properties
+//         $formation->setActifFormation(true);
+//         $formation->setNumero('001');
+//         $formation->setEtat('Active');
+//         $formation->setTitreProfessionnel('Titre Pro Example');
+//         $formation->setNiveau(1);
+//         $formation->setNbStagiairesPrevisionnel(10);
+//         $formation->setGroupeRattachement('Groupe A');
+//         $formation->setDateDebut(new \DateTime('2025-01-01'));
+//         $formation->setDateFin(new \DateTime('2025-06-30'));
+
+//         // Add formateur using addFormateur()
+//         $formation->addFormateur($data['formateur']);
+        
+//         $manager->persist($formation);
+//     }
+
+//     $manager->flush();
+// }
+// }
