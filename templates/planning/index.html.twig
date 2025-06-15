@@ -333,12 +333,12 @@ ganttScroll.scrollTop = scrollTop - walkY;
 		}
 
 		/* Sticky top navbar */
-		.navbar {
+		/*.navbar {
 			position: sticky;
 			top: 0;
 			z-index: 1000;
 			background: white;
-		}
+		}*/
 
 		/* Full-size planning area under navbar */
 		.container-fluid {
@@ -378,7 +378,11 @@ ganttScroll.scrollTop = scrollTop - walkY;
 		}
 
 		.gantt-header {
-			position: sticky;
+
+			overflow: auto;
+			cursor: grab;
+			/*position: sticky;*/
+			position: relative;
 			top: 0;
 			background: white;
 			z-index: 50;
@@ -409,14 +413,29 @@ ganttScroll.scrollTop = scrollTop - walkY;
 		/* Timelines (years/months/weeks/stagiaires) */
 		.timeline-years,
 		.timeline-months,
-		.timeline-weeks,
-		.timeline-stagiaires {
+
+		.timeline-total-stagiaires {
 			display: flex;
-			height: 30px;
+			height: 20px;
+			border-top: 1px solid black;
+
+
+		}
+		.timeline-weeks {
+			display: flex;
+			height: 20px;
+
+
 		}
 
-		.timeline-stagiaires {
+		.timeline-active-stagiaires {
 			border-bottom: 2px solid #23395d;
+			display: flex;
+			height: 20px;
+			border-top: 1px solid;
+			width: 100%;
+
+
 		}
 
 		/* Year block spans entire year */
@@ -448,6 +467,11 @@ ganttScroll.scrollTop = scrollTop - walkY;
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			height: ;
+		}
+		.stagiaires-column {
+			;
+			/*border-top: 3px solid #23395d;*/
 		}
 
 		/* Sticky left column for formation names */
@@ -468,7 +492,7 @@ ganttScroll.scrollTop = scrollTop - walkY;
 		/* Gantt bars */
 		.formation-bar {
 			position: absolute;
-			height: 20px;
+			height: 30px;
 			background-color: #4e73df;
 			border-radius: 3px;
 			top: 5px;
@@ -478,8 +502,10 @@ ganttScroll.scrollTop = scrollTop - walkY;
 			padding: 2px;
 			overflow: hidden;
 			white-space: nowrap;
+
 			text-overflow: ellipsis;
 		}
+
 
 		.formation-bar:hover {
 			z-index: 10;
@@ -492,7 +518,7 @@ ganttScroll.scrollTop = scrollTop - walkY;
 		}
 
 		.formation-pending {
-			background-color: orange;
+			background-color: orang;
 		}
 
 		/* Markers */
@@ -544,12 +570,12 @@ ganttScroll.scrollTop = scrollTop - walkY;
 					{% endfor %}
 				</div>
 
-				<div class="timeline-stagiaires">
+				<div class="timeline-total-stagiaires">
 					{% for week in all_weeks %}
 						<div class="stagiaires-column">{{ week.total_stagiaires ?? '' }}</div>
 					{% endfor %}
 				</div>
-				<div class="timeline-stagiaires">
+				<div class="timeline-active-stagiaires">
 					{% for week in all_weeks %}
 						<div class="stagiaires-column">{{ week.active_stagiaires ?? '' }}</div>
 					{% endfor %}
@@ -567,7 +593,7 @@ ganttScroll.scrollTop = scrollTop - walkY;
 										<small>{{ formation.titreProfessionnel }}</small>
 									</div>
 
-									<div style="position: relative; height: 100%; margin-left: 250px;">
+									<div style="position: relative; height: 100%; margin-left: 0px;">
 										{% set barLeft = date_service.getWeeksBetween(start_date, formation.dateDebut) * 30 %}
 										{% set barWidth = date_service.getWeeksBetween(formation.dateDebut, formation.dateFin) * 30 %}
 										<a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" style="left: {{ barLeft }}px; width: {{ barWidth }}px" title="{{ formation.nom }} | {{ formation.dateDebut|date('d/m/Y') }} - {{ formation.dateFin|date('d/m/Y') }} | {{ formation.nombreHeures }}h">
@@ -596,26 +622,21 @@ ganttScroll.scrollTop = scrollTop - walkY;
 
 		{{ parent() }}
 		<script>
-			const ganttScroll = document.getElementById('gantt-scroll-body');
+			function enableDragScroll(element) {
 let isDragging = false;
 let startX,
-startY,
 scrollLeft;
-/*scrollTop*/
 
-// Drag scroll only for body
-ganttScroll.addEventListener('mousedown', (e) => {
+element.addEventListener('mousedown', (e) => {
 isDragging = true;
-ganttScroll.style.cursor = 'grabbing';
-startX = e.pageX - ganttScroll.offsetLeft;
-/*startY = e.pageY - ganttScroll.offsetTop;*/
-scrollLeft = ganttScroll.scrollLeft;
-/*scrollTop = ganttScroll.scrollTop;*/
+element.style.cursor = 'grabbing';
+startX = e.pageX - element.offsetLeft;
+scrollLeft = element.scrollLeft;
 });
 
 document.addEventListener('mouseup', () => {
 isDragging = false;
-ganttScroll.style.cursor = 'grab';
+element.style.cursor = 'grab';
 });
 
 document.addEventListener('mousemove', (e) => {
@@ -625,65 +646,75 @@ return;
 
 
 e.preventDefault();
-const x = e.pageX - ganttScroll.offsetLeft;
-const y = e.pageY - ganttScroll.offsetTop;
-const walkX = (x - startX) * 2;
-const walkY = (y - startY) * 2;
-ganttScroll.scrollLeft = scrollLeft - walkX;
-ganttScroll.scrollTop = scrollTop - walkY;
+const x = e.pageX - element.offsetLeft;
+const walkX = (x - startX) * 2; // Adjust scroll speed as needed
+element.scrollLeft = scrollLeft - walkX;
 });
+}
+
+const ganttScroll = document.getElementById('gantt-scroll-body');
+const ganttHeader = document.querySelector('.gantt-header');
+
+if (ganttScroll) 
+enableDragScroll(ganttScroll);
+
+
+
+if (ganttHeader) 
+enableDragScroll(ganttHeader);
 		</script>
+
 	{% endblock %}
 
 	{# {{ parent() }}
-										<script>
-											const ganttScroll = document.getElementById('gantt-scroll-body');
-									const ganttHeader = document.querySelector('.gantt-header');
-									
-									let isDragging = false;
-									let startX,
-									startY,
-									scrollLeft,
-									scrollTop;
-									
-									// Drag scroll on gantt body
-									ganttScroll.addEventListener('mousedown', (e) => {
-									isDragging = true;
-									ganttScroll.style.cursor = 'grabbing';
-									startX = e.pageX - ganttScroll.offsetLeft;
-									startY = e.pageY - ganttScroll.offsetTop;
-									scrollLeft = ganttScroll.scrollLeft;
-									scrollTop = ganttScroll.scrollTop;
-									});
-									
-									document.addEventListener('mouseup', () => {
-									isDragging = false;
-									ganttScroll.style.cursor = 'grab';
-									});
-									
-									document.addEventListener('mousemove', (e) => {
-									if (! isDragging) 
-									return;
-									
-									
-									
-									e.preventDefault();
-									const x = e.pageX - ganttScroll.offsetLeft;
-									const y = e.pageY - ganttScroll.offsetTop;
-									const walkX = (x - startX) * 2;
-									const walkY = (y - startY) * 2;
-									ganttScroll.scrollLeft = scrollLeft - walkX;
-									ganttScroll.scrollTop = scrollTop - walkY;
-									
-									// Sync header scrollLeft with body
-									ganttHeader.scrollLeft = ganttScroll.scrollLeft;
-									});
-									
-									// Sync scroll if user scrolls body with scrollbar or mouse wheel
-									ganttScroll.addEventListener('scroll', () => {
-									ganttHeader.scrollLeft = ganttScroll.scrollLeft;
-									});
-										</script> #}
+																																																																						<script>
+																																																																							const ganttScroll = document.getElementById('gantt-scroll-body');
+																																																																					const ganttHeader = document.querySelector('.gantt-header');
+																																																																					
+																																																																					let isDragging = false;
+																																																																					let startX,
+																																																																					startY,
+																																																																					scrollLeft,
+																																																																					scrollTop;
+																																																																					
+																																																																					// Drag scroll on gantt body
+																																																																					ganttScroll.addEventListener('mousedown', (e) => {
+																																																																					isDragging = true;
+																																																																					ganttScroll.style.cursor = 'grabbing';
+																																																																					startX = e.pageX - ganttScroll.offsetLeft;
+																																																																					startY = e.pageY - ganttScroll.offsetTop;
+																																																																					scrollLeft = ganttScroll.scrollLeft;
+																																																																					scrollTop = ganttScroll.scrollTop;
+																																																																					});
+																																																																					
+																																																																					document.addEventListener('mouseup', () => {
+																																																																					isDragging = false;
+																																																																					ganttScroll.style.cursor = 'grab';
+																																																																					});
+																																																																					
+																																																																					document.addEventListener('mousemove', (e) => {
+																																																																					if (! isDragging) 
+																																																																					return;
+																																																																					
+																																																																					
+																																																																					
+																																																																					e.preventDefault();
+																																																																					const x = e.pageX - ganttScroll.offsetLeft;
+																																																																					const y = e.pageY - ganttScroll.offsetTop;
+																																																																					const walkX = (x - startX) * 2;
+																																																																					const walkY = (y - startY) * 2;
+																																																																					ganttScroll.scrollLeft = scrollLeft - walkX;
+																																																																					ganttScroll.scrollTop = scrollTop - walkY;
+																																																																					
+																																																																					// Sync header scrollLeft with body
+																																																																					ganttHeader.scrollLeft = ganttScroll.scrollLeft;
+																																																																					});
+																																																																					
+																																																																					// Sync scroll if user scrolls body with scrollbar or mouse wheel
+																																																																					ganttScroll.addEventListener('scroll', () => {
+																																																																					ganttHeader.scrollLeft = ganttScroll.scrollLeft;
+																																																																					});
+																																																																						</script> #}
 {# {{ parent() }}
 					<script>
 						const ganttScroll = document.getElementById('gantt-scroll-body');
@@ -734,54 +765,54 @@ ganttScroll.scrollTop = scrollTop - walkY;
 				});
 					</script> #}
 	{# {{ parent() }}
-										<script>
-											const ganttScroll = document.getElementById('gantt-scroll-body');
-									const ganttHeader = document.querySelector('.gantt-header');
-									
-									let isDragging = false;
-									let startX,
-									startY,
-									scrollLeft,
-									scrollTop;
-									
-									// Drag scroll on gantt body
-									ganttScroll.addEventListener('mousedown', (e) => {
-									isDragging = true;
-									ganttScroll.style.cursor = 'grabbing';
-									startX = e.pageX - ganttScroll.offsetLeft;
-									startY = e.pageY - ganttScroll.offsetTop;
-									scrollLeft = ganttScroll.scrollLeft;
-									scrollTop = ganttScroll.scrollTop;
-									});
-									
-									document.addEventListener('mouseup', () => {
-									isDragging = false;
-									ganttScroll.style.cursor = 'grab';
-									});
-									
-									document.addEventListener('mousemove', (e) => {
-									if (! isDragging) 
-									return;
-									
-									
-									
-									e.preventDefault();
-									const x = e.pageX - ganttScroll.offsetLeft;
-									const y = e.pageY - ganttScroll.offsetTop;
-									const walkX = (x - startX) * 2;
-									const walkY = (y - startY) * 2;
-									ganttScroll.scrollLeft = scrollLeft - walkX;
-									ganttScroll.scrollTop = scrollTop - walkY;
-									
-									// Sync header scrollLeft with body
-									ganttHeader.scrollLeft = ganttScroll.scrollLeft;
-									});
-									
-									// Sync scroll if user scrolls body with scrollbar or mouse wheel
-									ganttScroll.addEventListener('scroll', () => {
-									ganttHeader.scrollLeft = ganttScroll.scrollLeft;
-									});
-										</script> #}
+																																																																						<script>
+																																																																							const ganttScroll = document.getElementById('gantt-scroll-body');
+																																																																					const ganttHeader = document.querySelector('.gantt-header');
+																																																																					
+																																																																					let isDragging = false;
+																																																																					let startX,
+																																																																					startY,
+																																																																					scrollLeft,
+																																																																					scrollTop;
+																																																																					
+																																																																					// Drag scroll on gantt body
+																																																																					ganttScroll.addEventListener('mousedown', (e) => {
+																																																																					isDragging = true;
+																																																																					ganttScroll.style.cursor = 'grabbing';
+																																																																					startX = e.pageX - ganttScroll.offsetLeft;
+																																																																					startY = e.pageY - ganttScroll.offsetTop;
+																																																																					scrollLeft = ganttScroll.scrollLeft;
+																																																																					scrollTop = ganttScroll.scrollTop;
+																																																																					});
+																																																																					
+																																																																					document.addEventListener('mouseup', () => {
+																																																																					isDragging = false;
+																																																																					ganttScroll.style.cursor = 'grab';
+																																																																					});
+																																																																					
+																																																																					document.addEventListener('mousemove', (e) => {
+																																																																					if (! isDragging) 
+																																																																					return;
+																																																																					
+																																																																					
+																																																																					
+																																																																					e.preventDefault();
+																																																																					const x = e.pageX - ganttScroll.offsetLeft;
+																																																																					const y = e.pageY - ganttScroll.offsetTop;
+																																																																					const walkX = (x - startX) * 2;
+																																																																					const walkY = (y - startY) * 2;
+																																																																					ganttScroll.scrollLeft = scrollLeft - walkX;
+																																																																					ganttScroll.scrollTop = scrollTop - walkY;
+																																																																					
+																																																																					// Sync header scrollLeft with body
+																																																																					ganttHeader.scrollLeft = ganttScroll.scrollLeft;
+																																																																					});
+																																																																					
+																																																																					// Sync scroll if user scrolls body with scrollbar or mouse wheel
+																																																																					ganttScroll.addEventListener('scroll', () => {
+																																																																					ganttHeader.scrollLeft = ganttScroll.scrollLeft;
+																																																																					});
+																																																																						</script> #}
 {% endblock %}
 
 

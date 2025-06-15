@@ -48,7 +48,7 @@ public function load(ObjectManager $manager): void
     $formation->setGroupeRattachement('Groupe A');
     $formation->setDateDebut(new \DateTime('2024-03-04'));
     $formation->setDateFin(new \DateTime('2025-08-22'));
-    $formation->setNombreHeures(400); // ✅ Ajout de cette ligne
+    $formation->setNombreHeures(750);
 
     $formation->addFormateur($data['formateur']);
 

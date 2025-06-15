@@ -40,7 +40,7 @@ class Formation
     #[ORM\Column(length: 255)]
     private ?string $groupeRattachement = null;
 
-    #[ORM\Column(type: 'integer', nullable:false)]
+    #[ORM\Column(type: 'integer', nullable:true)]
    private ?int $nombreHeures = null; // added at 12062025
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
