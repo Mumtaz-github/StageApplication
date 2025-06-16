@@ -20,6 +20,8 @@
 					<th>Nb Stagiaires</th>
 					<th>Groupe</th>
 					<th>Date Début</th>
+					<th>Date Fin
+					</th>
 					<th>Formateurs</th>
 					<th>Actions</th>
 				</tr>
@@ -37,6 +39,7 @@
 						<td>{{ formation.nbStagiairesPrevisionnel }}</td>
 						<td>{{ formation.groupeRattachement }}</td>
 						<td>{{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '' }}</td>
+						<td>{{ formation.dateFin ? formation.dateFin |date('d/m/Y') : '' }}</td>
 						<td>
 							{% if formation.formateurs is not empty %}
 								<ul class="mb-0 ps-3">

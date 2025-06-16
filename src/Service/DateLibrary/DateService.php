@@ -122,6 +122,8 @@ class DateService
     /**
      * Get all weeks between two dates with their metadata
      */
+
+     
     public function getWeeksBetweenDates(DateTimeInterface $startDate, DateTimeInterface $endDate): array
     {
         $start = $this->ensureDateTime($startDate);

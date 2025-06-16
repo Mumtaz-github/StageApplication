@@ -135,8 +135,8 @@ $formations = $formationRepository->findAllWithRelations();
 $today = new \DateTime();
 
 // Calculate date range
-$startDate = new \DateTime('2024-01-01');
-$endDate = new \DateTime('2030-12-31');
+$startDate = new \DateTime('2020-01-01');
+$endDate = new \DateTime('2026-12-31');
 
 foreach ($formations as $f) {
 $startDate = min($startDate, $f->getDateDebut());
