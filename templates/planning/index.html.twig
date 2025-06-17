@@ -6,6 +6,7 @@
 {% block stylesheets %}
 	{{ parent() }}
 	<style>
+		/* Make entire page fill screen */
 		html,
 		body {
 			height: 100%;
@@ -13,74 +14,131 @@
 			padding: 0;
 			overflow: hidden;
 		}
+
+		/* Sticky top navbar */
+		/*.navbar {
+position: sticky;
+top: 0;
+z-index: 1000;
+background: white;
+}*/
+
+		/* Full-size planning area under navbar */
 		.container-fluid {
-			height: calc(100vh - 60px);
+			height: calc(100vh - 60px); /* Adjust 60px if your navbar height is different */
 			width: 100vw;
 			padding: 0;
 			margin: 0;
 			display: flex;
 			flex-direction: column;
 			overflow: hidden;
+			height: 800px;
 		}
+
+		/* Outer container for Gantt diagram */
 		.gantt-wrapper {
 			flex: 1;
 			display: flex;
 			flex-direction: column;
+			/*overflow: hidden;*/
+
 		}
+
+		/* Header that stays visible on vertical scroll */
 		.gantt-scroll-body {
 			flex: 1;
 			overflow: auto;
 			cursor: grab;
 			position: relative;
-			scrollbar-width: none;
-			-ms-overflow-style: none;
+
+			/* Hide scrollbars but keep scroll functionality */
+			scrollbar-width: none; /* Firefox */
+			-ms-overflow-style: none; /* IE 10+ */
 		}
+
 		.gantt-scroll-body::-webkit-scrollbar {
-			display: none;
+			display: none; /* Chrome/Safari/Edge */
 		}
+
 		.gantt-header {
+
 			overflow: auto;
 			cursor: grab;
+			/*position: sticky;*/
 			position: relative;
 			top: 0;
 			background: white;
-			z-index: 50;
+			z-index: 0;
+
 			border-bottom: 2px solid #ccc;
+
+			/* Enable horizontal scroll */
 			overflow-x: auto;
 			overflow-y: hidden;
 			white-space: nowrap;
-			scrollbar-width: none;
-			-ms-overflow-style: none;
+
+			/* Hide scrollbars */
+			scrollbar-width: none; /* Firefox */
+			-ms-overflow-style: none; /* IE 10+ */
 		}
+
 		.gantt-header::-webkit-scrollbar {
-			display: none;
+			display: none; /* Chrome/Safari/Edge */
 		}
+
 		.gantt-container {
 			position: relative;
-			min-width: calc(52 * 7 * 4.3px);
+			min-width: 2000px; /* Ensures horizontal scroll space */
+			min-width: calc(7 * 52*30px);
 		}
-		.timeline-years,
-		.timeline-months,
+
+		/* Timelines (years/months/weeks/stagiaires) */
+
+
 		.timeline-total-stagiaires {
 			display: flex;
 			height: 20px;
 			border-top: 1px solid black;
-			width: 8740px;
-
+			width: 8820px;
 		}
+
+		.timeline-months {
+			display: flex;
+			height: 20px;
+			border-top: 2px solid black;
+			width: 8300px;
+			justify-content: center;
+			font-family: }
+
+
+		.timeline-years {
+
+			display: flex;
+			height: 25px;
+			border-top: 2px solid black;
+			width: 10500px;
+			/*align-items: center;*/
+			justify-content: center;
+		}
+
+
 		.timeline-weeks {
 			display: flex;
 			height: 20px;
 
 		}
+
 		.timeline-active-stagiaires {
 			border-bottom: 2px solid #23395d;
 			display: flex;
 			height: 20px;
 			border-top: 1px solid;
-			width: 8740px;
+			width: 8500px;
+			border-right: 1px solid black;
 
 		}
+
+		/* Year block spans entire year */
 		.year-column {
 			font-weight: bold;
 			background: #f8f9fc;
@@ -89,33 +147,43 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			min-width: 1200px;
+			min-width: 0; /* 52 weeks × 30px */
 		}
+
 		.month-column {
-			min-width: 100px;
+			min-width: 99px;
 			font-size: 12px;
 			border: 1px solid #999;
 			display: flex;
 			align-items: center;
 			justify-content: center;
-			border-right: 1px solid black;
-			border-bottom: 1px solid black;
 		}
+
 		.week-column,
 		.stagiaires-column {
 			min-width: 23px;
-			font-size: 11px;
-			border-right: 1px solid #eee;
+			font-size: 10px;
+			/*border-right: 1px solid #eee;*/
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			height: ;
 			border-right: 1px solid black;
 		}
+		.stagiaires-column {
+			;
+			/*border-top: 3px solid #23395d;*/
+		}
+
+		/* Sticky left column for formation names */
 		.formation-name {
 			position: sticky;
 			left: 0;
 			background: white;
+			font-size: 15px;
+			font: bold;
 			z-index: 10;
+			width: 250px;
 			border-right: 1px solid #ddd;
 			padding-left: 5px;
 			font-weight: bold;
@@ -123,10 +191,8 @@
 			overflow: hidden;
 			text-overflow: ellipsis;
 		}
-		.gantt-row {
-			position: relative;
-			height: 30px;
-		}
+
+		/* Gantt bars */
 		.formation-bar {
 			position: absolute;
 			height: 30px;
@@ -139,19 +205,25 @@
 			padding: 2px;
 			overflow: hidden;
 			white-space: nowrap;
+
 			text-overflow: ellipsis;
 		}
+
 		.formation-bar:hover {
 			z-index: 10;
 			overflow: visible;
 			background-color: #3a5bbf;
 		}
+
 		.formation-validated {
-			background-color: rgb(245, 7, 19);
+			background-color: #28a745;
 		}
+
 		.formation-pending {
-			background-color: ;
+			background-color: orang;
 		}
+
+		/* Interruptions */
 		.interruption {
 			position: absolute;
 			height: 30px;
@@ -161,36 +233,37 @@
 			z-index: 5;
 			border-radius: 3px;
 		}
+
+		/* Enterprise Periods */
 		.entreprise-period {
 			position: absolute;
 			height: 30px;
 			background-color: #1cc88a;
 			border-radius: 3px;
-			top: 5px;
+			top: 5px; /* Position below main bar */
 			z-index: 4;
 		}
+
+		/* Markers */
 		.holiday-marker,
 		.today-marker {
 			position: absolute;
 			top: 0;
-			height: 800px;
+			height: 100%;
 			width: 2px;
 			z-index: 5;
 		}
+
 		.holiday-marker {
 			background-color: red;
+			height: 800px;
+			margin-top: 0;
 		}
+
 		.today-marker {
 			background-color: blue;
-
-		}
-
-		.bar-label {
-			font-size: 10px;
-			line-height: 1.1;
-			white-space: normal;
-			word-break: break-word;
-			padding: 2px;
+			height: 800px;
+			margin-top: 0;
 		}
 	</style>
 {% endblock %}
@@ -198,23 +271,30 @@
 {% block body %}
 	<div class="container-fluid">
 		<h1 class="h3 mb-4 text-gray-800 text-center">Planning des Formations</h1>
+
 		<div class="gantt-wrapper">
 			<div class="gantt-header">
 				<div class="timeline-years">
+
 					{% for year, weeks in yearly_weeks %}
 						<div class="year-column" style="width: {{ weeks * 30 }}px">{{ year }}</div>
 					{% endfor %}
 				</div>
+
 				<div class="timeline-months">
 					{% for month in months %}
 						<div class="month-column">{{ month|split('-')[1]|month_name_fr }}</div>
 					{% endfor %}
 				</div>
+
 				<div class="timeline-weeks">
 					{% for week in all_weeks %}
-						<div class="week-column">{{ week.number }}</div>
+						<div class="week-column" title="Semaine {{ week.number }}{% if week.iso_year != week.display_year %} ({{ week.iso_year }}){% endif %}">
+							{{ week.number }}
+						</div>
 					{% endfor %}
 				</div>
+
 				<div class="timeline-total-stagiaires">
 					{% for week in all_weeks %}
 						<div class="stagiaires-column">{{ week.total_stagiaires ?? '' }}</div>
@@ -230,49 +310,48 @@
 			<div class="gantt-scroll-body" id="gantt-scroll-body">
 				<div class="gantt-container">
 					{% for group, formations in grouped_formations %}
-						<div id="group-{{ group|e('html_attr') }}">
-							{% for formation in formations %}
-								<div
-									class="gantt-row mb-2">
-									{#<div class="formation-name">{{ formation.nom }}</div>#}
-									<div style="position: relative; height: 50%;">
-										<a class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" href="{{ path('app_formation_edit', {'id': formation.id}) }}" data-start="{{ formation.dateDebut|date('Y-m-d') }}" data-end="{{ formation.dateFin|date('Y-m-d') }}">
-											<span class="bar-label">
-												{{ formation.nom }}<br>
-												{{ formation.nombreHeures }}h<br>
-												Semaine(s) actives:
-												{{ formation.activeStagiaires }}
-											</span>
-										</a>
+						{# 	<div id="group-{{ group|e('html_attr') }}">#}
+						{% for formation in formations %}
+							<div
+								class="gantt-row">
+								{# 	<div class="formation-name">{{ formation.nom }}</div>#}
+								<div style="position: relative; height: 100%;">
+									<a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" data-start="{{ formation.dateDebut|date('Y-m-d') }}" data-end="{{ formation.dateFin|date('Y-m-d') }}">
+										{{ formation.nom }}
+										({{ formation.nombreHeures }}h)
+									</a>
 
-										{% for interruption in formation.interruptions %}
-											<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"></div>
+									<div style="position: relative; height: 100%; margin-left: 0px;">
+										{% set barLeft = date_service.getWeeksBetween(start_date, formation.dateDebut) * 30 %}
+										{% set barWidth = date_service.getWeeksBetween(formation.dateDebut, formation.dateFin) * 30 %}
+
+										{# Main Formation Bar #}
+										{# <a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" style="left: {{ barLeft }}px; width: {{ barWidth }}px">
+																															{{ formation.nom }}
+																															({{ formation.nombreHeures }}h)
+																														</a> #}
+										{# Interruptions #}
+											{% for interruption in formation.interruptions %}<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"> </div>
 										{% endfor %}
-
+										<!-- Period en Entreprises -->
 										{% for periode in formation.periodEnEntreprises %}
-											<div class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}">
-												<span class="bar-label">Stage</span>
-											</div>
-										{% endfor %}
-									</div>
+											<div class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}"></div>
+										</div>
+									{% endfor %}
 								</div>
-							{% endfor %}
-						</div>
-					{% endfor %}
-
-					{% for holiday in holidays %}
-						<div class="holiday-marker" data-start="{{ holiday.date|date('Y-m-d') }}" title="Jour férié: {{ holiday.nom }} ({{ holiday.date|date('d/m/Y') }})"></div>
-					{% endfor %}
-				</div>
+							</div>
+						{% endfor %}
+					</div>
+				{% endfor %}
+				{% for holiday in holidays %}
+					<div class="holiday-marker" data-start="{{ holiday.date|date('Y-m-d') }}" title="Jour férié: {{ holiday.nom }} ({{ holiday.date|date('d/m/Y') }})"></div>
+				{% endfor %}
 			</div>
 		</div>
 	</div>
-{% endblock %}
-
-{% block javascripts %}
-	{{ parent() }}
-	<script>
-		const ganttStartDate = new Date('{{ start_date|date("Y-m-d") }}');
+</div>{% endblock %}{% block javascripts %}
+{{ parent() }}<script>
+	const ganttStartDate = new Date('{{ start_date|date("Y-m-d") }}');
 const dayWidth = 4.3;
 
 function positionGanttElements() {
@@ -300,23 +379,21 @@ document.addEventListener('DOMContentLoaded', positionGanttElements);
 const ganttScroll = document.getElementById('gantt-scroll-body');
 const ganttHeader = document.querySelector('.gantt-header');
 let isDragging = false,
-startX,
-startY,
-scrollLeft,
-scrollTop;
+startX = 0,
+scrollLeft = 0;
 
 ganttScroll.addEventListener('mousedown', (e) => {
 isDragging = true;
 startX = e.pageX - ganttScroll.offsetLeft;
-startY = e.pageY - ganttScroll.offsetTop;
 scrollLeft = ganttScroll.scrollLeft;
-scrollTop = ganttScroll.scrollTop;
 ganttScroll.style.cursor = 'grabbing';
 });
+
 document.addEventListener('mouseup', () => {
 isDragging = false;
 ganttScroll.style.cursor = 'grab';
 });
+
 document.addEventListener('mousemove', (e) => {
 if (! isDragging) 
 return;
@@ -325,15 +402,13 @@ return;
 
 e.preventDefault();
 const x = e.pageX - ganttScroll.offsetLeft;
-const y = e.pageY - ganttScroll.offsetTop;
-const walkX = (x - startX) * 2;
-const walkY = (y - startY) * 2;
+const walkX = (x - startX) * 2; // multiply for scroll speed
+
 ganttScroll.scrollLeft = scrollLeft - walkX;
-ganttScroll.scrollTop = scrollTop - walkY;
 ganttHeader.scrollLeft = ganttScroll.scrollLeft;
 });
+
 ganttScroll.addEventListener('scroll', () => {
 ganttHeader.scrollLeft = ganttScroll.scrollLeft;
 });
-	</script>
-{% endblock %}
+</script>{% endblock %}

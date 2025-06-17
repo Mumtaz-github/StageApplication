@@ -13,6 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 class FormationForm extends AbstractType
 {
@@ -41,10 +42,16 @@ class FormationForm extends AbstractType
                 'label' => 'Titre professionnel',
                 'required' => false
             ])
-            ->add('niveau', IntegerType::class, [
-                'label' => 'Niveau',
-                'attr' => ['min' => 1, 'max' => 5]
-            ])
+         ->add('niveau', IntegerType::class, [
+    'label' => 'Niveau',
+    'required' => true,
+    'attr' => ['min' => 1, 'max' => 5],
+    'constraints' => [
+        new NotBlank([
+            'message' => 'Le niveau est obligatoire.'
+        ])
+            ]
+])
             ->add('nbStagiairesPrevisionnel', IntegerType::class, [
                 'label' => 'Nombre de stagiaires',
                 'attr' => ['min' => 1]

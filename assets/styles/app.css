@@ -4,7 +4,7 @@
 
 .nav-link {
   color: white;
-  font-size: 25px;
+  font-size: 22px;
   font-weight: 100;
   font-weight: bolder;
   padding: 10px 15px;
@@ -14,7 +14,7 @@
 
 .nav-link.active {
   font-weight: bold;
-  background-color: #ff8c00;
+  background-color: #d4bb9b;
   border-radius: 5px;
 }
 .navbar {
