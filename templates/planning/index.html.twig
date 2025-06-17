@@ -111,6 +111,15 @@ background: white;
 			font-family: }
 
 
+		/* Add this for the timeline area */
+		.timeline-area {
+			position: relative;
+			height: 40px;
+			margin-left: 250px;
+			min-width: calc(100% - 250px);
+		}
+
+
 		.timeline-years {
 
 			display: flex;
@@ -193,34 +202,25 @@ background: white;
 		}
 
 		/* Gantt bars */
-		.formation-bar {
-			position: absolute;
-			height: 30px;
-			background-color: #4e73df;
-			border-radius: 3px;
-			top: 5px;
-			cursor: pointer;
-			color: white;
-			font-size: 10px;
-			padding: 2px;
-			overflow: hidden;
-			white-space: nowrap;
-
-			text-overflow: ellipsis;
-		}
-
 		.formation-bar:hover {
 			z-index: 10;
-			overflow: visible;
-			background-color: #3a5bbf;
+			box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
 		}
 
-		.formation-validated {
-			background-color: #28a745;
+		.formation-bar.validated {
+			opacity: 0.9;
+		}
+
+		.entreprise-period {
+			position: absolute;
+			height: 10px;
+			background-color: #f6c23e;
+			border-radius: 2px;
+			z-index: 1;
 		}
 
 		.formation-pending {
-			background-color: orang;
+			background-color: orange;
 		}
 
 		/* Interruptions */
@@ -229,20 +229,9 @@ background: white;
 			height: 30px;
 			background-color: #e74a3b;
 			opacity: 0.7;
-			top: 5px;
-			z-index: 5;
-			border-radius: 3px;
+			z-index: 3;
 		}
 
-		/* Enterprise Periods */
-		.entreprise-period {
-			position: absolute;
-			height: 30px;
-			background-color: #1cc88a;
-			border-radius: 3px;
-			top: 5px; /* Position below main bar */
-			z-index: 4;
-		}
 
 		/* Markers */
 		.holiday-marker,
@@ -255,9 +244,12 @@ background: white;
 		}
 
 		.holiday-marker {
+			position: absolute;
+			top: 0;
+			width: 2px;
+			height: 100%;
 			background-color: red;
-			height: 800px;
-			margin-top: 0;
+			z-index: 4;
 		}
 
 		.today-marker {
@@ -273,139 +265,225 @@ background: white;
 		<h1 class="h3 mb-4 text-gray-800 text-center">Planning des Formations</h1>
 
 		<div class="gantt-wrapper">
-			<div class="gantt-header">
-				<div class="timeline-years">
-
-					{% for year, weeks in yearly_weeks %}
-						<div class="year-column" style="width: {{ weeks * 30 }}px">{{ year }}</div>
-					{% endfor %}
-				</div>
+			<div
+				class="gantt-header">
+				{# <div class="timeline-years">
+																	{% for year, weeks in yearly_weeks %}
+																		<div class="year-column" style="width: {{ weeks * 7 * day_width }}px">{{ year }}</div>
+																	{% endfor %}
+																</div> #}
 
 				<div class="timeline-months">
 					{% for month in months %}
-						<div class="month-column">{{ month|split('-')[1]|month_name_fr }}</div>
-					{% endfor %}
+						{% set monthParts = month|split('-') %}
+						{# {% set daysInMonth = date_service.getDaysInMonth(monthParts[1], monthParts[0]) %} #}
+						{# <div class="month-column" style="width: {{ daysInMonth * day_width }}px"> #}
+					{{ monthParts[1]|month_name_fr }}
 				</div>
-
-				<div class="timeline-weeks">
-					{% for week in all_weeks %}
-						<div class="week-column" title="Semaine {{ week.number }}{% if week.iso_year != week.display_year %} ({{ week.iso_year }}){% endif %}">
-							{{ week.number }}
-						</div>
-					{% endfor %}
-				</div>
-
-				<div class="timeline-total-stagiaires">
-					{% for week in all_weeks %}
-						<div class="stagiaires-column">{{ week.total_stagiaires ?? '' }}</div>
-					{% endfor %}
-				</div>
-				<div class="timeline-active-stagiaires">
-					{% for week in all_weeks %}
-						<div class="stagiaires-column">{{ week.active_stagiaires ?? '' }}</div>
-					{% endfor %}
-				</div>
+			{% endfor %}
 			</div>
 
-			<div class="gantt-scroll-body" id="gantt-scroll-body">
-				<div class="gantt-container">
-					{% for group, formations in grouped_formations %}
-						{# 	<div id="group-{{ group|e('html_attr') }}">#}
-						{% for formation in formations %}
-							<div class="gantt-row">
-								{# 	<div class="formation-name">{{ formation.nom }}</div>#}
-
-								{# Main Formation Bar #}
-									<div style="position: relative; height: 100%;"> <a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" data-start="{{ formation.dateDebut|date('Y-m-d') }}" data-end="{{ formation.dateFin|date('Y-m-d') }}">
-										{{ formation.nom }}
-										({{ formation.nombreHeures }}h)
-									</a>
-
-									<div style="position: relative; height: 100%; margin-left: 0px;">
-										{% set barLeft = date_service.getWeeksBetween(start_date, formation.dateDebut) * 30 %}
-										{% set barWidth = date_service.getWeeksBetween(formation.dateDebut, formation.dateFin) * 30 %}
-
-
-										{# Interruptions #}
-										{% for interruption in formation.interruptions %}
-											<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"></div>
-										{% endfor %}
-										<!-- Period en Entreprises -->
-										{% for periode in formation.periodEnEntreprises %}
-											<div class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}"></div>
-										</div>
-									{% endfor %}
-								</div>
-							</div>
-						{% endfor %}
+				<div class="timeline-weeks"> {% for week in all_weeks %}
+					<div class="week-column" style="width: {{ 7 * day_width }}px">
+						S{{ week.number }}
 					</div>
 				{% endfor %}
-				{% for holiday in holidays %}
-					<div class="holiday-marker" data-start="{{ holiday.date|date('Y-m-d') }}" title="Jour férié: {{ holiday.nom }} ({{ holiday.date|date('d/m/Y') }})"></div>
+			</div>
+
+			<div class="timeline-total-stagiaires">
+				{% for week in all_weeks %}
+					<div class="stagiaires-column" style="width: {{ 7 * day_width }}px">
+						{{ week.total_stagiaires ?? '' }}
+					</div>
+				{% endfor %}
+			</div>
+			<div class="timeline-active-stagiaires">
+				{% for week in all_weeks %}
+					<div class="stagiaires-column" style="width: {{ 7 * day_width }}px">
+						{{ week.active_stagiaires ?? '' }}
+					</div>
 				{% endfor %}
 			</div>
 		</div>
+
+		<div class="gantt-scroll-body" id="gantt-body">
+			{% for group, formations in grouped_formations %}
+				<div class="gantt-group" data-group="{{ group }}">
+					{% for formation in formations %}
+						<div class="gantt-row" data-formation-id="{{ formation.id }}">
+							<div class="formation-name">{{ formation.nom }}
+								({{ formation.niveau }})</div>
+
+							<div
+								class="timeline-area">
+								{# Main Formation Bar #}
+								<div class="formation-bar" data-start="{{ formation.dateDebut|date('Y-m-d') }}" data-end="{{ formation.dateFin|date('Y-m-d') }}" data-state="{{ formation.etat }}" data-grn="{{ formation.groupeRattachement }}">
+									<div class="bar-content">
+										{{ formation.nom }}<br>
+										{{ formation.nombreHeures }}h | Niv.
+										{{ formation.niveau }}
+									</div>
+								</div>
+
+								{# Enterprise Periods #}
+								{% for periode in formation.periodEnEntreprises %}
+									<div class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}"></div>
+								{% endfor %}
+
+								{# Interruptions #}
+								{% for interruption in formation.interruptions %}
+									<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"></div>
+								{% endfor %}
+							</div>
+						</div>
+					{% endfor %}
+				</div>
+			{% endfor %}
+
+			{# Holidays #}
+			{% for holiday in holidays %}
+				<div class="holiday-marker" data-start="{{ holiday.date|date('Y-m-d') }}" title="Jour férié: {{ holiday.nom }} ({{ holiday.date|date('d/m/Y') }})"></div>
+			{% endfor %}
+		</div>
 	</div>
-</div>{% endblock %}{% block javascripts %}
-{{ parent() }}<script>
-	const ganttStartDate = new Date('{{ start_date|date("Y-m-d") }}');
-const dayWidth = 4.3;
+</div></div>{% endblock %}{% block javascripts %}{{ parent() }}<script>
+document.addEventListener('DOMContentLoaded', function () { // Configuration
+const config = {
+dayWidth: {{ day_width }},
+rowHeight: 40,
+barHeight: 30,
+startDate: new Date('{{ start_date|date('Y-m-d') }}'),
+endDate: new Date('{{ end_date|date('Y-m-d') }}'),
+colors: {
+'GRN1': '#4e73df',
+'GRN2': '#1cc88a',
+'GRN3': '#36b9cc',
+'default': '#858796',
+'validated': '#28a745',
+'pending': '#fd7e14',
+'interruption': '#e74a3b',
+'entreprise': '#f6c23e',
+'holiday': '#dc3545'
+}
+};
 
-function positionGanttElements() {
-const elements = document.querySelectorAll('.formation-bar, .interruption, .entreprise-period, .holiday-marker');
+// Initialize timeline
+const timelineDuration = dateDiffInDays(config.startDate, config.endDate);
+document.querySelector('.gantt-container').style.width = `${
+timelineDuration * config.dayWidth
+}px`;
 
-elements.forEach(el => {
-const start = new Date(el.dataset.start);
-const end = el.dataset.end ? new Date(el.dataset.end) : start;
+// Position all elements
+positionAllElements();
+setupScrollSync();
 
-const durationDays = Math.max(1, Math.floor((end - start) / (1000 * 60 * 60 * 24)));
-const offsetDays = Math.floor((start - ganttStartDate) / (1000 * 60 * 60 * 24));
+function positionAllElements() {
+positionFormationBars();
+positionEnterprisePeriods();
+positionInterruptions();
+positionHolidayMarkers();
+positionTodayMarker();
+}
 
-const left = offsetDays * dayWidth;
-const width = durationDays * dayWidth;
+function positionFormationBars() {
+document.querySelectorAll('.formation-bar').forEach(bar => {
+const startDate = new Date(bar.dataset.start);
+const endDate = new Date(bar.dataset.end);
 
-el.style.left = `${left}px`;
-if (!el.classList.contains('holiday-marker')) {
-el.style.width = `${width}px`;
+const daysFromStart = dateDiffInDays(config.startDate, startDate);
+const durationDays = dateDiffInDays(startDate, endDate) + 1;
+
+bar.style.left = `${
+daysFromStart * config.dayWidth
+}px`;
+bar.style.width = `${
+durationDays * config.dayWidth
+}px`;
+
+// Apply color based on GRN
+const grn = bar.dataset.grn || 'default';
+bar.style.backgroundColor = config.colors[grn] || config.colors.default;
+
+// Add validation state
+if (bar.dataset.state === 'validée') {
+bar.classList.add('validated');
 }
 });
 }
 
-document.addEventListener('DOMContentLoaded', positionGanttElements);
+function positionEnterprisePeriods() {
+document.querySelectorAll('.entreprise-period').forEach(period => {
+const startDate = new Date(period.dataset.start);
+const endDate = new Date(period.dataset.end);
 
-const ganttScroll = document.getElementById('gantt-scroll-body');
+const daysFromStart = dateDiffInDays(config.startDate, startDate);
+const durationDays = dateDiffInDays(startDate, endDate) + 1;
+
+period.style.left = `${
+daysFromStart * config.dayWidth
+}px`;
+period.style.width = `${
+durationDays * config.dayWidth
+}px`;
+period.style.top = `${
+config.barHeight + 5
+}px`;
+});
+}
+
+function positionInterruptions() {
+document.querySelectorAll('.interruption').forEach(interruption => {
+const startDate = new Date(interruption.dataset.start);
+const endDate = new Date(interruption.dataset.end);
+
+const daysFromStart = dateDiffInDays(config.startDate, startDate);
+const durationDays = dateDiffInDays(startDate, endDate) + 1;
+
+interruption.style.left = `${
+daysFromStart * config.dayWidth
+}px`;
+interruption.style.width = `${
+durationDays * config.dayWidth
+}px`;
+});
+}
+
+function positionHolidayMarkers() {
+document.querySelectorAll('.holiday-marker').forEach(marker => {
+const date = new Date(marker.dataset.date);
+const daysFromStart = dateDiffInDays(config.startDate, date);
+
+marker.style.left = `${
+daysFromStart * config.dayWidth
+}px`;
+});
+}
+
+function positionTodayMarker() {
+const today = new Date();
+if (today >= config.startDate && today <= config.endDate) {
+const marker = document.createElement('div');
+marker.className = 'today-marker';
+marker.style.left = `${
+dateDiffInDays(config.startDate, today) * config.dayWidth
+}px`;
+document.querySelector('.gantt-container').appendChild(marker);
+}
+}
+
+function setupScrollSync() {
+const ganttBody = document.querySelector('.gantt-scroll-body');
 const ganttHeader = document.querySelector('.gantt-header');
-let isDragging = false,
-startX = 0,
-scrollLeft = 0;
 
-ganttScroll.addEventListener('mousedown', (e) => {
-isDragging = true;
-startX = e.pageX - ganttScroll.offsetLeft;
-scrollLeft = ganttScroll.scrollLeft;
-ganttScroll.style.cursor = 'grabbing';
+ganttBody.addEventListener('scroll', () => {
+ganttHeader.scrollLeft = ganttBody.scrollLeft;
 });
+}
 
-document.addEventListener('mouseup', () => {
-isDragging = false;
-ganttScroll.style.cursor = 'grab';
-});
-
-document.addEventListener('mousemove', (e) => {
-if (! isDragging) 
-return;
-
-
-
-e.preventDefault();
-const x = e.pageX - ganttScroll.offsetLeft;
-const walkX = (x - startX) * 2; // multiply for scroll speed
-
-ganttScroll.scrollLeft = scrollLeft - walkX;
-ganttHeader.scrollLeft = ganttScroll.scrollLeft;
-});
-
-ganttScroll.addEventListener('scroll', () => {
-ganttHeader.scrollLeft = ganttScroll.scrollLeft;
-});
-</script>{% endblock %}
+// Helper functions
+function dateDiffInDays(a, b) {
+const utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+const utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+return Math.floor((utc2 - utc1) / (1000 * 60 * 60 * 24));
+}
+});</script>{% endblock %}

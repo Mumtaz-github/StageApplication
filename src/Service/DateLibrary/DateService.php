@@ -31,10 +31,15 @@ class DateService
     /**
      * Get number of days in a given month and year
      */
-    public function getDaysInMonth(int $month, int $year): int
-    {
-        return cal_days_in_month(CAL_GREGORIAN, $month, $year);
+  // Add this method to your DateService class
+public function getDaysInMonthFromString(string $monthString): int
+{
+    $date = \DateTime::createFromFormat('Y-m', $monthString);
+    if (!$date) {
+        throw new \InvalidArgumentException("Invalid month format. Expected 'Y-m'");
     }
+    return (int) $date->format('t');
+}
 
     /**
      * Get all months between two dates (format: Y-m)
@@ -125,28 +130,28 @@ class DateService
 
      
     public function getWeeksBetweenDates(DateTimeInterface $startDate, DateTimeInterface $endDate): array
-    {
-        $start = $this->ensureDateTime($startDate);
-        $end = $this->ensureDateTime($endDate);
-        
-        $weeks = [];
-        $current = (clone $start)->modify('monday this week');
-        $end = (clone $end)->modify('sunday this week');
+{
+    $start = $this->ensureDateTime($startDate);
+    $end = $this->ensureDateTime($endDate);
+    
+    $weeks = [];
+    $current = (clone $start)->modify('monday this week');
+    $end = (clone $end)->modify('sunday this week');
 
-        while ($current <= $end) {
-            $weeks[] = [
-                'year' => (int)$current->format('Y'),
-                'week' => (int)$current->format('W'),
-                'month' => (int)$current->format('m'),
-                'number' => (int)$current->format('W'),
-                'start_date' => clone $current,
-                'end_date' => (clone $current)->modify('+6 days')
-            ];
-            $current->modify('+1 week');
-        }
-
-        return $weeks;
+    while ($current <= $end) {
+        $weeks[] = [
+            'year' => (int)$current->format('Y'),
+            'week' => (int)$current->format('W'),
+            'month' => (int)$current->format('m'),
+            'number' => (int)$current->format('W'),
+            'start_date' => clone $current,
+            'end_date' => (clone $current)->modify('+6 days')
+        ];
+        $current->modify('+1 week');
     }
+
+    return $weeks;
+}
 
     /**
      * Get number of weeks between two dates
