@@ -312,11 +312,11 @@ background: white;
 					{% for group, formations in grouped_formations %}
 						{# 	<div id="group-{{ group|e('html_attr') }}">#}
 						{% for formation in formations %}
-							<div
-								class="gantt-row">
+							<div class="gantt-row">
 								{# 	<div class="formation-name">{{ formation.nom }}</div>#}
-								<div style="position: relative; height: 100%;">
-									<a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" data-start="{{ formation.dateDebut|date('Y-m-d') }}" data-end="{{ formation.dateFin|date('Y-m-d') }}">
+
+								{# Main Formation Bar #}
+									<div style="position: relative; height: 100%;"> <a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" data-start="{{ formation.dateDebut|date('Y-m-d') }}" data-end="{{ formation.dateFin|date('Y-m-d') }}">
 										{{ formation.nom }}
 										({{ formation.nombreHeures }}h)
 									</a>
@@ -325,13 +325,10 @@ background: white;
 										{% set barLeft = date_service.getWeeksBetween(start_date, formation.dateDebut) * 30 %}
 										{% set barWidth = date_service.getWeeksBetween(formation.dateDebut, formation.dateFin) * 30 %}
 
-										{# Main Formation Bar #}
-										{# <a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar {{ formation.etat == 'validée' ? 'formation-validated' : 'formation-pending' }}" style="left: {{ barLeft }}px; width: {{ barWidth }}px">
-																															{{ formation.nom }}
-																															({{ formation.nombreHeures }}h)
-																														</a> #}
+
 										{# Interruptions #}
-											{% for interruption in formation.interruptions %}<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"> </div>
+										{% for interruption in formation.interruptions %}
+											<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"></div>
 										{% endfor %}
 										<!-- Period en Entreprises -->
 										{% for periode in formation.periodEnEntreprises %}
