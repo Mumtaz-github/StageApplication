@@ -34,8 +34,15 @@ class Formation
     #[ORM\Column]
     private ?int $niveau = null;
 
-    #[ORM\Column(length: 255)]
+
+    #[ORM\Column(type: 'integer', nullable: true)]
     private ?int $nbStagiairesPrevisionnel = null;
+
+
+    //#[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $activeStagiaires = null;
+    // #[ORM\Column(length: 255)]
+    // private ?int $nbStagiairesPrevisionnel = null;
 
     #[ORM\Column(length: 255)]
     private ?string $groupeRattachement = null;
@@ -163,6 +170,18 @@ public function setNombreHeures(int $nombreHeures): static
         $this->nbStagiairesPrevisionnel = $nbStagiairesPrevisionnel;
         return $this;
     }
+
+
+public function getActiveStagiaires(): ?int
+{
+    return $this->activeStagiaires;
+}
+
+public function setActiveStagiaires(?int $count): static
+{
+    $this->activeStagiaires = $count;
+    return $this;
+}
 
     public function getGroupeRattachement(): ?string
     {
