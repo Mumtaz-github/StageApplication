@@ -59,10 +59,11 @@ class PlanningController extends AbstractController
         $activeStagiaires = 0;
         
         foreach ($formations as $formation) {
-            if ($formation->getDateDebut() <= $weekEnd && $formation->getDateFin() >= $weekStart) {
-                $totalStagiaires += $formation->getNbStagiairesPrevisionnel() ?? 0;
-                $activeStagiaires++;
-            }
+           if ($formation->getDateDebut() <= $weekEnd && $formation->getDateFin() >= $weekStart) {
+    $totalStagiaires += ($formation->getNbStagiairesPrevisionnel() ?? 0); // Fixed line
+    $activeStagiaires++;
+}
+
         }
         
         $week['total_stagiaires'] = $totalStagiaires;
