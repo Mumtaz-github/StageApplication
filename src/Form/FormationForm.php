@@ -34,6 +34,10 @@ class FormationForm extends AbstractType
                 'required' => false,
                 'attr' => ['placeholder' => 'Optionnel']
             ])
+                ->add('nombreHeures', IntegerType::class, [
+                'label' => 'Numbre d\'heures',
+                  'attr' => ['min' => 1]
+            ])
             ->add('etat', TextType::class, [
                 'label' => 'État',
                 'attr' => ['placeholder' => 'Ex: En cours de validation']

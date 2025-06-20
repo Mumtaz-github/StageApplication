@@ -7,9 +7,11 @@
 	<div class="form-check form-switch mb-4">
 		{{ form_widget(form.actifFormation, {'attr': {'class': 'form-check-input'}}) }}
 		{{ form_label(form.actifFormation, 'Formation Active', {'label_attr': {'class': 'form-check-label'}}) }}
+
 	</div>
 
 	<div class="row">
+
 		<div class="col-md-6 mb-3">
 			{{ form_row(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de la formation'}}) }}
 		</div>
@@ -62,6 +64,9 @@
 		<div class="col-md-6 mb-3">
 			{{ form_row(form.dateFin, {'attr': {'class': 'form-control'}}) }}
 		</div>
+	</div>
+	<div class="col-md-12 mb-3">
+		{{ form_row(form.nombreHeures , {'attr': {'class': 'form-control'}}) }}
 	</div>
 
 	<div class="text-center mt-4">

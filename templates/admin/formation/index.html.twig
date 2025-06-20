@@ -40,6 +40,7 @@
 						<td>{{ formation.groupeRattachement }}</td>
 						<td>{{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '' }}</td>
 						<td>{{ formation.dateFin ? formation.dateFin |date('d/m/Y') : '' }}</td>
+						<td>{{ formation.nombreHeures }}</td>
 						<td>
 							{% if formation.formateurs is not empty %}
 								<ul class="mb-0 ps-3">
