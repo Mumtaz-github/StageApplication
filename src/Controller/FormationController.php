@@ -41,41 +41,57 @@ final class FormationController extends AbstractController
             'form' => $form,
         ]);
     }
-
-    #[Route('/{id}', name: 'app_formation_show', methods: ['GET'])]
-    public function show(Formation $formation): Response
-    {
-        return $this->render('admin/formation/show.html.twig', [
-            'formation' => $formation,
-        ]);
+ #[Route('/{id}', name: 'app_formation_show', methods: ['GET'], requirements: ['id' => '\d+'])]
+  public function show(int $id, FormationRepository $repository): Response
+{
+    $formation = $repository->find($id);
+    if (!$formation) {
+        throw $this->createNotFoundException('Formation non trouvée.');
     }
 
-    #[Route('/{id}/edit', name: 'app_formation_edit', methods: ['GET', 'POST'])]
-    public function edit(Request $request, Formation $formation, EntityManagerInterface $entityManager): Response
-    {
-        $form = $this->createForm(FormationForm::class, $formation);
-        $form->handleRequest($request);
+    return $this->render('admin/formation/show.html.twig', [
+        'formation' => $formation,
+    ]);
+}
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_formation_index', [], Response::HTTP_SEE_OTHER);
-        }
-
-        return $this->render('admin/formation/edit.html.twig', [
-            'formation' => $formation,
-            'form' => $form,
-        ]);
+  #[Route('/{id}/edit', name: 'app_formation_edit', methods: ['GET', 'POST'], requirements: ['id' => '\d+'])]
+public function edit(Request $request, int $id, FormationRepository $repository, EntityManagerInterface $em): Response
+{
+    $formation = $repository->find($id);
+    if (!$formation) {
+        throw $this->createNotFoundException('Formation non trouvée.');
     }
 
-    #[Route('/{id}', name: 'app_formation_delete', methods: ['POST'])]
-    public function delete(Request $request, Formation $formation, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$formation->getId(), $request->getPayload()->getString('_token'))) {
-            $entityManager->remove($formation);
-            $entityManager->flush();
-        }
+    $form = $this->createForm(FormationForm::class, $formation);
+    $form->handleRequest($request);
 
-        return $this->redirectToRoute('app_formation_index', [], Response::HTTP_SEE_OTHER);
+    if ($form->isSubmitted() && $form->isValid()) {
+        $em->flush();
+        return $this->redirectToRoute('app_formation_index');
     }
+
+    return $this->render('admin/formation/edit.html.twig', [
+        'formation' => $formation,
+        'form' => $form,
+    ]);
+}
+
+
+   #[Route('/{id}', name: 'app_formation_delete', methods: ['POST'], requirements: ['id' => '\d+'])]
+public function delete(Request $request, int $id, FormationRepository $repository, EntityManagerInterface $em): Response
+{
+    $formation = $repository->find($id);
+    if (!$formation) {
+        throw $this->createNotFoundException('Formation non trouvée.');
+    }
+
+    if ($this->isCsrfTokenValid('delete' . $formation->getId(), $request->getPayload()->getString('_token'))) {
+        $em->remove($formation);
+        $em->flush();
+    }
+
+    return $this->redirectToRoute('app_formation_index');
+}
+
 }

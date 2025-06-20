@@ -38,25 +38,35 @@ class FormationForm extends AbstractType
                 'label' => 'Numbre d\'heures',
                   'attr' => ['min' => 1]
             ])
-            ->add('etat', TextType::class, [
-                'label' => 'État',
-                'attr' => ['placeholder' => 'Ex: En cours de validation']
+            ->add('dateDebutValidation', TextType::class, [
+                'label' => 'Date de debut validation',
+                'required' => false,
+                'attr' => ['placeholder' => 'JJ/MM/AAAA']
+              
             ])
+            ->add('dateFinValidation', TextType::class, [
+                  'label' => 'Date de fin validation',
+                'required' => false,
+                'attr' => ['placeholder' => 'JJ/MM/AAAA']
+              
+            ])
+
+
             ->add('titreProfessionnel', TextType::class, [
                 'label' => 'Titre professionnel',
                 'required' => false
             ])
          ->add('niveau', IntegerType::class, [
-    'label' => 'Niveau',
-    'required' => true,
-    'attr' => ['min' => 1, 'max' => 5],
-    'constraints' => [
-        new NotBlank([
+                'label' => 'Niveau',
+                'required' => true,
+                'attr' => ['min' => 1, 'max' => 5],
+                'constraints' => [
+                    new NotBlank([
             'message' => 'Le niveau est obligatoire.'
         ])
             ]
 ])
-            ->add('nbStagiairesPrevisionnel', IntegerType::class, [
+            ->add('NombreStagiaires', IntegerType::class, [
                 'label' => 'Nombre de stagiaires',
                 'attr' => ['min' => 1]
             ])
@@ -66,12 +76,14 @@ class FormationForm extends AbstractType
             ->add('dateDebut', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de début',
-                'html5' => true
+                'html5' => true,
+                'required' => false
             ])
             ->add('dateFin', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de fin',
-                'html5' => true
+                'html5' => true,
+                'required' => false
             ])
         ->add('formateurs', EntityType::class, [
                 'class' => Formateur::class,

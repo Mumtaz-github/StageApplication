@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250619093223 extends AbstractMigration
+final class Version20250620112730 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -24,7 +24,7 @@ final class Version20250619093223 extends AbstractMigration
             CREATE TABLE formateur (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE formation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, actif_formation BOOLEAN NOT NULL, nom VARCHAR(255) NOT NULL, numero VARCHAR(255) NOT NULL, etat VARCHAR(255) NOT NULL, titre_professionnel VARCHAR(255) NOT NULL, niveau INTEGER NOT NULL, nb_stagiaires_previsionnel INTEGER DEFAULT NULL, groupe_rattachement VARCHAR(255) NOT NULL, nombre_heures INTEGER DEFAULT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL)
+            CREATE TABLE formation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, actif_formation BOOLEAN NOT NULL, nom VARCHAR(255) NOT NULL, numero VARCHAR(255) NOT NULL, date_debut_validation VARCHAR(255) NOT NULL, date_fin_validation VARCHAR(255) NOT NULL, titre_professionnel VARCHAR(255) NOT NULL, niveau INTEGER NOT NULL, nombre_stagiaires INTEGER DEFAULT NULL, groupe_rattachement VARCHAR(255) NOT NULL, nombre_heures INTEGER DEFAULT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE formation_formateur (formation_id INTEGER NOT NULL, formateur_id INTEGER NOT NULL, PRIMARY KEY(formation_id, formateur_id), CONSTRAINT FK_270B2E925200282E FOREIGN KEY (formation_id) REFERENCES formation (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_270B2E92155D8F51 FOREIGN KEY (formateur_id) REFERENCES formateur (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)

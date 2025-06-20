@@ -60,7 +60,7 @@ class PlanningController extends AbstractController
         
         foreach ($formations as $formation) {
            if ($formation->getDateDebut() <= $weekEnd && $formation->getDateFin() >= $weekStart) {
-    $totalStagiaires += ($formation->getNbStagiairesPrevisionnel() ?? 0); // Fixed line
+    $totalStagiaires += ($formation->getnombreStagiaires() ?? 0); // Fixed line
     $activeStagiaires++;
 }
 

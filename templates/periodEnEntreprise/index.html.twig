@@ -12,7 +12,7 @@
 				<th>Id</th>
 				<th>Date_debut</th>
 				<th>Date_fin</th>
-				<th>NumberHeures</th>
+				<th>Nombre Heures</th>
 				<th>actions</th>
 			</tr>
 		</thead>
@@ -22,7 +22,7 @@
 					<td>{{ period_en_entreprise.id }}</td>
 					<td>{{ period_en_entreprise.dateDebut ? period_en_entreprise.dateDebut|date('Y-m-d') : '' }}</td>
 					<td>{{ period_en_entreprise.dateFin ? period_en_entreprise.dateFin|date('Y-m-d') : '' }}</td>
-					{# <td>{{ period_en_entreprise.numberHeures }}</td> #}
+					<td>{{ period_en_entreprise.numbreHeures }}</td>
 					<td>
 						<a href="{{ path('app_period_en_entreprise_show', {'id': period_en_entreprise.id}) }}">show</a>
 						<a href="{{ path('app_period_en_entreprise_edit', {'id': period_en_entreprise.id}) }}">edit</a>

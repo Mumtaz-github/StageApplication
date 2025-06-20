@@ -14,10 +14,11 @@
 					<th>Active</th>
 					<th>Nom</th>
 					<th>Numéro</th>
-					<th>État</th>
+					<th>Date Debut validation</th>
+					<th>Date fin validation</th>
 					<th>Titre Professionnel</th>
 					<th>Niveau</th>
-					<th>Nb Stagiaires</th>
+					<th>NombreStagiaires</th>
 					<th>Groupe</th>
 					<th>Date Début</th>
 					<th>Date Fin
@@ -33,10 +34,11 @@
 						<td>{{ formation.actifFormation ? 'Oui' : 'Non' }}</td>
 						<td>{{ formation.nom }}</td>
 						<td>{{ formation.numero }}</td>
-						<td>{{ formation.etat }}</td>
+						<td>{{ formation.dateDebutValidation }}</td>
+						<td>{{ formation.dateFinValidation  }}</td>
 						<td>{{ formation.titreProfessionnel }}</td>
 						<td>{{ formation.niveau }}</td>
-						<td>{{ formation.nbStagiairesPrevisionnel }}</td>
+						<td>{{ formation.nombreStagiaires }}</td>
 						<td>{{ formation.groupeRattachement }}</td>
 						<td>{{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '' }}</td>
 						<td>{{ formation.dateFin ? formation.dateFin |date('d/m/Y') : '' }}</td>

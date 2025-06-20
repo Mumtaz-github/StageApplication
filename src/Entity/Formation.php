@@ -26,7 +26,10 @@ class Formation
     private ?string $numero = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $etat = null;
+    private ?string $DateDebutValidation = null;
+
+    #[ORM\Column(length: 255)]
+    private ?string $DateFinValidation = null;
 
     #[ORM\Column(length: 255)]
     private ?string $titreProfessionnel = null;
@@ -36,7 +39,7 @@ class Formation
 
 
     #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $nbStagiairesPrevisionnel = null;
+    private ?int $NombreStagiaires = null;
 
 
     //#[ORM\Column(type: 'integer', nullable: true)]
@@ -110,14 +113,25 @@ class Formation
         return $this;
     }
 
-    public function getEtat(): ?string
+    public function getDateDebutValidation(): ?string
     {
-        return $this->etat;
+        return $this->DateDebutValidation;
     }
 
-    public function setEtat(string $etat): static
+    public function setDateDebutValidation(string $DateDebutValidation): static
     {
-        $this->etat = $etat;
+        $this->DateDebutValidation = $DateDebutValidation;
+        return $this;
+    }
+
+      public function getDateFinValidation(): ?string
+    {
+        return $this->DateFinValidation;
+    }
+
+    public function setDateFinValidation(string $DateFinValidation): static
+    {
+        $this->DateFinValidation = $DateFinValidation;
         return $this;
     }
 
@@ -160,14 +174,14 @@ public function setNombreHeures(int $nombreHeures): static
         return $this;
     }
 
-    public function getNbStagiairesPrevisionnel(): ?int
+    public function getNombreStagiaires(): ?int
     {
-        return $this->nbStagiairesPrevisionnel;
+        return $this->NombreStagiaires;
     }
 
-    public function setNbStagiairesPrevisionnel(int $nbStagiairesPrevisionnel): static
+    public function setNombreStagiaires(int $NombreStagiaires): static
     {
-        $this->nbStagiairesPrevisionnel = $nbStagiairesPrevisionnel;
+        $this->NombreStagiaires = $NombreStagiaires;
         return $this;
     }
 

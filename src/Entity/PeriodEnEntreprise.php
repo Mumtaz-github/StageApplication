@@ -20,6 +20,9 @@ class PeriodEnEntreprise
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateFin = null;
 
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $numbreHeures = null;
+
     #[ORM\ManyToOne(inversedBy: 'periodEnEntreprises')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Formation $formation = null;
@@ -52,6 +55,21 @@ class PeriodEnEntreprise
 
         return $this;
     }
+
+
+
+public function getNumbreHeures(): ?int
+{
+    return $this->numbreHeures;
+}
+
+public function setNumbreHeures(int $numbreHeures): static
+{
+    $this->numbreHeures = $numbreHeures;
+    return $this;
+}
+
+
 
     public function getFormation(): ?Formation
     {

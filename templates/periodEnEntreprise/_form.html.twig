@@ -21,6 +21,11 @@
 			{{ form_widget(form.formation, {'attr': {'class': 'form-select'}}) }}
 			{{ form_errors(form.formation) }}
 		</div>
+		<div class="mb-3">
+			{{ form_widget(form.numbreHeures, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.numbreHeures) }}
+			{{ form_label(form.numbreHeures, 'Nombre Heures', {'label_attr': {'class': 'form-label'}}) }}
+		</div>
 
 		<div class="text-center">
 			<div class="d-flex justify-content-between mt-0 mb-0">
