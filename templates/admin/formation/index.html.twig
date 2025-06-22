@@ -36,8 +36,8 @@
 						<td>{{ formation.numero }}</td>
 						<td>{{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '' }}</td>
 						<td>{{ formation.dateFin ? formation.dateFin |date('d/m/Y') : '' }}</td>
-						<td>{{ formation.dateDebutValidation }}</td>
-						<td>{{ formation.dateFinValidation  }}</td> 
+            <td>{{ formation.dateDebutValidation ? formation.dateDebutValidation|date('d/m/Y') : '' }}</td>
+            <td>{{ formation.dateFinValidation ? formation.dateFinValidation|date('d/m/Y') : '' }}</td>
 						<td>{{ formation.titreProfessionnel }}</td>
 						<td>{{ formation.niveau }}</td>
 						<td>{{ formation.nombreStagiaires }}</td>

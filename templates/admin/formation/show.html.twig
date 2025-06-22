@@ -26,8 +26,8 @@
 			</tr>
 			<tr>
 				<th>Validation</th>
-				<td>{{ formation.dateDebutValidation }}</td>
-			</tr>
+			<td>{{ formation.dateDebutValidation ? formation.dateDebutValidation|date('d/m/Y') : '' }}</td>
+     </tr>
 			<tr>
 				<th>Titre_Professionnel</th>
 				<td>{{ formation.titreProfessionnel }}</td>

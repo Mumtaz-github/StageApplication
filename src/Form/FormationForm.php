@@ -43,12 +43,12 @@ class FormationForm extends AbstractType
      ->add('dateDebutValidation', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de debut validation',
-                'required' => true,
+                'required' => false,
             ])
             ->add('dateFinValidation', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de fin validation',
-                'required' => true,
+                'required' => false,
             ])
             
 
@@ -74,14 +74,14 @@ class FormationForm extends AbstractType
             ])
          ->add('niveau', IntegerType::class, [
                 'label' => 'Niveau',
-                'required' => true,
-                'attr' => ['min' => 1, 'max' => 5],
-                'constraints' => [
-                    new NotBlank([
-            'message' => 'Le niveau est obligatoire.'
+                'required' => false,
+                'attr' => ['min' => 1, 'max' => 5]
+            //     'constraints' => [
+            //         new NotBlank([
+            // 'message' => 'Le niveau est obligatoire.'
         ])
-            ]
-])
+            
+
             ->add('NombreStagiaires', IntegerType::class, [
                 'label' => 'Nombre de stagiaires',
                 'attr' => ['min' => 1]
@@ -92,13 +92,13 @@ class FormationForm extends AbstractType
             ->add('dateDebut', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de début',
-                'html5' => true,
+                'required' => false,
                 // 'required' => false
             ])
             ->add('dateFin', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de fin',
-                'html5' => true,
+                'required' => false,
                 // 'required' => false
             ])
         ->add('formateurs', EntityType::class, [

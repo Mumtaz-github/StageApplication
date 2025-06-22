@@ -24,24 +24,21 @@ class Formation
 
     #[ORM\Column(length: 255)]
     private ?string $numero = null;
-// #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-// private ?\DateTimeInterface $dateDebutValidation = null;
 
-// #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-// private ?\DateTimeInterface $dateFinValidation = null;
+#[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+private ?\DateTime $dateDebutValidation = null;
+
+#[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+private ?\DateTime $dateFinValidation = null;
+
+
+
 
 //  #[ORM\Column(type: Types::DATE_MUTABLE)]
-//     private ?\DateTime $dateDebutValidation= null;
+// private ?\DateTime $dateDebutValidation;
 
-//  #[ORM\Column(type: Types::DATE_MUTABLE)]
-//     private ?\DateTime $dateFinValidation= null;
-
-
- #[ORM\Column(type: Types::DATE_MUTABLE)]
-private ?\DateTime $dateDebutValidation;
-
-#[ORM\Column(type: Types::DATE_MUTABLE)]
-private ?\DateTime $dateFinValidation;
+// #[ORM\Column(type: Types::DATE_MUTABLE)]
+// private ?\DateTime $dateFinValidation;
 
 
     #[ORM\Column(length: 255)]
@@ -69,8 +66,11 @@ private ?\DateTime $dateFinValidation;
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateDebut = null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
-    private ?\DateTime $dateFin = null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+        private ?\DateTime $dateFin = null;
+    // #[ORM\Column(type: Types::DATE_MUTABLE)]
+    // private ?\DateTime $dateFin = null;
     
 
     #[ORM\ManyToMany(targetEntity: Formateur::class, inversedBy: 'formations')]
@@ -127,27 +127,47 @@ private ?\DateTime $dateFinValidation;
         return $this;
     }
 
-    public function getDateDebutValidation(): ?\DateTime
-    {
-        return $this->dateDebutValidation;
-    }
+   public function getDateDebutValidation(): ?\DateTime
+{
+    return $this->dateDebutValidation;
+}
 
-    public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
-    {
-        $this->dateDebutValidation = $dateDebutValidation;
-        return $this;
-    }
+public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
+{
+    $this->dateDebutValidation = $dateDebutValidation;
+    return $this;
+}
 
-      public function getDateFinValidation(): ?\DateTime
-    {
-        return $this->dateFinValidation;
-    }
+public function getDateFinValidation(): ?\DateTime
+{
+    return $this->dateFinValidation;
+}
 
-    public function setDateFinValidation(?\DateTime $dateFinValidation): static
-    {
-        $this->dateFinValidation = $dateFinValidation;
-        return $this;
-    }
+public function setDateFinValidation(?\DateTime $dateFinValidation): static
+{
+    $this->dateFinValidation = $dateFinValidation;
+    return $this;
+}
+
+
+
+
+    // public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
+    // {
+    //     $this->dateDebutValidation = $dateDebutValidation;
+    //     return $this;
+    // }
+
+    //   public function getDateFinValidation(): ?\DateTime
+    // {
+    //     return $this->dateFinValidation;
+    // }
+
+    // public function setDateFinValidation(?\DateTime $dateFinValidation): static
+    // {
+    //     $this->dateFinValidation = $dateFinValidation;
+    //     return $this;
+    // }
 
 
 
@@ -235,16 +255,32 @@ public function setActiveStagiaires(?int $count): static
         return $this;
     }
 
-    public function getDateFin(): ?\DateTime
-    {
-        return $this->dateFin;
-    }
 
-    public function setDateFin(\DateTime $dateFin): static
-    {
-        $this->dateFin = $dateFin;
-        return $this;
-    }
+public function getDateFin(): ?\DateTime
+{
+    return $this->dateFin;
+}
+
+public function setDateFin(?\DateTime $dateFin): static
+{
+    $this->dateFin = $dateFin;
+    return $this;
+}
+
+
+
+
+
+    // public function getDateFin(): ?\DateTime
+    // {
+    //     return $this->dateFin;
+    // }
+
+    // public function setDateFin(\DateTime $dateFin): static
+    // {
+    //     $this->dateFin = $dateFin;
+    //     return $this;
+    // }
 
     /**
      * @return Collection<int, Formateur>
