@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250620112730 extends AbstractMigration
+final class Version20250622012809 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -24,7 +24,7 @@ final class Version20250620112730 extends AbstractMigration
             CREATE TABLE formateur (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE formation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, actif_formation BOOLEAN NOT NULL, nom VARCHAR(255) NOT NULL, numero VARCHAR(255) NOT NULL, date_debut_validation VARCHAR(255) NOT NULL, date_fin_validation VARCHAR(255) NOT NULL, titre_professionnel VARCHAR(255) NOT NULL, niveau INTEGER NOT NULL, nombre_stagiaires INTEGER DEFAULT NULL, groupe_rattachement VARCHAR(255) NOT NULL, nombre_heures INTEGER DEFAULT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL)
+            CREATE TABLE formation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, actif_formation BOOLEAN NOT NULL, nom VARCHAR(255) NOT NULL, numero VARCHAR(255) NOT NULL, date_debut_validation DATE NOT NULL, date_fin_validation DATE NOT NULL, titre_professionnel VARCHAR(255) NOT NULL, niveau INTEGER NOT NULL, nombre_stagiaires INTEGER DEFAULT NULL, groupe_rattachement VARCHAR(255) NOT NULL, nombre_heures INTEGER DEFAULT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE formation_formateur (formation_id INTEGER NOT NULL, formateur_id INTEGER NOT NULL, PRIMARY KEY(formation_id, formateur_id), CONSTRAINT FK_270B2E925200282E FOREIGN KEY (formation_id) REFERENCES formation (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_270B2E92155D8F51 FOREIGN KEY (formateur_id) REFERENCES formateur (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)
@@ -48,7 +48,7 @@ final class Version20250620112730 extends AbstractMigration
             CREATE TABLE jour_ferie (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date DATE NOT NULL, nom VARCHAR(255) NOT NULL, zone VARCHAR(50) NOT NULL, annee INTEGER DEFAULT NULL)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE period_en_entreprise (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, formation_id INTEGER NOT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL, CONSTRAINT FK_92E223D25200282E FOREIGN KEY (formation_id) REFERENCES formation (id) NOT DEFERRABLE INITIALLY IMMEDIATE)
+            CREATE TABLE period_en_entreprise (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, formation_id INTEGER NOT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL, numbre_heures INTEGER DEFAULT NULL, CONSTRAINT FK_92E223D25200282E FOREIGN KEY (formation_id) REFERENCES formation (id) NOT DEFERRABLE INITIALLY IMMEDIATE)
         SQL);
         $this->addSql(<<<'SQL'
             CREATE INDEX IDX_92E223D25200282E ON period_en_entreprise (formation_id)

@@ -79,7 +79,7 @@ class PlanningController extends AbstractController
 
     // Calculate day width
 $totalDays = $dateService->getDaysBetween($startDate, $endDate);
-$dayWidth = min(6, max(4, 1200 / $totalDays));
+$dayWidth = min(6, max(5, 1200 / $totalDays));
 
 return $this->render('planning/index.html.twig', [
     'grouped_formations' => $groupedFormations,

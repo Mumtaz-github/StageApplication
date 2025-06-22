@@ -24,12 +24,24 @@ class Formation
 
     #[ORM\Column(length: 255)]
     private ?string $numero = null;
+// #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+// private ?\DateTimeInterface $dateDebutValidation = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $DateDebutValidation = null;
+// #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+// private ?\DateTimeInterface $dateFinValidation = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $DateFinValidation = null;
+//  #[ORM\Column(type: Types::DATE_MUTABLE)]
+//     private ?\DateTime $dateDebutValidation= null;
+
+//  #[ORM\Column(type: Types::DATE_MUTABLE)]
+//     private ?\DateTime $dateFinValidation= null;
+
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+private ?\DateTime $dateDebutValidation= null;
+
+#[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+private ?\DateTime $dateFinValidation= null;
+
 
     #[ORM\Column(length: 255)]
     private ?string $titreProfessionnel = null;
@@ -58,6 +70,7 @@ class Formation
 
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTime $dateFin = null;
+    
 
     #[ORM\ManyToMany(targetEntity: Formateur::class, inversedBy: 'formations')]
     private Collection $formateurs;
@@ -113,27 +126,29 @@ class Formation
         return $this;
     }
 
-    public function getDateDebutValidation(): ?string
+    public function getDateDebutValidation(): ?\DateTime
     {
-        return $this->DateDebutValidation;
+        return $this->dateDebutValidation;
     }
 
-    public function setDateDebutValidation(string $DateDebutValidation): static
+    public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
     {
-        $this->DateDebutValidation = $DateDebutValidation;
+        $this->dateDebutValidation = $dateDebutValidation;
         return $this;
     }
 
-      public function getDateFinValidation(): ?string
+      public function getDateFinValidation(): ?\DateTime
     {
-        return $this->DateFinValidation;
+        return $this->dateFinValidation;
     }
 
-    public function setDateFinValidation(string $DateFinValidation): static
+    public function setDateFinValidation(?\DateTime $dateFinValidation): static
     {
-        $this->DateFinValidation = $DateFinValidation;
+        $this->dateFinValidation = $dateFinValidation;
         return $this;
     }
+
+
 
 
 

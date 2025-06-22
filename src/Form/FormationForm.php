@@ -15,6 +15,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
+
 class FormationForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -38,18 +39,32 @@ class FormationForm extends AbstractType
                 'label' => 'Numbre d\'heures',
                   'attr' => ['min' => 1]
             ])
-            ->add('dateDebutValidation', TextType::class, [
+
+     ->add('dateDebutValidation', DateType::class, [
+                'widget' => 'single_text',
                 'label' => 'Date de debut validation',
-                'required' => false,
-                'attr' => ['placeholder' => 'JJ/MM/AAAA']
-              
+                'html5' => true,
+                'required' => false
             ])
-            ->add('dateFinValidation', TextType::class, [
-                  'label' => 'Date de fin validation',
-                'required' => false,
-                'attr' => ['placeholder' => 'JJ/MM/AAAA']
-              
+            ->add('dateFinValidation', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de fin validation',
+                'html5' => true,
+                'required' => false
             ])
+            
+            // ->add('dateDebutValidation', TextType::class, [
+            //     'label' => 'Date de debut validation',
+            //     'required' => false,
+            //     'attr' => ['placeholder' => 'JJ/MM/AAAA']
+              
+            // ])
+            // ->add('dateFinValidation', TextType::class, [
+            //       'label' => 'Date de fin validation',
+            //     'required' => false,
+            //     'attr' => ['placeholder' => 'JJ/MM/AAAA']
+              
+            // ])
 
 
             ->add('titreProfessionnel', TextType::class, [
