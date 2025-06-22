@@ -293,7 +293,8 @@
                                            data-grn="{{ formation.groupeRattachement }}">
                                             {{ formation.nom }} {{ formation.numero }} [5]
                                             {{ formation.dateDebut|date('d/m/Y') }} →
-                                            {{ formation.dateFin|date('d/m/Y') }} {{ formation.nombreHeures }} h
+                                            {{ formation.dateFin|date('d/m/Y') }} 
+                                            {{ formation.nombreHeures }} h
                                         </a>
 
                                         <!-- Périodes en entreprise -->
@@ -307,6 +308,19 @@
                                                 {{ periode.numbreHeures }} h
                                             </a>
                                         {% endfor %}
+
+<!-- Période de validation -->
+{% if formation.dateDebutValidation and formation.dateFinValidation %}
+    <div class="validation-bar"
+         data-start="{{ formation.dateDebutValidation|date('Y-m-d') }}"
+         data-end="{{ formation.dateFinValidation|date('Y-m-d') }}"
+         style="background-color: #dc3545; position: absolute; height: 30px; opacity: 0.8; z-index: 2; color: white; display: flex; align-items: center; font-size: 12px; padding-left: 3px;">
+        {{ formation.dateDebutValidation|date('d/m/Y') }} →
+        {{ formation.dateFinValidation|date('d/m/Y') }}
+    </div>
+{% endif %}
+
+
 
                                         <!-- Interruptions -->
                                         {% for interruption in formation.interruptions %}

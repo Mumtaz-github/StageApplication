@@ -13,7 +13,7 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+// use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 
 class FormationForm extends AbstractType
@@ -40,18 +40,16 @@ class FormationForm extends AbstractType
                   'attr' => ['min' => 1]
             ])
 
-    //  ->add('dateDebutValidation', DateType::class, [
-    //             'widget' => 'single_text',
-    //             'label' => 'Date de debut validation',
-    //             'html5' => true,
-    //             'required' => false
-    //         ])
-    //         ->add('dateFinValidation', DateType::class, [
-    //             'widget' => 'single_text',
-    //             'label' => 'Date de fin validation',
-    //             'html5' => true,
-    //             'required' => false
-    //         ])
+     ->add('dateDebutValidation', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de debut validation',
+                'required' => true,
+            ])
+            ->add('dateFinValidation', DateType::class, [
+                'widget' => 'single_text',
+                'label' => 'Date de fin validation',
+                'required' => true,
+            ])
             
 
 
