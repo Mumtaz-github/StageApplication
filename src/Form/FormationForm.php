@@ -40,19 +40,22 @@ class FormationForm extends AbstractType
                   'attr' => ['min' => 1]
             ])
 
-     ->add('dateDebutValidation', DateType::class, [
-                'widget' => 'single_text',
-                'label' => 'Date de debut validation',
-                'html5' => true,
-                'required' => false
-            ])
-            ->add('dateFinValidation', DateType::class, [
-                'widget' => 'single_text',
-                'label' => 'Date de fin validation',
-                'html5' => true,
-                'required' => false
-            ])
+    //  ->add('dateDebutValidation', DateType::class, [
+    //             'widget' => 'single_text',
+    //             'label' => 'Date de debut validation',
+    //             'html5' => true,
+    //             'required' => false
+    //         ])
+    //         ->add('dateFinValidation', DateType::class, [
+    //             'widget' => 'single_text',
+    //             'label' => 'Date de fin validation',
+    //             'html5' => true,
+    //             'required' => false
+    //         ])
             
+
+
+
             // ->add('dateDebutValidation', TextType::class, [
             //     'label' => 'Date de debut validation',
             //     'required' => false,
@@ -92,13 +95,13 @@ class FormationForm extends AbstractType
                 'widget' => 'single_text',
                 'label' => 'Date de début',
                 'html5' => true,
-                'required' => false
+                // 'required' => false
             ])
             ->add('dateFin', DateType::class, [
                 'widget' => 'single_text',
                 'label' => 'Date de fin',
                 'html5' => true,
-                'required' => false
+                // 'required' => false
             ])
         ->add('formateurs', EntityType::class, [
                 'class' => Formateur::class,

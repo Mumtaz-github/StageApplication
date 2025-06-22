@@ -219,108 +219,116 @@
 	</style>
 {% endblock %}
 {% block body %}
-	<div class="container-fluid py-2 px-0">
+<div class="container-fluid py-2 px-0">
+    <h1 class="h3 text-center my-3">Planning des Formations</h1>
 
-		<h1 class="h3 text-center my-3">Planning des Formations</h1>
+    <!-- CONTENEUR SCROLLABLE -->
+    <div class="gantt-scroll-wrapper" id="scroll-wrapper">
+        <div class="gantt-scroll-inner" id="scroll-inner" style="min-width: {{ total_days * day_width }}px;">
 
-		<!--  CONTENEUR SCROLLABLE -->
-		<div class="gantt-scroll-wrapper" id="scroll-wrapper">
-			<div
-				class="gantt-scroll-inner" id="scroll-inner" style="min-width: {{ total_days * day_width }}px;">
+            <!-- HEADERS SYNCHRONISÉS -->
+            <div class="gantt-header">
+                <div class="timeline-row">
+                    {% for year, weeks in yearly_weeks %}
+                        <div class="year-column" style="width: {{ weeks * 7 * day_width }}px">{{ year }}</div>
+                    {% endfor %}
+                </div>
 
-				<!--  HEADERS SYNCHRONISÉS -->
-				<div class="gantt-header">
-					<div class="timeline-row">
-						{% for year, weeks in yearly_weeks %}
-							<div class="year-column" style="width: {{ weeks * 7 * day_width }}px">{{ year }}</div>
-						{% endfor %}
-					</div>
+                <div class="timeline-row">
+                    {% for month in months %}
+                        {% set daysInMonth = date_service.getDaysInMonthFromString(month) %}
+                        <div class="month-column" style="width: {{ daysInMonth * day_width }}px">
+                            {{ month|split('-')[1]|month_name_fr }}
+                        </div>
+                    {% endfor %}
+                </div>
 
-					<div class="timeline-row">
-						{% for month in months %}
-							{% set daysInMonth = date_service.getDaysInMonthFromString(month) %}
-							<div class="month-column" style="width: {{ daysInMonth * day_width }}px">
-								{{ month|split('-')[1]|month_name_fr }}
-							</div>
-						{% endfor %}
-					</div>
+                <div class="timeline-row">
+                    {% for week in all_weeks %}
+                        <div class="week-column" style="width: {{ 7 * day_width }}px">{{ week.number }}</div>
+                    {% endfor %}
+                </div>
 
-					<div class="timeline-row">
-						{% for week in all_weeks %}
-							<div class="week-column" style="width: {{ 7 * day_width }}px">{#S#}{{ week.number }}</div>
-						{% endfor %}
-					</div>
-					<div class="timeline-row">
-						{% for week in all_weeks %}
-							<div class="total-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.total_stagiaires }}</div>
-						{% endfor %}
-					</div>
-					<div class="timeline-row">
-						{% for week in all_weeks %}
-							<div class="active-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.active_stagiaires }}</div>
-						{% endfor %}
-					</div>
-				</div>
+                <div class="timeline-row">
+                    {% for week in all_weeks %}
+                        <div class="total-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.total_stagiaires }}</div>
+                    {% endfor %}
+                </div>
 
-				<!--  BODY DU GANTT -->
-				<div
-					class="gantt-scroll-body">
+                <div class="timeline-row">
+                    {% for week in all_weeks %}
+                        <div class="active-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.active_stagiaires }}</div>
+                    {% endfor %}
+                </div>
+            </div>
 
-					<!-- Holiday Row -->
-					<div class="gantt-row">
-						<div class="formation-name" style="background: transparent; border: none;"></div>
-						<div class="holiday-row" style="position: sticky; top: 0; z-index: 10; height: 700px; background: white;">
+            <!-- BODY DU GANTT -->
+            <div class="gantt-scroll-body">
 
-							<div class="timeline-area" style="width: {{ total_days * day_width }}px; position: relative;">
+                <!-- Holiday Row -->
+                <div class="gantt-row">
+                    <div class="formation-name" style="background: transparent; border: none;"></div>
+                    <div class="holiday-row" style="position: sticky; top: 0; z-index: 10; height: 700px; background: white;">
+                        <div class="timeline-area" style="width: {{ total_days * day_width }}px; position: relative;">
+                            {% for holiday in holidays %}
+                                <div class="holiday-marker" data-date="{{ holiday.date|date('Y-m-d') }}" style="left: {{ date_service.getDaysBetween(start_date, holiday.date) * day_width }}px;"></div>
+                            {% endfor %}
+                            <div id="today-marker" class="today-marker"></div>
+                        </div>
 
-								{% for holiday in holidays %}
-									<div class="holiday-marker" data-date="{{ holiday.date|date('Y-m-d') }}" style="left: {{ date_service.getDaysBetween(start_date, holiday.date) * day_width }}px;"></div>
-								{% endfor %}
+                        {% for group, formations in grouped_formations %}
+                            {% for formation in formations %}
+                                <div class="gantt-row d-flex" style="margin-bottom: 5px;">
+                                    <div class="timeline-area" style="width: {{ total_days * day_width }}px; position:relative; height:27px;">
 
-								{% for holiday in holidays %}
-									<div class="holiday-marker" data-date="{{ holiday.date|date('Y-m-d') }}" style="left: {{ date_service.getDaysBetween(start_date, holiday.date) * day_width }}px;"></div>
-								{% endfor %}
-								<div id="today-marker" class="today-marker"></div>
+                                        {% for i in 0..(total_days // 7) %}
+                                            <div class="grid-line" style="left: {{ i * 7 * day_width }}px;"></div>
+                                        {% endfor %}
 
-							</div>
-							{# <div class="gantt-group" data-group="{{group}}"> #}
-							{% for group, formations in grouped_formations %}
-								{% for formation in formations %}
-									<div class="gantt-row d-flex" style="margin-bottom: 5px;">
-										{#<div class="formation-name">#}
-										{#{{ formation.nom }}
-																																	
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																								({{ formation.niveau }})</div>#}
-											<div
-											class="timeline-area" style="width: {{ total_days * day_width }}px; position:relative; height:27px;"> {# lignes de grille de la page de planification, repérentant par semaine  #}
-											{% for i in 0..(total_days // 7) %}
-												<div class="grid-line" style="left: {{ i * 7 * day_width }}px;"></div>
-											{% endfor %}
+                                        <!-- Bar Formation -->
+                                        <a href="{{ path('app_formation_edit', {'id': formation.id}) }}"
+                                           class="formation-bar"
+                                           data-start="{{ formation.dateDebut|date('Y-m-d') }}"
+                                           data-end="{{ formation.dateFin|date('Y-m-d') }}"
+                                           data-grn="{{ formation.groupeRattachement }}">
+                                            {{ formation.nom }} {{ formation.numero }} [5]
+                                            {{ formation.dateDebut|date('d/m/Y') }} →
+                                            {{ formation.dateFin|date('d/m/Y') }} {{ formation.nombreHeures }} h
+                                        </a>
 
+                                        <!-- Périodes en entreprise -->
+                                        {% for periode in formation.periodEnEntreprises %}
+                                            <a href="{{ path('app_period_en_entreprise_edit', {'id': periode.id}) }}"
+                                               class="entreprise-period"
+                                               data-start="{{ periode.dateDebut|date('Y-m-d') }}"
+                                               data-end="{{ periode.dateFin|date('Y-m-d') }}">
+                                                {{ periode.dateDebut|date('d/m/Y') }} -
+                                                {{ periode.dateFin|date('d/m/Y') }}
+                                                {{ periode.numbreHeures }} h
+                                            </a>
+                                        {% endfor %}
 
-											<!-- Bar Formation -->
-											<a</div href="{{ path('app_formation_edit', {'id':formation.id}) }}" class="formation-bar" data-start="{{ formation.dateDebut|date('Y-m-d') }}" data-end="{{ formation.dateFin|date('Y-m-d') }}" data-grn="{{ formation.groupeRattachement }}" data-state="{{ formation.dateDebutValidation ? formation.dateDebutValidation|date('d/m/Y') : '' }}" data-state="{{ formation.dateDebutValidation ? formation.dateDebutValidation|date('d/m/Y') : '' }}" {# data-state="{{ formation.dateDebutValidation }}"> #} {{ formation.nom }} {{ formation.numero }} [5] {{ formation.dateDebut|date('d/m/Y') }} → {{ formation.dateFin|date('d/m/Y') }} {{ formation.nombreHeures }} h </a> {# <div class="formation-bar" data-start="{{ formation.dateDebut|date('Y-m-d') }}" data-end="{{ formation.dateFin|date('Y-m-d') }}" data-grn="{{ formation.groupeRattachement }}" data-state="{{ formation.etat }}"> {{ formation.nom }} </div> #} <!-- Périodes en entreprise --> {% for periode in formation.periodEnEntreprises %} <a href="{{ path('app_period_en_entreprise_edit', {'id': periode.id}) }}" class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}"> {{ periode.dateDebut|date('d/m/Y') }} - {{ periode.dateFin|date('d/m/Y') }} {{ periode.numbreHeures }} h </a> {% endfor %} {# {% for periode in formation.periodEnEntreprises %} <div class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}">>
-											{% endfor %}
-											#}
-											{% if formation.dateDebutValidation and formation.dateFinValidation %}
-												<div class="validation-bar" data-start="{{ formation.dateDebutValidation|date('Y-m-d') }}" data-end="{{ formation.dateFinValidation|date('Y-m-d') }}"></div>
-											{% endif %}
+                                        <!-- Interruptions -->
+                                        {% for interruption in formation.interruptions %}
+                                            <div class="interruption"
+                                                 data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
+                                                 data-end="{{ interruption.dateFin|date('Y-m-d') }}">
+                                            </div>
+                                        {% endfor %}
 
-											<!-- Interruptions -->
-											{% for interruption in formation.interruptions %}
-												<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"></div>
-											{% endfor %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% endfor %}
+                    </div>
+                </div>
 
-										</div>
-									</div>
-								{% endfor %}
-							</div>
-						{% endfor %}
-					</div>
-				</div>
-			</div>
-		</div>
-	{% endblock %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
 
 	{% block javascripts %}
 		{{ parent() }}
@@ -430,210 +438,27 @@ wrapper.scrollLeft = scrollLeft - walk;
 		</script>
 	{% endblock %}
 
-
-	{# 
+{# {% endblock %}  
+ {% block javascripts %}
+																										{{ parent() }}<script>
+																																																			document.addEventListener('DOMContentLoaded', function () {
+																																										const wrapper = document.getElementById('scroll-wrapper');
+																																																					const header = document.querySelector('.gantt-header');
+																																																																																																							const dayWidth = {{ day_width }};
+																																																																																															const startDate = new Date('{{ start_date|date('Y-m-d') }}');
+																																																																																																const endDate = new Date('{{ end_date|date('Y-m-d') }}');
 																																																																																																																																														
-																																																																																																																																														{% extends 'base.html.twig' %}
-																																																																																																																																														
-																																																																																																																																														{% block stylesheets %}
-																																																																																																																																															{{ parent() }}
-																																																																																																																																															<style>
-																																																																																																																																																html,
-																																																																																																																																																body {
-																																																																																																																																																	margin: 0;
-																																																																																																																																																	padding: 0;
-																																																																																																																																																	height: 100%;
-																																																																																																																																																	overflow: hidden; /* évite scroll inutiles */
-																																																																																																																																																	font-family: sans-serif;
-																																																																																																																																														
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.container-fluid {
-																																																																																																																																																	height: 100vh;
-																																																																																																																																																	display: flex;
-																																																																																																																																																	flex-direction: column;
-																																																																																																																																																	padding: 4;
-																																																																																																																																														
-																																																																																																																																														
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																/*.gantt-scroll-wrapper {
-																																																																																																																																																	flex: 1;
-																																																																																																																																																	overflow-x: auto;
-																																																																																																																																																	overflow-y: hidden;
-																																																																																																																																																	position: relative;
-																																																																																																																																																	background-color: #f8f9fc;
-																																																																																																																																																}*/
-																																																																																																																																														
-																																																																																																																																														
-																																																																																																																																																.gantt-scroll-wrapper {
-																																																																																																																																																	overflow: hidden; /* on gère manuellement le scroll via JS */
-																																																																																																																																																	cursor: grab;
-																																																																																																																																																	height: 500px;
-																																																																																																																																																	user-select: none;
-																																																																																																																																														
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.gantt-scroll-wrapper:active {
-																																																																																																																																																	cursor: grabbing;
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.gantt-scroll-inner {
-																																																																																																																																																	min-width: {{total_days * day_width}}
-																																																																																																																																																	px;
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.gantt-scroll-wrapper {
-																																																																																																																																																	width: 100%;
-																																																																																																																																																	overflow-x: auto;
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																														
-																																																																																																																																																.gantt-scroll-wrapper {
-																																																																																																																																																	width: 100%;
-																																																																																																																																																	overflow-x: auto;
-																																																																																																																																																}
-																																																																																																																																																.gantt-header {
-																																																																																																																																																	position: sticky;
-																																																																																																																																																	top: 0;
-																																																																																																																																																	background: white;
-																																																																																																																																																	z-index: 50;
-																																																																																																																																																	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-																																																																																																																																														
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.timeline-row {
-																																																																																																																																																	display: flex;
-																																																																																																																																																	height: 25px;
-																																																																																																																																																	line-height: 25px;
-																																																																																																																																																	white-space: nowrap;
-																																																																																																																																																	border-bottom: 1px solid #ccc;
-																																																																																																																																														
-																																																																																																																																														
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.year-column,
-																																																																																																																																																.month-column,
-																																																																																																																																																.week-column,
-																																																																																																																																																.stagiaires-column {
-																																																																																																																																																	display: flex;
-																																																																																																																																																	justify-content: center;
-																																																																																																																																																	align-items: center;
-																																																																																																																																																	border-right: 1px solid #ddd;
-																																																																																																																																																	font-size: 12px;
-																																																																																																																																																	background: #fff;
-																																																																																																																																														
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.year-column {
-																																																																																																																																																	font-weight: bold;
-																																																																																																																																																	background-color: #e2e6ea;
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.formation-name {
-																																																																																																																																																	position: sticky;
-																																																																																																																																																	left: 0;
-																																																																																																																																																	background: white;
-																																																																																																																																																	width: 5px;
-																																																																																																																																																	border-right: 1px solid #ccc;
-																																																																																																																																																	font-weight: bold;
-																																																																																																																																																	padding-left: 5px;
-																																																																																																																																																	z-index: 5;
-																																																																																																																																														
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.gantt-scroll-body {
-																																																																																																																																																	overflow-y: auto;
-																																																																																																																																																	max-height: calc(100vh - 200px); /* ajuste si ton header fait +/– */
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.gantt-row {
-																																																																																																																																																	display: flex;
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.timeline-area {
-																																																																																																																																																	position: relative;
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																/* Formation Bar (Blue background for entire duration) */
-																																																																																																																																																.formation-bar {
-																																																																																																																																																	background: #4e73df;
-																																																																																																																																																	color: white;
-																																																																																																																																																	font-size: 12px;
-																																																																																																																																																	padding-left: 4px;
-																																																																																																																																																	line-height: 25px;
-																																																																																																																																																	position: absolute;
-																																																																																																																																																	top: 0;
-																																																																																																																																																	height: 25px;
-																																																																																																																																																	white-space: nowrap;
-																																																																																																																																																	overflow: hidden;
-																																																																																																																																																	text-overflow: ellipsis;
-																																																																																																																																																	z-index: 1;
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																														
-																																																																																																																																																/* Enterprise Period (Green segment) */
-																																																																																																																																																.entreprise-period {
-																																																																																																																																																	background-color: #1cc88a;
-																																																																																																																																																	height: 100px;
-																																																																																																																																																	position: absolute;
-																																																																																																																																																	top: 0;
-																																																																																																																																																	z-index: 2; /* Above blue bar */
-																																																																																																																																																	opacity: 0.8; /* Slightly transparent to see overlaps */
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																/* Interruption (Red segment) */
-																																																																																																																																																.interruption {
-																																																																																																																																																	background-color: #e74a3b;
-																																																																																																																																																	height: 50px;
-																																																																																																																																																	position: absolute;
-																																																																																																																																																	top: 0;
-																																																																																																																																																	z-index: 3; /* Top layer */
-																																																																																																																																																	opacity: 0.8;
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																																.holiday-marker {
-																																																																																																																																																	position: absolute;
-																																																																																																																																																	top: 0;
-																																																																																																																																																	width: 5px;
-																																																																																																																																																	height: 100vh; /* Full height of viewport */
-																																																																																																																																																	background: rgba(255, 0, 0, 0.7);
-																																																																																																																																																	z-index: 5;
-																																																																																																																																																	pointer-events: none; /* Allow clicking through them */
-																																																																																																																																																}
-																																																																																																																																														
-																																																																																																																																														
-																																																																																																																																																.today-marker {
-																																																																																																																																																	position: absolute; /* NOT fixed */
-																																																																																																																																																	top: 0;
-																																																																																																																																																	width: 2px;
-																																																																																																																																																	height: 100%;
-																																																																																																																																																	background: blue;
-																																																																																																																																																	z-index: 5;
-																																																																																																																																																}
-																																																																																																																																															</style>
-																																																																																																																																										
-																																																																																																																																									 {% endblock %}  
-																																																																																																																																									 {% block javascripts %}
-																																																																																																																																																{{ parent() }}<script>
-																																																																																																																																																	document.addEventListener('DOMContentLoaded', function () {
-																																																																																																																																														const wrapper = document.getElementById('scroll-wrapper');
-																																																																																																																																														const header = document.querySelector('.gantt-header');
-																																																																																																																																														const dayWidth = {{ day_width }};
-																																																																																																																																														const startDate = new Date('{{ start_date|date('Y-m-d') }}');
-																																																																																																																																														const endDate = new Date('{{ end_date|date('Y-m-d') }}');
-																																																																																																																																														
-																																																																																																																																														// Position all elements initially
-																																																																																																																																														function positionElements() { // Position holiday markers
-																																																																																																																																														document.querySelectorAll('.holiday-marker').forEach(marker => {
-																																																																																																																																														const date = new Date(marker.dataset.date);
-																																																																																																																																														const offset = Math.floor((date - startDate) / (86400 * 1000));
-																																																																																																																																														marker.style.left = `${
-																																																																																																																																														offset * dayWidth
-																																																																																																																																														}px`;
-																																																																																																																																														}); 
+																																																																																														// Position all elements initially
+																																																																																																	function positionElements() { // Position holiday markers
+																																																																																														document.querySelectorAll('.holiday-marker').forEach(marker => {
+																																																																																																									const date = new Date(marker.dataset.date);
+																																																																																						const offset = Math.floor((date - startDate) / (86400 * 1000));
+																																																																																																										marker.style.left = `${
+																																																																																													offset * dayWidth
+																																																																																																	}px`;
+																																																																																																}); 
 																																																																																																																																							
-																																																																																																																																								{# // Position other elements (formations, periods, interruptions)
+																																																																																{# // Position other elements (formations, periods, interruptions)
 																																																																																																																																														document.querySelectorAll('.formation-bar, .entreprise-period, .interruption').forEach(el => {
 																																																																																																																																														const start = new Date(el.dataset.start);
 																																																																																																																																														const end = new Date(el.dataset.end);
@@ -688,3 +513,5 @@ wrapper.scrollLeft = scrollLeft - walk;
 																																																																																																																																														});
 																																																																																																																																																</script>
 																																																																																																																																															{% endblock %} #}
+
+																																																																																																																																									 

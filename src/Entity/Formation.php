@@ -36,11 +36,13 @@ class Formation
 //  #[ORM\Column(type: Types::DATE_MUTABLE)]
 //     private ?\DateTime $dateFinValidation= null;
 
-    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-private ?\DateTime $dateDebutValidation= null;
 
-#[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-private ?\DateTime $dateFinValidation= null;
+
+//     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+// private ?\DateTime $dateDebutValidation= null;
+
+// #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+// private ?\DateTime $dateFinValidation= null;
 
 
     #[ORM\Column(length: 255)]
@@ -126,27 +128,27 @@ private ?\DateTime $dateFinValidation= null;
         return $this;
     }
 
-    public function getDateDebutValidation(): ?\DateTime
-    {
-        return $this->dateDebutValidation;
-    }
+    // public function getDateDebutValidation(): ?\DateTime
+    // {
+    //     return $this->dateDebutValidation;
+    // }
 
-    public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
-    {
-        $this->dateDebutValidation = $dateDebutValidation;
-        return $this;
-    }
+    // public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
+    // {
+    //     $this->dateDebutValidation = $dateDebutValidation;
+    //     return $this;
+    // }
 
-      public function getDateFinValidation(): ?\DateTime
-    {
-        return $this->dateFinValidation;
-    }
+    //   public function getDateFinValidation(): ?\DateTime
+    // {
+    //     return $this->dateFinValidation;
+    // }
 
-    public function setDateFinValidation(?\DateTime $dateFinValidation): static
-    {
-        $this->dateFinValidation = $dateFinValidation;
-        return $this;
-    }
+    // public function setDateFinValidation(?\DateTime $dateFinValidation): static
+    // {
+    //     $this->dateFinValidation = $dateFinValidation;
+    //     return $this;
+    // }
 
 
 
