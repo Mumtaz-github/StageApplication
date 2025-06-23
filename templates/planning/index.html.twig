@@ -179,17 +179,28 @@
 								       padding-left: 3px;">
 								      
 								    }
-								
-										.interruption {
-											position: absolute;
-											top: 50px;
-											height: 30px;
-											background-color: orange;
-											opacity: 0.8;
-											z-index: 3;
-										}
-								
-										.holiday-marker {
+
+
+                  .formation-bar .interruption {
+                    position: absolute;
+                    top: 00px;
+                    height: 30px;
+                    background-color: #F64F00;
+                    opacity: 0.8;
+                    z-index: 3;
+                  }
+
+                  .vertical-column .interruption {
+                    position: relative;
+                    height: 100vh;
+                    width: 200px;
+                    background-color: #F64F00;
+                    opacity: 0.3;
+                    z-index: 2;
+                  }
+
+
+                   	.holiday-marker {
 											position: absolute;
 											top: 0;
 											width: 5px;
@@ -338,15 +349,34 @@
 								                                        {% endif %}
 
 
+                                                       <!-- Interruptions -->
 
-								
-								                                           <!-- Interruptions -->
-								                                        {% for interruption in formation.interruptions %}
+                                                           <!-- Top bar container -->
+                                                          <div class="formation-bar">
+                                                              {% for interruption in formation.interruptions %}
+                                                                  <div class="interruption"
+                                                                      data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
+                                                                      data-end="{{ interruption.dateFin|date('Y-m-d') }}">
+                                                                  </div>
+                                                              {% endfor %}
+                                                          </div>
+
+                                                          <!-- Vertical column container -->
+                                                          <div class="vertical-column">
+                                                              {% for interruption in formation.interruptions %}
+                                                                  <div class="interruption"
+                                                                      data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
+                                                                      data-end="{{ interruption.dateFin|date('Y-m-d') }}">
+                                                                  </div>
+                                                              {% endfor %}
+                                                          </div>
+
+								                                        {# {% for interruption in formation.interruptions %}
 								                                            <div class="interruption"
 								                                                 data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
 								                                                 data-end="{{ interruption.dateFin|date('Y-m-d') }}">
 								                                            </div>
-								                                        {% endfor %}
+								                                        {% endfor %} #}
 								
 								                                    </div>
 								                                </div>
