@@ -44,6 +44,9 @@ private ?\DateTime $dateFinValidation = null;
     #[ORM\Column(length: 255)]
     private ?string $titreProfessionnel = null;
 
+  // #[ORM\Column(length: 255)]
+  //  private ?string $titreProfessionnel = null;
+
     #[ORM\Column]
     private ?int $niveau = null;
 
