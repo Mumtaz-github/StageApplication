@@ -41,13 +41,13 @@ private ?\DateTime $dateFinValidation = null;
 // private ?\DateTime $dateFinValidation;
 
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $titreProfessionnel = null;
 
   // #[ORM\Column(length: 255)]
   //  private ?string $titreProfessionnel = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length:255, nullable: true)]
     private ?int $niveau = null;
 
 
@@ -60,7 +60,7 @@ private ?\DateTime $dateFinValidation = null;
     // #[ORM\Column(length: 255)]
     // private ?int $nbStagiairesPrevisionnel = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable:true)]
     private ?string $groupeRattachement = null;
 
     #[ORM\Column(type: 'integer', nullable:true)]
