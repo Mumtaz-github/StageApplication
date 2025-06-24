@@ -59,24 +59,50 @@ class PlanningController extends AbstractController
     }
 
     // Calculate stagiaires per week
-    foreach ($allWeeks as &$week) {
-        $weekStart = $week['start_date'];
-        $weekEnd = $week['end_date'];
-        
-        $totalStagiaires = 0;
-        $activeStagiaires = 0;
-        
-        foreach ($formations as $formation) {
-           if ($formation->getDateDebut() <= $weekEnd && $formation->getDateFin() >= $weekStart) {
-    $totalStagiaires += ($formation->getnombreStagiaires() ?? 0); // Fixed line
-    $activeStagiaires++;
+
+foreach ($allWeeks as &$week) {
+    $weekStart = $week['start_date'];
+    $weekEnd = $week['end_date'];
+
+    $totalStagiaires = 0;
+    $activeStagiaires = 0;
+
+    foreach ($formations as $formation) {
+        $formationStart = $formation->getDateDebut();
+        $formationEnd = $formation->getDateFin() ?? $formationStart;
+
+        if ($formationStart <= $weekEnd && $formationEnd >= $weekStart) {
+            $totalStagiaires += ($formation->getnombreStagiaires() ?? 0);
+            $activeStagiaires++;
+        }
+    }
+
+    $week['total_stagiaires'] = $totalStagiaires;
+    $week['active_stagiaires'] = $activeStagiaires;
 }
 
-        }
+
+
+
+
+//     foreach ($allWeeks as &$week) {
+//         $weekStart = $week['start_date'];
+//         $weekEnd = $week['end_date'];
         
-        $week['total_stagiaires'] = $totalStagiaires;
-        $week['active_stagiaires'] = $activeStagiaires;
-    }
+//         $totalStagiaires = 0;
+//         $activeStagiaires = 0;
+        
+//         foreach ($formations as $formation) {
+//            if ($formation->getDateDebut() <= $weekEnd && $formation->getDateFin() >= $weekStart) {
+//     $totalStagiaires += ($formation->getnombreStagiaires() ?? 0); // Fixed line
+//     $activeStagiaires++;
+// }
+
+//         }
+        
+//         $week['total_stagiaires'] = $totalStagiaires;
+//         $week['active_stagiaires'] = $activeStagiaires;
+//     }
 
     // Group formations
     $groupedFormations = [];
