@@ -8,7 +8,9 @@
 		</button>
 
 		<!-- Main Navigation -->
-		<div class="collapse navbar-collapse d-none d-lg-flex" id="mainNavbar">
+		{# <div class="collapse navbar-collapse d-none d-lg-flex" id="mainNavbar">this one put navbar link at center on navbar #} 
+    <div class="collapse navbar-collapse d-flex justify-content-between w-100" id="mainNavbar"> {#this one put planning,formation,administration on left side on navbar and profile and connexion right side#}
+
 			<ul class="navbar-nav me-auto mb-2 mb-lg-0">
 				{% set currentRoute = app.request.attributes.get('_route') %}
 
