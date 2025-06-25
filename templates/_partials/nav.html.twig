@@ -85,7 +85,8 @@
 
 
  <nav class="navbar navbar-expand-lg"
-     style="background-image: url('{{ asset('uploads/nav1.jpg') }}'); background-size: cover; background-position: center center; background-repeat: no-repeat; width: 100%; height: 120px;">
+     {# style="background-image: url('{{ asset('uploads/nav1.jpg') }}'); background-size: cover; background-position: 
+     center center; background-repeat: no-repeat; width: 100%; height: 120px;">i took 6 hours to found error , due to this line i was unable to login #} 
 
 	<div class=" container-fluid">
 	<!-- Mobile Toggler -->
@@ -137,7 +138,7 @@
 					</a>
 					<ul class="dropdown-menu dropdown-menu-end">
 						<li>
-							<a class="dropdown-item" href="{{ path('app_profile') }}">Mon Compte</a>
+							<a class="dropdown-item" href="{{ path('app_profile') }}"> 👤 Mon Compte</a>
 						</li>
 						<li><hr class="dropdown-divider"></li>
 						<li>
@@ -147,7 +148,7 @@
 				</li>
 			{% else %}
 				<li class="nav-item">
-					<a class="nav-link" href="{{ path('app_connexion') }}">🔑 Connexion</a>
+					<a class="nav-link" href="{{ path('app_login') }}">🔑 Connexion</a>
 				</li>
 			{% endif %}
 		</ul>

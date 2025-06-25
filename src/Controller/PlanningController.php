@@ -12,19 +12,19 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class PlanningController extends AbstractController
 {
-    #[Route('/', name: 'app_planning')]
+    #[Route('/planning', name: 'app_planning')]
    public function index(
     FormationRepository $formationRepository,
     JourFerieRepository $jourFerieRepository,
     DateService $dateService
    
- ): Response {
-    $formations = $formationRepository->findAllWithRelations();
-   $today = new \DateTime();
+//  ): Response {
+//     $formations = $formationRepository->findAllWithRelations();
+//    $today = new \DateTime();
 
-//): Response {
-  //if (!$this->getUser()) // these two lines added that planning twig didn't display directly before login
-  //return $this->redirectToRoute('app_connexion');// these two lines added that planning twig didn't display directly before login
+): Response {
+  if (!$this->getUser()) // these two lines added that planning twig didn't display directly before login
+  return $this->redirectToRoute('app_connexion');// these two lines added that planning twig didn't display directly before login
 
     $formations = $formationRepository->findAllWithRelations();
     $today = new \DateTime();
