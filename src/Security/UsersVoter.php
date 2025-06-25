@@ -9,7 +9,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class FormationVoter extends Voter
+class UsersVoter extends Voter
 {
     public const ADD = 'user_add';
     public const EDIT = 'user_edit';
