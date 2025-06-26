@@ -1,4 +1,73 @@
 {% extends "base.html.twig" %}
+
+{% block title %}Administration{% endblock %}
+
+{% block body %}
+<div class="container mt-4">
+    <div class="row">
+
+        {# Left Sidebar #}
+        <aside class="col-md-3">
+            {% include "_partials/adminnav.html.twig" %}
+        </aside>
+
+        {# Center Content #}
+        <main class="col-md-6 bg-white border p-4">
+            <h1 class="text-center mb-4">Administration</h1>
+            {# Add any center content here #}
+        </main>
+
+        {# Right Sidebar #}
+        <aside class="col-md-3">
+            {# Example: Formations Sidebar Content #}
+            {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_GESTIONNAIRE') %}
+                <article class="card mb-3">
+                    <div class="card-header bg-success text-white">
+                        🎓 Gestion des Formations
+                    </div>
+                    <div class="card-body">
+                        <p>
+                            <a href="{{ path('app_formation_index') }}" class="text-decoration-none">
+                                <i class="fas fa-list me-1"></i>
+                                Liste des formations
+                            </a>
+                        </p>
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <p>
+                                <a href="{{ path('app_formation_new') }}" class="text-decoration-none">
+                                    <i class="fas fa-plus me-1"></i>
+                                    Créer formation
+                                </a>
+                            </p>
+                            <p>
+                                <a href="{{ path('app_period_en_entreprise_index') }}" class="text-decoration-none">
+                                    <i class="fas fa-building me-1"></i>
+                                    Périodes en entreprise
+                                </a>
+                            </p>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endif %}
+        </aside>
+
+    </div>
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{# {% extends "base.html.twig" %}
 {% block title %}Adminstration
 {% endblock %}
 
@@ -6,9 +75,9 @@
 	<div class="container">
 		<div class="row">
 			{% include "_partials/adminnav.html.twig" %}
-			<main class="col-9 border border-light bg-white p-2">
+			<main class="col-9">
 				<h1 style="text-align:center;">Adminstration</h1>
 			</main>
 		</div>
 	</div>
-{% endblock %}
+{% endblock %} #}
