@@ -4,10 +4,11 @@
 {% endblock %}
 
 {% block body %}
-	<div class="container mt-5">
+	<div class="container mt-5 mb-5" style="max-width:900px">
+  <div class="card shadow p-4">
 		<div class="row justify-content-center">
-			<div class="col-lg-6 col-md-8 col-sm-10">
-				<div class="card shadow-sm">
+			{# <div class="col-lg-6 col-md-8 col-sm-10"> #}
+		
 					<div class="card-body">
 						<h1 class="card-title text-center mb-4">Créer un compte</h1>
 						<p class="text-center mb-4">Inscription pour :
@@ -15,15 +16,47 @@
 						</p>
 
 						{{ form_start(registrationForm, {'attr': {'class': 'needs-validation','novalidate':'novalidate'}}) }}
-						{{ form_row(registrationForm.nom, {'attr': {'class':'form-control', 'placeholder': 'Entrez votre nom'}}) }}
-						{{ form_row(registrationForm.prenom, {'attr': {'class':'form-control', 'placeholder': 'Entrez votre prénom'}}) }}
-						{{ form_row(registrationForm.codepostal, {'attr': {'class':'form-control', 'placeholder': 'Entrez votre code postal'}}) }}
-						{{ form_row(registrationForm.ville, {'attr': {'class':'form-control', 'placeholder': 'Entrez votre ville nom'}}) }}
-						{{ form_row(registrationForm.email, {'attr': {'class':'form-control'}}) }}
+       <div class="mb-3">
+    <label class="form-label">Civilité</label><br>
+    {% for choice in registrationForm.civilite %}
+        <div class="form-check form-check-inline">
+            {{ form_widget(choice, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(choice, null, {'label_attr': {'class': 'form-check-label'}}) }}
+        </div>
+    {% endfor %}
+    {{ form_errors(registrationForm.civilite) }}
+</div>
 
+			<div class="row mb-3">
+				<div class="col-md-6">
+						{{ form_row(registrationForm.nom, {'attr': {'class':'form-control', 'placeholder': 'ex. Jean'}}) }}
+            	</div>
+              	<div class="col-md-6">
+						{{ form_row(registrationForm.prenom, {'attr': {'class':'form-control', 'placeholder': 'ex. Perrin'}}) }}
+            </div>
+            </div>
+            <div class="row mb-3">
+            						{{ form_row(registrationForm.email, {'attr': {'class':'form-control'}}) }}
+</div>
+<div class="row mb-3">
+	<div class="col-md-6">
+		{{ form_row(registrationForm.plainPassword.first, {'attr': {'class':'form-control','placeholder': 'Entrez votre mot de passe'}}) }}
+    </div>
+    	<div class="col-md-6">
 
-						{{ form_row(registrationForm.plainPassword, {'attr': {'class':'form-control','placeholder': 'Entrez votre mot de passe'}}) }}
+            {{ form_row(registrationForm.plainPassword.second, {'attr': {'class':'form-control','placeholder':'Confirmation mote de passe'}}) }}
+            </div>
+             </div>
 						{{ form_errors(registrationForm.plainPassword) }}
+
+    <div class="row mb-3">
+						{{ form_row(registrationForm.codepostal, {'attr': {'class':'form-control', 'placeholder': 'Entrez votre code postal'}}) }}
+                        </div>
+						{{ form_row(registrationForm.ville, {'attr': {'class':'form-control', 'placeholder': 'Entrez votre ville nom'}}) }}
+
+
+
+				
 					</div>
 					<div class="d-grid gap-2">
 						<button type="submit" class="btn btn-primary w-50 mx-auto">
@@ -31,7 +64,9 @@
 					</div>
 					{{ form_end(registrationForm) }}
 				</div>
-			</div>
-		</div>
+			
+		{# </div> #}
 	</div>
-</div>{% endblock %}
+</div>
+</div>
+{% endblock %}

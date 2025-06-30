@@ -20,8 +20,10 @@ class AppFixtures extends Fixture
         $admin->setRole('ROLE_ADMIN');
         $admin->setNom('Admin');
         $admin->setPrenom('Admin');
+         $admin->setCivilite('monsieur'); 
         $admin->setCodepostal('80000');
         $admin->setVille('amiens');
+      
     $admin->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($admin);
 
@@ -34,6 +36,7 @@ class AppFixtures extends Fixture
         $gestionnaire->setPrenom('Gestionnaire');
         $gestionnaire->setCodepostal('80000');
         $gestionnaire->setVille('amiens');
+            $gestionnaire->setCivilite('madame');
 
 $gestionnaire->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($gestionnaire);
@@ -45,8 +48,10 @@ $gestionnaire->setDateInvitation(new \DateTimeImmutable());
         $consultation->setRole('ROLE_CONSULTATION');
         $consultation->setNom('Consultation');
         $consultation->setPrenom('Consultation');
+   
         $consultation->setCodepostal('80000');
         $consultation->setVille('amiens');
+             $consultation->setCivilite('monsieur');
 $consultation->setDateInvitation(new \DateTimeImmutable());
         $manager->persist($consultation);
 

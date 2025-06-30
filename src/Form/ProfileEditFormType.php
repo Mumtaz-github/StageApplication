@@ -20,66 +20,39 @@ class ProfileEditFormType extends AbstractType
         $builder
             ->add('nom', TextType::class, [
                 'label' => 'Nom',
-                'attr' => [
-                    'class' => 'form-control',
-                    'autocomplete' => 'given-name'
+                'attr' => ['class' => 'form-control','autocomplete' => 'given-name'
                 ]
             ])
             ->add('prenom', TextType::class, [
                 'label' => 'Prénom',
-                'attr' => [
-                    'class' => 'form-control',
-                    'autocomplete' => 'family-name'
+                'attr' => [ 'class' => 'form-control','autocomplete' => 'family-name'
                 ]
             ])
-            ->add('email', EmailType::class, [
-                'label' => 'Email',
-                'disabled' => true,
-                'attr' => [
-                    'class' => 'form-control bg-light',
-                    'readonly' => 'readonly',
-                    'style' => 'cursor: not-allowed;'
+            ->add('email', EmailType::class, ['label' => 'Email','disabled' => true,
+                'attr' => [ 'class' => 'form-control bg-light', 'readonly' => 'readonly', 'style' => 'cursor: not-allowed;'
                 ]
             ])
-            ->add('currentPassword', PasswordType::class, [
-                'label' => 'Mot de passe actuel',
-                'mapped' => false,
-                'required' => false,
-                'attr' => [
-                    'autocomplete' => 'current-password',
-                    'class' => 'form-control',
-                    'placeholder' => 'Laissez vide si inchangé'
+
+            ->add('currentPassword', PasswordType::class, ['label' => 'Mot de passe actuel','mapped' => false,
+               'required' => false,
+                'attr' => [ 'autocomplete' => 'current-password', 'class' => 'form-control', 'placeholder' => 'Laissez vide si inchangé'
                 ],
                 'constraints' => [
-                    new NotBlank([
-                        'message' => 'Le mot de passe actuel est requis pour modifier',
-                        'groups' => ['password_change']
+                    new NotBlank(['message' => 'Le mot de passe actuel est requis pour modifier', 'groups' => ['password_change']
                     ])
                 ]
             ])
-            ->add('newPassword', RepeatedType::class, [
-                'type' => PasswordType::class,
-                'mapped' => false,
-                'required' => false,
-                'first_options' => [
-                    'label' => 'Nouveau mot de passe',
-                    'attr' => [
-                        'class' => 'form-control',
-                        'autocomplete' => 'new-password',
+            ->add('newPassword', RepeatedType::class, ['type' => PasswordType::class,'mapped' => false, 'required' => false,
+                'first_options' => ['label' => 'Nouveau mot de passe','attr' => [ 'class' => 'form-control', 'autocomplete' => 'new-password',
                         'placeholder' => 'Minimum 8 caractères'
                     ]
                 ],
-                'second_options' => [
-                    'label' => 'Confirmation',
-                    'attr' => [
-                        'class' => 'form-control',
+                'second_options' => ['label' => 'Confirmation','attr' => [ 'class' => 'form-control',
                         'placeholder' => 'Répétez le mot de passe'
                     ]
                 ],
                 'constraints' => [
-                    new Length([
-                        'min' => 8,
-                        'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères',
+                    new Length(['min' => 8,'minMessage' => 'Le mot de passe doit contenir au moins {{ limit }} caractères',
                         'groups' => ['password_change']
                     ])
                 ],

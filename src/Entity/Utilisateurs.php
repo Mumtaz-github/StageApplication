@@ -6,6 +6,7 @@ use App\Repository\UtilisateursRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
+use Symfony\Component\Validator\Constraints\Length;
 
 #[ORM\Entity(repositoryClass: UtilisateursRepository::class)]
 class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
@@ -14,6 +15,9 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
+
+#[ORM\Column(type: 'string', length: 10, nullable:true)]
+private ?string $civilite = null;
 
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
@@ -44,6 +48,19 @@ class Utilisateurs implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return $this->id;
     }
+
+ public function getCivilite(): ?string
+ {
+       return $this->civilite;
+ }
+
+ public function setCivilite(string $civilite):self
+ {
+  $this->civilite = $civilite;
+  return $this;
+ }
+
+
 
     public function getNom(): ?string
     {
