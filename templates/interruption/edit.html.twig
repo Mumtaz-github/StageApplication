@@ -3,11 +3,11 @@
 {% block title %}Edit Interruption{% endblock %}
 
 {% block body %}
-    <h1>Edit Interruption</h1>
+    <h1 class="text-center mb-4 mt-5">Interruption d'édition</h1>
 
     {{ include('interruption/_form.html.twig', {'button_label': 'Update'}) }}
 
-    <a href="{{ path('app_interruption_index') }}">back to list</a>
+    {# <a href="{{ path('app_interruption_index') }}">back to list</a> #}
+{{ include('interruption/_delete_form.html.twig', { 'button_label': 'Delete', 'button_attr': {'class': 'btn btn-danger'} }) }}
 
-    {{ include('interruption/_delete_form.html.twig') }}
 {% endblock %}

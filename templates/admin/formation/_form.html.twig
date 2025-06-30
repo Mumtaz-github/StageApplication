@@ -1,104 +1,119 @@
+{% block body %}
+<div class="container mt-3 mb-3" style="max-width: 900px; background-color:rgb(53, 67, 70); margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px;">
+    <div class="row justify-content-center text-white">
+        {{ form_start(form) }}
 
- {% block body %}
-	{# <div class="login-container py-4" style="background-image: url('{{ asset('uploads/nav.png') }}')"> #}
-  			<div class="container mt-3 mb-3" style="max-width: 900px; background-color:#89bff8; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px;">
+        <h2 class="text-center mb-4">{{ button_label|default('Créer une Formation') }}</h2>
 
-			<div class="row  justify-content-center">
- {{ form_start(form) }}
+        {# Actif checkbox shown as switch #}
+        <div class="form-check form-switch mb-4">
+            {{ form_widget(form.actifFormation, {'attr': {'class': 'form-check-input'}}) }}
+            {{ form_label(form.actifFormation, 'Formation Active', {'label_attr': {'class': 'form-check-label text-white'}}) }}
+            {{ form_errors(form.actifFormation) }}
+        </div>
 
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.nom, 'Nom de la formation', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de la formation'}}) }}
+                {{ form_errors(form.nom) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.numero, 'Numéro', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.numero, {'attr': {'class': 'form-control', 'placeholder': 'Numéro'}}) }}
+                {{ form_errors(form.numero) }}
+            </div>
+        </div>
 
+        <div class="mb-3">
+            {{ form_label(form.formateurs, 'Formateurs', {'label_attr': {'class': 'form-label text-white'}}) }}
+            {{ form_widget(form.formateurs, {
+                'attr': {
+                    'class': 'form-select',
+                    'multiple': true,
+                    'size': 5
+                }
+            }) }}
+            {{ form_errors(form.formateurs) }}
+        </div>
 
-	<h2 class="text-center mb-4">{{ button_label|default('Créer une Formation') }}</h2>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.dateDebut, 'Date de début', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.dateDebut) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.dateFin, 'Date de fin', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.dateFin, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.dateFin) }}
+            </div>
+        </div>
 
-	{# Actif checkbox shown as switch #}
-	 <div class="form-check form-switch mb-4">
-		{{ form_widget(form.actifFormation, {'attr': {'class': 'form-check-input'}}) }}
-		{{ form_label(form.actifFormation, 'Formation Active', {'label_attr': {'class': 'form-check-label'}}) }}
-	</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.dateDebutValidation, 'Date début validation', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.dateDebutValidation, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.dateDebutValidation) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.dateFinValidation, 'Date fin validation', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.dateFinValidation, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.dateFinValidation) }}
+            </div>
+        </div>
 
-	<div class="row">
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.nom, {'attr': {'class': 'form-control', 'placeholder': 'Nom de la formation'}}) }}
-		</div>
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.numero, {'attr': {'class': 'form-control', 'placeholder': 'Numéro'}}) }}
-		</div>
-	</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.niveau, 'Niveau', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.niveau, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.niveau) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.titreProfessionnel, 'Titre Professionnel', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.titreProfessionnel, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.titreProfessionnel) }}
+            </div>
+        </div>
 
-	<div class="mb-3">
-		{{ form_label(form.formateurs, 'Formateurs', {'label_attr': {'class': 'form-label'}}) }}
-		{{ form_widget(form.formateurs, {
-            'attr': {
-                'class': 'form-select',
-                'multiple': true,
-                'size': 5
-            }
-        }) }}
-		{{ form_errors(form.formateurs) }}
-	</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.nombreHeures, 'Nombre d\'heures', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.nombreHeures, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.nombreHeures) }}
+            </div>
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.NombreStagiaires, 'Nombre de stagiaires', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.NombreStagiaires, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.NombreStagiaires) }}
+            </div>
+        </div>
 
-	<div class="row">
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.dateDebut, {'attr': {'class': 'form-control'}}) }}
-		</div>
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.dateFin, {'attr': {'class': 'form-control'}}) }}
-		</div>
-	</div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                {{ form_label(form.groupeRattachement, 'Groupe de rattachement', {'label_attr': {'class': 'form-label text-white'}}) }}
+                {{ form_widget(form.groupeRattachement, {'attr': {'class': 'form-control'}}) }}
+                {{ form_errors(form.groupeRattachement) }}
+            </div>
+        </div>
 
-	 <div class="row">
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.dateDebutValidation, {'attr': {'class': 'form-control'}}) }}
-		</div>
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.dateFinValidation, {'attr': {'class': 'form-control'}}) }}
-		</div>
-	</div> 
+        <div class="text-center">
+            <div class="d-flex justify-content-between mt-0 mb-0">
+                <button class="btn btn-success px-5 py-2 mt-4">
+                    {{ button_label|default('Enregistrer') }}
+                </button>
 
-	<div class="row">
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.niveau, {'attr': {'class': 'form-control'}}) }}
-		</div>
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.titreProfessionnel, {'attr': {'class': 'form-control'}}) }}
-		</div>
-	</div>
+                <a href="{{ path('app_formation_index') }}" class="btn btn-primary px-4 mt-4">
+                    ← Retour à la liste
+                </a>
+            </div>
+        </div>
 
-
-	<div class="row">
-
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.nombreHeures, {'attr': {'class': 'form-control'}}) }}
-		</div>
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.NombreStagiaires, {'attr': {'class': 'form-control'}}) }}
-		</div>
-	</div>
-
-	<div class="row">
-		<div class="col-md-6 mb-3">
-			{{ form_row(form.groupeRattachement, {'attr': {'class': 'form-control'}}) }}
-		</div>
-	</div>
-
-	<div class="text-center">
-  <div class="d-flex justify-content-between mt-0 mb-0">
-		<button class="btn btn-success px-5 py-2 mt-4">
-			{{ button_label|default('Enregistrer') }}
-		</button>
-    	<a href="{{ path('app_formation_index') }}" class="btn btn-primary px-4 mt-4 ">	← Retour à la liste</a>
-	</div>
+        {{ form_end(form) }}
+    </div>
 </div>
-
-
-
-
-{{ form_end(form) }}  
-</div>
-</div>
-
-
 {% endblock %}
+
 
 	{#}
 	    <div class="row">

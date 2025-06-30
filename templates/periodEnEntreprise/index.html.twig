@@ -6,17 +6,18 @@
 {% block body %}
 <div class="container mt-5">
 
-	<h1 class="text-center">PeriodEnEntreprise index</h1>
-</div>
+	<h1 class="text-center mb-4">PeriodEnEntreprise index</h1>
 
+<div class="card">
+<div class="card-header bg-primary text-white text-center">
+<strong>Périodes entregistrées</strong>
 </div>
-</div>
-
 <div class="card-body p-0">
 <div class="table-responsive">
-<div class="card-header bg-primary text-white text-center">
+
+
 	<table class="table table-bordered table-hover table-striped mb-0">
-		<thead>
+		<thead class="table-light">
 			<tr>
 				<th>Id</th>
 				<th>Date_debut</th>
@@ -39,14 +40,19 @@
 				</tr>
 			{% else %}
 				<tr>
-					<td colspan="4">no records found</td>
+					<td colspan="5" class="text-center">Aucun enregistrement trouvé</td>
 				</tr>
 			{% endfor %}
 		</tbody>
 	</table>
-
 </div>
+</div>
+</div>
+<div class="text-center mt-4">
 
 
-	<a href="{{ path('app_period_en_entreprise_new') }}">Create new</a>
+	<a href="{{ path('app_period_en_entreprise_new') }}" class="btn btn-success">+ Créer une nouvelle période
+  </a>
+  </div>
+  </div>
 {% endblock %}
