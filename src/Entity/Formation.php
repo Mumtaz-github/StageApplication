@@ -7,10 +7,13 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Entity\Trait\CreatedAtTrait; // ajouté cette ligne
 
 #[ORM\Entity(repositoryClass: FormationRepository::class)]
 class Formation
 {
+  use CreatedAtTrait; // ajouté cette ligne
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -87,6 +90,7 @@ private ?\DateTime $dateFinValidation = null;
 
     public function __construct()
     {
+        $this->createdAt = new \DateTimeImmutable(); // ajouté cette ligne
         $this->interruptions = new ArrayCollection();
         $this->periodEnEntreprises = new ArrayCollection();
         $this->formateurs = new ArrayCollection();

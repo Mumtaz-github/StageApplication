@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250630090148 extends AbstractMigration
+final class Version20250701140243 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -24,7 +24,8 @@ final class Version20250630090148 extends AbstractMigration
             CREATE TABLE formateur (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE formation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, actif_formation BOOLEAN NOT NULL, nom VARCHAR(255) NOT NULL, numero VARCHAR(255) NOT NULL, date_debut_validation DATE DEFAULT NULL, date_fin_validation DATE DEFAULT NULL, titre_professionnel VARCHAR(255) DEFAULT NULL, niveau INTEGER DEFAULT NULL, nombre_stagiaires INTEGER DEFAULT NULL, groupe_rattachement VARCHAR(255) DEFAULT NULL, nombre_heures INTEGER DEFAULT NULL, date_debut DATE NOT NULL, date_fin DATE DEFAULT NULL)
+            CREATE TABLE formation (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, actif_formation BOOLEAN NOT NULL, nom VARCHAR(255) NOT NULL, numero VARCHAR(255) NOT NULL, date_debut_validation DATE DEFAULT NULL, date_fin_validation DATE DEFAULT NULL, titre_professionnel VARCHAR(255) DEFAULT NULL, niveau INTEGER DEFAULT NULL, nombre_stagiaires INTEGER DEFAULT NULL, groupe_rattachement VARCHAR(255) DEFAULT NULL, nombre_heures INTEGER DEFAULT NULL, date_debut DATE DEFAULT NULL, date_fin DATE DEFAULT NULL, created_at DATETIME NOT NULL --(DC2Type:datetime_immutable)
+            )
         SQL);
         $this->addSql(<<<'SQL'
             CREATE TABLE formation_formateur (formation_id INTEGER NOT NULL, formateur_id INTEGER NOT NULL, PRIMARY KEY(formation_id, formateur_id), CONSTRAINT FK_270B2E925200282E FOREIGN KEY (formation_id) REFERENCES formation (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE, CONSTRAINT FK_270B2E92155D8F51 FOREIGN KEY (formateur_id) REFERENCES formateur (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE)
@@ -54,7 +55,7 @@ final class Version20250630090148 extends AbstractMigration
             CREATE INDEX IDX_92E223D25200282E ON period_en_entreprise (formation_id)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE utilisateurs (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, civilite VARCHAR(10) NOT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, codepostal VARCHAR(5) NOT NULL, ville VARCHAR(150) NOT NULL, email VARCHAR(255) NOT NULL, role VARCHAR(255) NOT NULL, date_invitation DATETIME NOT NULL --(DC2Type:datetime_immutable)
+            CREATE TABLE utilisateurs (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, civilite VARCHAR(10) DEFAULT NULL, nom VARCHAR(255) NOT NULL, prenom VARCHAR(255) NOT NULL, codepostal VARCHAR(5) NOT NULL, ville VARCHAR(150) NOT NULL, email VARCHAR(255) NOT NULL, role VARCHAR(255) NOT NULL, date_invitation DATETIME NOT NULL --(DC2Type:datetime_immutable)
             , password VARCHAR(255) NOT NULL)
         SQL);
         $this->addSql(<<<'SQL'
