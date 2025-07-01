@@ -28,27 +28,14 @@ class Formation
     #[ORM\Column(length: 255)]
     private ?string $numero = null;
 
-#[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-private ?\DateTime $dateDebutValidation = null;
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $dateDebutValidation = null;
 
-#[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
-private ?\DateTime $dateFinValidation = null;
-
-
-
-
-//  #[ORM\Column(type: Types::DATE_MUTABLE)]
-// private ?\DateTime $dateDebutValidation;
-
-// #[ORM\Column(type: Types::DATE_MUTABLE)]
-// private ?\DateTime $dateFinValidation;
-
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    private ?\DateTime $dateFinValidation = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $titreProfessionnel = null;
-
-  // #[ORM\Column(length: 255)]
-  //  private ?string $titreProfessionnel = null;
 
     #[ORM\Column(length:255, nullable: true)]
     private ?int $niveau = null;
@@ -75,9 +62,7 @@ private ?\DateTime $dateFinValidation = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
         private ?\DateTime $dateFin = null;
-    // #[ORM\Column(type: Types::DATE_MUTABLE)]
-    // private ?\DateTime $dateFin = null;
-    
+ 
 
     #[ORM\ManyToMany(targetEntity: Formateur::class, inversedBy: 'formations')]
     private Collection $formateurs;
@@ -134,66 +119,39 @@ private ?\DateTime $dateFinValidation = null;
         return $this;
     }
 
-   public function getDateDebutValidation(): ?\DateTime
-{
-    return $this->dateDebutValidation;
-}
+        public function getDateDebutValidation(): ?\DateTime
+      {
+          return $this->dateDebutValidation;
+      }
 
-public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
-{
-    $this->dateDebutValidation = $dateDebutValidation;
-    return $this;
-}
+      public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
+      {
+          $this->dateDebutValidation = $dateDebutValidation;
+          return $this;
+      }
 
-public function getDateFinValidation(): ?\DateTime
-{
-    return $this->dateFinValidation;
-}
+      public function getDateFinValidation(): ?\DateTime
+      {
+          return $this->dateFinValidation;
+      }
 
-public function setDateFinValidation(?\DateTime $dateFinValidation): static
-{
-    $this->dateFinValidation = $dateFinValidation;
-    return $this;
-}
-
-
+      public function setDateFinValidation(?\DateTime $dateFinValidation): static
+      {
+          $this->dateFinValidation = $dateFinValidation;
+          return $this;
+      }
 
 
-    // public function setDateDebutValidation(?\DateTime $dateDebutValidation): static
-    // {
-    //     $this->dateDebutValidation = $dateDebutValidation;
-    //     return $this;
-    // }
+      public function getNombreHeures(): ?int
+      {
+          return $this->nombreHeures;
+      }
 
-    //   public function getDateFinValidation(): ?\DateTime
-    // {
-    //     return $this->dateFinValidation;
-    // }
-
-    // public function setDateFinValidation(?\DateTime $dateFinValidation): static
-    // {
-    //     $this->dateFinValidation = $dateFinValidation;
-    //     return $this;
-    // }
-
-
-
-
-
-public function getNombreHeures(): ?int
-{
-    return $this->nombreHeures;
-}
-
-public function setNombreHeures(int $nombreHeures): static
-{
-    $this->nombreHeures = $nombreHeures;
-    return $this;
-}
-
-
-
-
+      public function setNombreHeures(int $nombreHeures): static
+      {
+          $this->nombreHeures = $nombreHeures;
+          return $this;
+      }
 
     public function getTitreProfessionnel(): ?string
     {
@@ -229,16 +187,16 @@ public function setNombreHeures(int $nombreHeures): static
     }
 
 
-public function getActiveStagiaires(): ?int
-{
-    return $this->activeStagiaires;
-}
+    public function getActiveStagiaires(): ?int
+    {
+        return $this->activeStagiaires;
+    }
 
-public function setActiveStagiaires(?int $count): static
-{
-    $this->activeStagiaires = $count;
-    return $this;
-}
+    public function setActiveStagiaires(?int $count): static
+    {
+        $this->activeStagiaires = $count;
+        return $this;
+    }
 
     public function getGroupeRattachement(): ?string
     {
@@ -263,31 +221,16 @@ public function setActiveStagiaires(?int $count): static
     }
 
 
-public function getDateFin(): ?\DateTime
-{
-    return $this->dateFin;
-}
+    public function getDateFin(): ?\DateTime
+    {
+        return $this->dateFin;
+    }
 
-public function setDateFin(?\DateTime $dateFin): static
-{
-    $this->dateFin = $dateFin;
-    return $this;
-}
-
-
-
-
-
-    // public function getDateFin(): ?\DateTime
-    // {
-    //     return $this->dateFin;
-    // }
-
-    // public function setDateFin(\DateTime $dateFin): static
-    // {
-    //     $this->dateFin = $dateFin;
-    //     return $this;
-    // }
+    public function setDateFin(?\DateTime $dateFin): static
+    {
+        $this->dateFin = $dateFin;
+        return $this;
+    }
 
     /**
      * @return Collection<int, Formateur>
