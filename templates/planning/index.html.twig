@@ -42,7 +42,7 @@
 								                        <div class="total-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.total_stagiaires }}</div>
 								                    {% endfor %}
 								                </div>
-								
+
 								                <div class="timeline-row">
 								                    {% for week in all_weeks %}
 								                        <div class="active-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.active_stagiaires }}</div>
@@ -68,7 +68,7 @@
 								                            {% for formation in formations %}
 								                                <div class="gantt-row d-flex" style="margin-bottom: 5px;">
 								                                    <div class="timeline-area" style="width: {{ total_days * day_width }}px; position:relative; height:27px;">
-								
+
 								                                        {% for i in 0..(total_days // 7) %}
 								                                            <div class="grid-line" style="left: {{ i * 7 * day_width }}px;"></div>
 								                                        {% endfor %}

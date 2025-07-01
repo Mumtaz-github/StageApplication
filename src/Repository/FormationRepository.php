@@ -17,14 +17,19 @@ class FormationRepository extends ServiceEntityRepository
     /**
      * Custom method to find all formations with relations
      */
-    public function findAllWithRelations(): array
-    {
-        return $this->createQueryBuilder('f')
-            ->leftJoin('f.interruptions', 'i')
-            ->leftJoin('f.periodEnEntreprises', 'p')
-            ->leftJoin('f.formateurs', 'form')
-            ->addSelect('i', 'p', 'form')
-            ->getQuery()
-            ->getResult();
-    }
+
+public function findAllWithRelations(): array
+{
+    return $this->createQueryBuilder('f')
+        ->leftJoin('f.interruptions', 'i')
+        ->leftJoin('f.periodEnEntreprises', 'p')
+        ->leftJoin('f.formateurs', 'form')
+        ->addSelect('i', 'p', 'form')
+        ->orderBy('f.id', 'ASC')     //ajouté cette linge pour formation afficher in asc ordern sur planning formation bar
+        ->getQuery()
+        ->getResult();
 }
+
+}
+
+

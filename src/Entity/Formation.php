@@ -66,7 +66,7 @@ private ?\DateTime $dateFinValidation = null;
     #[ORM\Column(type: 'integer', nullable:true)]
    private ?int $nombreHeures = null; // added at 12062025
 
-    #[ORM\Column(type: Types::DATE_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTime $dateDebut = null;
 
 
