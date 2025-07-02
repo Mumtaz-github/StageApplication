@@ -24,7 +24,7 @@ class PeriodEnEntreprise
     private ?int $numbreHeures = null;
 
     #[ORM\ManyToOne(inversedBy: 'periodEnEntreprises')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)] //here false changed to true
     private ?Formation $formation = null;
 
     public function getId(): ?int

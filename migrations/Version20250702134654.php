@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250701140243 extends AbstractMigration
+final class Version20250702134654 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -49,7 +49,7 @@ final class Version20250701140243 extends AbstractMigration
             CREATE TABLE jour_ferie (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, date DATE NOT NULL, nom VARCHAR(255) NOT NULL, zone VARCHAR(50) NOT NULL, annee INTEGER DEFAULT NULL)
         SQL);
         $this->addSql(<<<'SQL'
-            CREATE TABLE period_en_entreprise (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, formation_id INTEGER NOT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL, numbre_heures INTEGER DEFAULT NULL, CONSTRAINT FK_92E223D25200282E FOREIGN KEY (formation_id) REFERENCES formation (id) NOT DEFERRABLE INITIALLY IMMEDIATE)
+            CREATE TABLE period_en_entreprise (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, formation_id INTEGER DEFAULT NULL, date_debut DATE NOT NULL, date_fin DATE NOT NULL, numbre_heures INTEGER DEFAULT NULL, CONSTRAINT FK_92E223D25200282E FOREIGN KEY (formation_id) REFERENCES formation (id) NOT DEFERRABLE INITIALLY IMMEDIATE)
         SQL);
         $this->addSql(<<<'SQL'
             CREATE INDEX IDX_92E223D25200282E ON period_en_entreprise (formation_id)
