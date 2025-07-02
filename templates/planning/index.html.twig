@@ -60,8 +60,24 @@
 								                        <div class="timeline-area" style="width: {{ total_days * day_width }}px; position: relative;">
 								                            {% for holiday in holidays %}
 								                                <div class="holiday-marker" data-date="{{ holiday.date|date('Y-m-d') }}" style="left: {{ date_service.getDaysBetween(start_date, holiday.date) * day_width }}px;"></div>
-								                            {% endfor %}
+
+{% endfor %}
+
+<!-- Vertical Interruption Markers -->
+{% for group, formations in grouped_formations %}
+    {% for formation in formations %}
+        {% for interruption in formation.interruptions %}
+            <div class="interruption-marker"
+                data-date="{{ interruption.dateDebut|date('Y-m-d') }}"
+                style="left: {{ date_service.getDaysBetween(start_date, interruption.dateDebut) * day_width }}px;">
+            </div>
+        {% endfor %}
+    {% endfor %}
+{% endfor %}
+
+
 								                            <div id="today-marker" class="today-marker"></div>
+                                            
 								                        </div>
 								
 								                        {% for group, formations in grouped_formations %}
@@ -93,10 +109,8 @@
        data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}"
        data-grn="{{ formation.groupeRattachement }}">
 {% else %}
-    <div class="formation-bar"
-         data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}"
-         data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}"
-         data-grn="{{ formation.groupeRattachement }}">
+    <div class="formation-bar" data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}"
+         data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}" data-grn="{{ formation.groupeRattachement }}">
 {% endif %}
         {{ formation.nom }} {{ formation.numero }} [{{ formation.nombreStagiaires ?? 0 }}]
         {{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '-' }}
@@ -165,22 +179,16 @@
                                                           </div>
 
                                                           <!-- Vertical column container -->
-                                                          <div class="vertical-column">
+                                                          {# <div class="vertical-column">
                                                               {% for interruption in formation.interruptions %}
                                                                   <div class="interruption"
                                                                       data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
                                                                       data-end="{{ interruption.dateFin|date('Y-m-d') }}">
                                                                   </div>
                                                               {% endfor %}
-                                                          </div>
+                                                          </div> #}
 
-								                                        {# {% for interruption in formation.interruptions %}
-								                                            <div class="interruption"
-								                                                 data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
-								                                                 data-end="{{ interruption.dateFin|date('Y-m-d') }}">
-								                                            </div>
-								                                        {% endfor %} #}
-								
+								                                 
 								                                    </div>
 								                                </div>
 								                            {% endfor %}
