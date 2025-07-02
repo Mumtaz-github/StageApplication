@@ -3,39 +3,62 @@
 {% block title %}Interruption{% endblock %}
 
 {% block body %}
-<div class="container mt-5" style="max-width: 900px;">
-    <h1 class="mb-4 text-center">Interruption</h1>
-
-    <table class="table table-striped table-bordered table-hover shadow-sm">
-        <tbody>
-            <tr>
-                <th scope="row">Id</th>
+<div class="container mt-5">
+    <h1 class="mb-4 mt-5 text-center">Interruption</h1>
+<div class="card">
+<div class="card-header bg-primary text-white text-center">
+<strong>Interruption pendant formation</strong>
+</div>
+<div class="card-body p-0">
+<div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover table-striped mb-0">
+    <thead class="table-light text-center">
+    <tr>
+    <th>ID</th>
+    <th>Date de début</th>
+    <th>Date de fin</th>
+ </tr>
+</thead>
+<tbody class="text-center">
+<tr>
+            
                 <td>{{ interruption.id }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Date début</th>
+    
                 <td>{{ interruption.dateDebut ? interruption.dateDebut|date('Y-m-d') : '' }}</td>
-            </tr>
-            <tr>
-                <th scope="row">Date fin</th>
+           
                 <td>{{ interruption.dateFin ? interruption.dateFin|date('Y-m-d') : '' }}</td>
             </tr>
         </tbody>
     </table>
+</div>
 
-    <div class="d-flex justify-content-between align-items-center mt-4">
+
+<div class="d-flex justify-content-between p-3">
+ <a href="{{ path('app_interruption_index') }}" class="btn btn-outline-primary">
+            ← Retour à la liste
+        </a>
+            <a href="{{ path('app_interruption_edit', {'id': interruption.id}) }}" class="btn btn-outline-warning">
+            ✎ Modifier
+        </a> 
+            {# {{ include('interruption/_delete_form.html.twig') }} #}
+         {{ include('interruption/_delete_form.html.twig', { 'button_label': 'Delete', 'button_attr': {'class': 'btn btn-outline-danger'} }) }}
+</div>
+</div>
+</div>
+</div>
+    {# <div class="d-flex justify-content-between align-items-center mt-4">
         <a href="{{ path('app_interruption_index') }}" class="btn btn-primary">
-            ← Back to list
+            ← Retour à la liste
         </a>
 
         <a href="{{ path('app_interruption_edit', {'id': interruption.id}) }}" class="btn btn-warning">
-            Edit
-        </a>
+            Modifier
+        </a> #}
 
         {# {{ include('interruption/_delete_form.html.twig') }} #}
-        {{ include('interruption/_delete_form.html.twig', { 'button_label': 'Delete', 'button_attr': {'class': 'btn btn-danger'} }) }}
+        {# {{ include('interruption/_delete_form.html.twig', { 'button_label': 'Delete', 'button_attr': {'class': 'btn btn-danger'} }) }}
 
     </div>
-</div>
+</div> #}
 {% endblock %}
 

@@ -17,7 +17,7 @@
 
 
 	<table class="table table-bordered table-hover table-striped mb-0">
-		<thead class="table-light">
+		<thead class="table-light text-center">
 			<tr>
 				<th>Id</th>
 				<th>Date_debut_int</th>
@@ -25,17 +25,23 @@
 				<th>actions</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="text-center">
 			{% for interruption in interruptions %}
 				<tr>
 					<td>{{ interruption.id }}</td>
 					<td>{{ interruption.dateDebut ? interruption.dateDebut|date('Y-m-d') : '' }}</td>
 					<td>{{ interruption.dateFin ? interruption.dateFin|date('Y-m-d') : '' }}</td>
-					<td>
-						<a href="{{ path('app_interruption_show', {'id': interruption.id}) }}">show</a>
-						<a href="{{ path('app_interruption_edit', {'id': interruption.id}) }}">edit</a>
+
+			<td class="text-center">
+  <div class="d-flex justify-content-center gap-2">
+						<a href="{{ path('app_interruption_show', {'id': interruption.id}) }}" class="btn btn-sm btn-outline-info">      
+            <i class="bi bi-eye"></i> Voir</a>
+						<a href="{{ path('app_interruption_edit', {'id': interruption.id}) }}" class="btn btn-sm btn-outline-warning">  
+            <i class="bi bi-pencil"></i> Éditer</a>
+              </div>
 					</td>
 				</tr>
+
 			{% else %}
 				<tr>
 					<td colspan="5" class="text-center">Auccun enregistrement trouvé</td>

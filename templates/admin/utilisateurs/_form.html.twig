@@ -2,54 +2,59 @@
 
 {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 <div
-	class="container mt-3 mb-3" style="max-width: 800px; margin: 0 auto; padding: 20px; background-color:#89bff8; border-radius: 10px; box-shadow: 0 4px 8px rgba(146, 85, 62, 0.3);">
+	class="container mt-5 mb-3" style="max-width: 1000px; margin: 0 auto; padding: 20px; background-color:rgb(53, 67, 70); border-radius: 10px; box-shadow: 0 4px 8px rgba(146, 85, 62, 0.3);">
 
 	{# <div class="container mt-4 mb-5 p-4 rounded bg-light shadow-sm" style="max-width: 800px;"> #}
 	<div class="container mt-4 mb-5 p-4 rounded {#bg-secondary-subtle#} shadow-sm" ">
-		<h2 class="text-center mb-4">{{ button_label|default('Créer un Utilisateur') }}</h2>
+		<h2 class="text-center mb-4 mt-1 text-white">{{ button_label|default('Créer un Utilisateur') }}</h2>
 
-		<div class="mb-3">
+    <div class="row">
+		<div class="col-md-6 mb-4">
 			{{ form_label(form.nom, 'Nom', {'label_attr': {'class': 'form-label'}}) }}
 			{{ form_widget(form.nom, {'attr': {'class': 'form-control'}}) }}
 			{{ form_errors(form.nom) }}
 		</div>
 
-		<div class="mb-3">
+		<div class="col-md-6 mb-4">
 			{{ form_label(form.prenom, 'Prénom', {'label_attr': {'class': 'form-label'}}) }}
 			{{ form_widget(form.prenom, {'attr': {'class': 'form-control'}}) }}
 			{{ form_errors(form.prenom) }}
 		</div>
-
-		<div class="mb-3">
-			{{ form_label(form.codepostal, 'Code Postal', {'label_attr': {'class': 'form-label'}}) }}
-			{{ form_widget(form.codepostal, {'attr': {'class': 'form-control'}}) }}
-			{{ form_errors(form.codepostal) }}
-		</div>
-
-		<div class="mb-3">
-			{{ form_label(form.ville, 'Ville', {'label_attr': {'class': 'form-label'}}) }}
-			{{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
-			{{ form_errors(form.ville) }}
-		</div>
-
-		<div class="mb-3">
+	</div>
+		<div class="mb-4">
 			{{ form_label(form.email, 'Email', {'label_attr': {'class': 'form-label'}}) }}
 			{{ form_widget(form.email, {'attr': {'class': 'form-control'}}) }}
 			{{ form_errors(form.email) }}
 		</div>
 
-		<div class="mb-3">
+    <div class="row">
+		<div class="col-md-6 mb-4">
+			{{ form_label(form.codepostal, 'Code Postal', {'label_attr': {'class': 'form-label'}}) }}
+			{{ form_widget(form.codepostal, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.codepostal) }}
+		</div>
+	<div class="col-md-6 mb-4">
+			{{ form_label(form.ville, 'Ville', {'label_attr': {'class': 'form-label'}}) }}
+			{{ form_widget(form.ville, {'attr': {'class': 'form-control'}}) }}
+			{{ form_errors(form.ville) }}
+		</div>
+		</div>
+
+
+	
+    <div class="row">
+		<div class="col-md-6 mb-4">
 			{{ form_label(form.role, 'Rôle', {'label_attr': {'class': 'form-label'}}) }}
 			{{ form_widget(form.role, {'attr': {'class': 'form-select'}}) }}
 			{{ form_errors(form.role) }}
 		</div>
 
-		<div class="mb-3">
+	<div class="col-md-6 mb-4">
 			{{ form_label(form.dateInvitation, 'Date d\'invitation', {'label_attr': {'class': 'form-label'}}) }}
 		{{ form_widget(form.dateInvitation, {'attr': {'class': 'form-control'}}) }}
 		{{ form_errors(form.dateInvitation) }}
 	</div>
-
+	</div>
 	<div class="mb-4">
 		{{ form_label(form.password, 'Mot de passe', {'label_attr': {'class': 'form-label'}}) }}
 		{{ form_widget(form.password, {'attr': {'class': 'form-control'}}) }}
