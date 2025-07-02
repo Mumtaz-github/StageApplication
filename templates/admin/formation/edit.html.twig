@@ -1,14 +1,51 @@
+
 {% extends 'base.html.twig' %}
+
+{% block title %}Edit Formation{% endblock %}
+
+{% block body %}
+<div class="container mt-5">
+	<h1 class="mb-4 text-center">Modifier Formation</h1>
+
+	{{ include('admin/formation/_form.html.twig', {
+		form: form,
+		button_label: 'Mettre à jour',
+		formation: formation
+	}) }}
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+{#{% extends 'base.html.twig' %}
 
 {% block title %}Edit Formation
 {% endblock %}
 
 {% block body %}
-	<h1>Edit Formation</h1>
+<div class="container mt-5">
+	<h1 class="mb-4 text-center">Modifier Formation</h1>
+	{{ include('admin/formation/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
 
-	{{ include('admin/formation/_form.html.twig', {'button_label': 'Update'}) }}
 
-	<a href="{{ path('app_formation_index') }}" class="btn btn-primary">Back to list</a>
+<div class="mt-3 d-flex justify-content-between">#}
 
-	{{ include('admin/formation/_delete_form.html.twig') }}
-{% endblock %}
+
+
+{# 
+	<a href="{{ path('app_formation_index') }}" class="btn btn-primary">Back to list</a> #}
+
+	{#{{ include('admin/formation/_delete_form.html.twig') }}
+  </div>
+  </div>
+{% endblock %}#}
