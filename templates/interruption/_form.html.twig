@@ -3,10 +3,10 @@
 <button class="btn ">{{ button_label|default('Save') }}</button>
 {{ form_end(form) }} #}
 
-
+{% block body %}
 {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
 
-<div class="container mt-3 mb-3" style="max-width: 800px; height:480px; background-color:#89bff8; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px;">
+<div class="container mt-3 mb-3" style="max-width: 800px; height:480px; background-color:rgb(53, 67, 70); margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px;">
 	<h2 class="text-center mb-4">{{ button_label|default('Créer une Interruption') }}</h2>
 
 	<div class="mb-3">
@@ -28,17 +28,20 @@
 	</div>
 
 	<div class="text-center">
-		<div class="d-flex justify-content-between mt-5">
+		<div class="d-flex justify-content-between mt-0 mb-0 flex-wrap gap-2">
 
-			<button class="btn btn-success px-5 py-2">
-				{{ button_label|default('Enregistrer') }}
-			</button>
-
-
-			<a href="{{ path('app_interruption_index') }}" class="btn btn-secondary px-4">
+			<a href="{{ path('app_interruption_index') }}" class="btn btn-outline-secondary px-4 mt-4">
 				← Retour à la liste
 			</a>
+			<button class="btn btn-outline-success px-5 py-2 mt-4">
+				{{ button_label|default('Enregistrer') }}
+			</button>
+{{ form_end(form) }}
 
+{% if interruption is defined and interruption.id is not null %}
+{{ include('interruption/_delete_form.html.twig',{interruption:interruption}) }}
+{% endif %}
 		</div>
 	</div>
-	{{ form_end(form) }}
+
+{% endblock %}
