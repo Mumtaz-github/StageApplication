@@ -1,5 +1,24 @@
 {% extends 'base.html.twig' %}
 
+{% block title %}Modifier une période en entreprise{% endblock %}
+
+{% block body %}
+
+<div class="container mt-5">
+	<h1 class="mb-4 text-center">Mettre à jour</h1>
+{{ include('admin/utilisateurs/_form.html.twig', {
+    form: form,
+    button_label: 'Mettre à jour',
+   utilisateur: utilisateur
+}) }}
+
+</div>
+
+{% endblock %}
+
+
+{# {% extends 'base.html.twig' %}
+
 {% block title %}Edit Utilisateurs
 {% endblock %}
 
@@ -11,4 +30,6 @@
 	<a href="{{ path('app_utilisateurs_index') }}">back to list</a>
 
 	{{ include('admin/utilisateurs/_delete_form.html.twig') }}
-{% endblock %}
+{% endblock %} #}
+
+

@@ -47,7 +47,7 @@ class UpdateJourFerieCommand extends Command
                 'range',
                 'r',
                 InputOption::VALUE_REQUIRED,
-                'Year range (e.g., "2023-2025")'
+                'Year range (e.g., "2022-2030")'
             );
     }
 

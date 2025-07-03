@@ -2,208 +2,175 @@
 
 
 {% block stylesheets %}
-<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
-{{ parent() }}
+	<link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+	{{ parent() }}
 {% endblock %}
 
-								{% block body %}
-								<div class="container-fluid py-2 px-0">
-								    <h1 class="h3 text-center my-3">Planning des Formations</h1>
-								
-								    <!-- CONTENEUR SCROLLABLE -->
-								    <div class="gantt-scroll-wrapper" id="scroll-wrapper">
-								        <div class="gantt-scroll-inner" id="scroll-inner" style="min-width: {{ total_days * day_width }}px;">
-								
-								            <!-- HEADERS SYNCHRONISÉS -->
-								            <div class="gantt-header">
-								                <div class="timeline-row">
-								                    {% for year, weeks in yearly_weeks %}
-								                        <div class="year-column" style="width: {{ weeks * 7 * day_width }}px">{{ year }}</div>
-								                    {% endfor %}
-								                </div>
-								
-								                <div class="timeline-row">
-								                    {% for month in months %}
-								                        {% set daysInMonth = date_service.getDaysInMonthFromString(month) %}
-								                        <div class="month-column" style="width: {{ daysInMonth * day_width }}px">
-								                            {{ month|split('-')[1]|month_name_fr }}
-								                        </div>
-								                    {% endfor %}
-								                </div>
-								
-								                <div class="timeline-row">
-								                    {% for week in all_weeks %}
-								                        <div class="week-column" style="width: {{ 7 * day_width }}px">{{ week.number }}</div>
-								                    {% endfor %}
-								                </div>
-								
-								                <div class="timeline-row">
-								                    {% for week in all_weeks %}
-								                        <div class="total-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.total_stagiaires }}</div>
-								                    {% endfor %}
-								                </div>
+{% block body %}
+	<div class="container-fluid py-2 px-0">
+		<h1 class=" text-center my-3">Planification des Formations</h1>
 
-								                <div class="timeline-row">
-								                    {% for week in all_weeks %}
-								                        <div class="active-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.active_stagiaires }}</div>
-								                    {% endfor %}
-								                </div>
-								            </div>
-								
-								            <!-- BODY DU GANTT -->
-								            <div class="gantt-scroll-body">
-								
-								                <!-- Holiday Row -->
-								                <div class="gantt-row">
-								                    <div class="formation-name" style="background: transparent; border: none;"></div>
-								                    <div class="holiday-row">
-								                        <div class="timeline-area" style="width: {{ total_days * day_width }}px; position: relative;">
-								                            {% for holiday in holidays %}
-								                                <div class="holiday-marker" data-date="{{ holiday.date|date('Y-m-d') }}" style="left: {{ date_service.getDaysBetween(start_date, holiday.date) * day_width }}px;"></div>
+		<!-- CONTENEUR SCROLLABLE -->
+		<div class="gantt-scroll-wrapper" id="scroll-wrapper">
+			<div class="gantt-scroll-inner" id="scroll-inner" style="min-width: {{ total_days * day_width }}px;">
 
-{% endfor %}
+				<!-- HEADERS SYNCHRONISÉS -->
+				<div class="gantt-header">
+					<div class="timeline-row">
+						{% for year, weeks in yearly_weeks %}
+							<div class="year-column" style="width: {{ weeks * 7 * day_width }}px">{{ year }}</div>
+						{% endfor %}
+					</div>
 
-<!-- Vertical Interruption Markers -->
-{% for group, formations in grouped_formations %}
-    {% for formation in formations %}
-        {% for interruption in formation.interruptions %}
-            <div class="interruption-marker"
-                data-date="{{ interruption.dateDebut|date('Y-m-d') }}"
-                style="left: {{ date_service.getDaysBetween(start_date, interruption.dateDebut) * day_width }}px;">
-            </div>
-        {% endfor %}
-    {% endfor %}
-{% endfor %}
+					<div class="timeline-row">
+						{% for month in months %}
+							{% set daysInMonth = date_service.getDaysInMonthFromString(month) %}
+							<div class="month-column" style="width: {{ daysInMonth * day_width }}px">
+								{{ month|split('-')[1]|month_name_fr }}
+							</div>
+						{% endfor %}
+					</div>
+
+					<div class="timeline-row">
+						{% for week in all_weeks %}
+							<div class="week-column" style="width: {{ 7 * day_width }}px">{{ week.number }}</div>
+						{% endfor %}
+					</div>
+
+					<div class="timeline-row">
+						{% for week in all_weeks %}
+							<div class="total-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.total_stagiaires }}</div>
+						{% endfor %}
+					</div>
+
+					<div class="timeline-row">
+						{% for week in all_weeks %}
+							<div class="active-stagiaires-column" style="width: {{ 7 * day_width }}px">{{ week.active_stagiaires }}</div>
+						{% endfor %}
+					</div>
+				</div>
 
 
-								                            <div id="today-marker" class="today-marker"></div>
-                                            
-								                        </div>
-								
-								                        {% for group, formations in grouped_formations %}
-								                            {% for formation in formations %}
-								                                <div class="gantt-row d-flex" style="margin-bottom: 5px;">
-								                                    <div class="timeline-area" style="width: {{ total_days * day_width }}px; position:relative; height:27px;">
+				<!-- BODY DU GANTT -->
+				<div class="gantt-scroll-body">
 
-								                                        {% for i in 0..(total_days // 7) %}
-								                                            <div class="grid-line" style="left: {{ i * 7 * day_width }}px;"></div>
-								                                        {% endfor %}
-								
-								                                        <!-- Bar Formation -->
-                                                           {# <a href="{{ path('app_formation_edit', {'id': formation.id}) }}"
-                                                              class="formation-bar"
-                                                              data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}"
-                                                              data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}"
-                                                              data-grn="{{ formation.groupeRattachement }}">
-                                                                {{ formation.nom }} {{ formation.numero }} [{{ formation.nombreStagiaires ?? 0 }}]
-                                                                {{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '-' }}
-                                                                {% if formation.dateFin %}→ {{ formation.dateFin|date('d/m/Y') }}{% endif %}
-                                                                {% if formation.nombreHeures %} {{ formation.nombreHeures }} h{% endif %}
-                                                            </a>#}
-                                                         <!-- Bar Formation -->
-<!-- Bar Formation -->
-{% if is_granted('ROLE_ADMIN') %}
-    <a href="{{ path('app_formation_edit', {'id': formation.id}) }}"
-       class="formation-bar"
-       data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}"
-       data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}"
-       data-grn="{{ formation.groupeRattachement }}">
-{% else %}
-    <div class="formation-bar" data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}"
-         data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}" data-grn="{{ formation.groupeRattachement }}">
-{% endif %}
-        {{ formation.nom }} {{ formation.numero }} [{{ formation.nombreStagiaires ?? 0 }}]
-        {{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '-' }}
-        {% if formation.dateFin %}→ {{ formation.dateFin|date('d/m/Y') }}{% endif %}
-        {% if formation.nombreHeures %} {{ formation.nombreHeures }} h{% endif %}
-{% if is_granted('ROLE_ADMIN') %}
-    </a>
-{% else %}
-    </div>
-{% endif %}
+					<!-- Holiday Row -->
+					<div class="gantt-row">
+						<div class="formation-name" style="background: transparent; border: none;"></div>
+						<div class="holiday-row">
+							<div class="timeline-area" style="width: {{ total_days * day_width }}px; position: relative;">
+								{% for holiday in holidays %}
+									<div class="holiday-marker" data-date="{{ holiday.date|date('Y-m-d') }}" style="left: {{ date_service.getDaysBetween(start_date, holiday.date) * day_width }}px;"></div>
+                 {% endfor %}
 
-         <!-- Périodes en entreprise -->
-{% for periode in formation.periodEnEntreprises %}
-    {% if is_granted('ROLE_ADMIN') %}
-        <a href="{{ path('app_period_en_entreprise_edit', {'id': periode.id}) }}"
-           class="entreprise-period"
-           data-start="{{ periode.dateDebut|date('Y-m-d') }}"
-           data-end="{{ periode.dateFin|date('Y-m-d') }}">
-    {% else %}
-        <div class="entreprise-period"
-             data-start="{{ periode.dateDebut|date('Y-m-d') }}"
-             data-end="{{ periode.dateFin|date('Y-m-d') }}">
-    {% endif %}
-            {{ periode.dateDebut|date('d/m/Y') }} -
-            {{ periode.dateFin|date('d/m/Y') }}
-            {{ periode.numbreHeures }} h
-    {% if is_granted('ROLE_ADMIN') %}
-        </a>
-    {% else %}
-        </div>
-    {% endif %}
-{% endfor %}                                                   
-                                                            <!-- Périodes en entreprise -->
-								                                        {# {% for periode in formation.periodEnEntreprises %}
-								                                            <a href="{{ path('app_period_en_entreprise_edit', {'id': periode.id}) }}"
-								                                               class="entreprise-period"
-								                                               data-start="{{ periode.dateDebut|date('Y-m-d') }}"
-								                                               data-end="{{ periode.dateFin|date('Y-m-d') }}">
-								                                                {{ periode.dateDebut|date('d/m/Y') }} -
-								                                                {{ periode.dateFin|date('d/m/Y') }}
-								                                                {{ periode.numbreHeures }} h
-								                                            </a>
-								                                        {% endfor %} #}
-								
-								                                        <!-- Période de validation -->
-								                                     {% if formation.dateDebutValidation and formation.dateFinValidation %}
-								                                            <div class="validation-bar"
-								                                                data-start="{{ formation.dateDebutValidation|date('Y-m-d') }}"
-								                                                data-end="{{ formation.dateFinValidation|date('Y-m-d') }}">
-								                                                {# {{ formation.dateDebutValidation|date('d/m/Y') }} →
-								                                                {{ formation.dateFinValidation|date('d/m/Y') }} #}
-								                                            </div>
-								                                        {% endif %}
+								<!-- Vertical Interruption Markers -->
+								{% for group, formations in grouped_formations %}
+									{% for formation in formations %}
+										{% for interruption in formation.interruptions %}
+											<div class="interruption-marker" data-date="{{ interruption.dateDebut|date('Y-m-d') }}" style="left: {{ date_service.getDaysBetween(start_date, interruption.dateDebut) * day_width }}px;"></div>
+										{% endfor %}
+									{% endfor %}
+								{% endfor %}
+
+              <div id="today-marker" class="today-marker"></div>
+             </div>
+
+							{% for group, formations in grouped_formations %}
+								{% for formation in formations %}
+									<div class="gantt-row d-flex" style="margin-bottom: 5px;">
+										<div class="timeline-area" style="width: {{ total_days * day_width }}px; position:relative; height:27px;">
+
+											{% for i in 0..(total_days // 7) %}
+												<div class="grid-line" style="left: {{ i * 7 * day_width }}px;"></div>
+											{% endfor %}
+
+									
+											<!-- Bar Formation -->
+												{% if is_granted('ROLE_ADMIN') %}
+													<a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar" data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}" data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}" data-grn="{{ formation.groupeRattachement }}">
+												{% else %}
+													<div class="formation-bar" data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}" data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}" data-grn="{{ formation.groupeRattachement }}">
+													{% endif %}
+													{{ formation.nom }}
+													{{ formation.numero }}
+													[{{ formation.nombreStagiaires ?? 0 }}]
+													{{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '-' }}
+													{% if formation.dateFin %}→
+														{{ formation.dateFin|date('d/m/Y') }}
+													{% endif %}
+													{% if formation.nombreHeures %}
+														{{ formation.nombreHeures }}
+														h
+													{% endif %}
+													{% if is_granted('ROLE_ADMIN') %}
+													</a>
+											{% else %}
+												</div>
+											{% endif %}
+
+											<!-- Périodes en entreprise -->
+											{% for periode in formation.periodEnEntreprises %}
+												{% if is_granted('ROLE_ADMIN') %}
+													<a href="{{ path('app_period_en_entreprise_edit', {'id': periode.id}) }}" class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}">
+													{% else %}
+														<div class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}">
+														{% endif %}
+														{{ periode.dateDebut|date('d/m/Y') }}
+														-
+														{{ periode.dateFin|date('d/m/Y') }}
+														{{ periode.numbreHeures }}
+														h
+														{% if is_granted('ROLE_ADMIN') %}
+														</a>
+												{% else %}
+													</div>
+												{% endif %}
+											{% endfor %}
+									
+
+											<!-- Période de validation -->
+												{% if formation.dateDebutValidation and formation.dateFinValidation %}<div
+													class="validation-bar" data-start="{{ formation.dateDebutValidation|date('Y-m-d') }}" data-end="{{ formation.dateFinValidation|date('Y-m-d') }}"> {# {{ formation.dateDebutValidation|date('d/m/Y') }} →
+												 {{ formation.dateFinValidation|date('d/m/Y') }} #}
+												</div>
+											{% endif %}
 
 
-                                                       <!-- Interruptions -->
+											<!-- Interruptions -->
 
-                                                           <!-- Top bar container -->
-                                                          <div class="formation-bar">
-                                                              {% for interruption in formation.interruptions %}
-                                                                  <div class="interruption"
-                                                                      data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
-                                                                      data-end="{{ interruption.dateFin|date('Y-m-d') }}">
-                                                                  </div>
-                                                              {% endfor %}
-                                                          </div>
+											<!-- Top bar container -->
+											<div class="formation-bar">
+												{% for interruption in formation.interruptions %}
+													<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"></div>
+												{% endfor %}
+											</div>
 
-                                                          <!-- Vertical column container -->
-                                                          {# <div class="vertical-column">
-                                                              {% for interruption in formation.interruptions %}
-                                                                  <div class="interruption"
-                                                                      data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
-                                                                      data-end="{{ interruption.dateFin|date('Y-m-d') }}">
-                                                                  </div>
-                                                              {% endfor %}
-                                                          </div> #}
+											<!-- Vertical column container -->
+											{# <div class="vertical-column">
+											  {% for interruption in formation.interruptions %}
+											 <div class="interruption"
+											 data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
+											 data-end="{{ interruption.dateFin|date('Y-m-d') }}">
+											   </div>
+										 {% endfor %}
+							     </div> #}
 
-								                                 
-								                                    </div>
-								                                </div>
-								                            {% endfor %}
-								                        {% endfor %}
-								                    </div>
-								                </div>
-								
-								            </div>
-								        </div>
-								    </div>
-								</div>
-								{% endblock %}
-								
-								
-								{#}	{% block javascripts %}
+
+										</div>
+									</div>
+								{% endfor %}
+							{% endfor %}
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}
+
+
+{#}	{% block javascripts %}
 										{{ parent() }}
 										<script>
 											document.addEventListener('DOMContentLoaded', function () {

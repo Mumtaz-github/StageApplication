@@ -30,12 +30,35 @@
 
 
 
-            <div class="d-flex justify-content-between p-3">
+            {# <div class="d-flex justify-content-between p-3">
              <a href="{{ path('app_period_en_entreprise_index') }}" class="btn btn-outline-success">	← Retour à la liste</a>
 	 <button class="btn btn-success px-5 py-2 mt-0">
 				{{ button_label|default('Enregistrer') }}
-			</button> 
+			</button>  #}
      
+
+     
+<div class="text-center">
+    <div class="d-flex justify-content-between mt-0 mb-0 flex-wrap gap-2">
+        <a href="{{ path('app_period_en_entreprise_index') }}" class="btn btn-primary px-4 mt-4">
+            ← Retour à la liste
+        </a>
+
+        <button class="btn btn-success px-5 py-2 mt-4">
+            {{ button_label|default('Enregistrer') }}
+        </button>
+         {{ form_end(form) }} {# the form was below the first two buttion, i brought delete button from edit twig#}
+      
+	{# This block assumes 'formation' is passed in — only show delete if it's defined and has an ID #}
+	{% if period_en_entreprise is defined and period_en_entreprise.id is not null %}
+
+   {{ include('periodEnEntreprise/_delete_form.html.twig', {periodEnEntreprise: period_en_entreprise}) }}
+   	{% endif %}
+
+    </div>
+</div>
+
+
 	{# <div class="text-center">
 		<div class="d-flex justify-content-between mt-0 mb-0">
 			 <button class="btn btn-success px-5 py-2 mt-4">
@@ -47,10 +70,8 @@
 			</a>
          {{ include('periodEnEntreprise/_delete_form.html.twig') }} 
 		</div>#}
-	</div> 
-</div>
-
-{{ form_end(form) }}
+	 </div> 
+</div> 
 {% endblock %}
 
 
