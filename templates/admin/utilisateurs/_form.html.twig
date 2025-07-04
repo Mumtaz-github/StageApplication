@@ -1,11 +1,9 @@
 {% block body %}
 
 {{ form_start(form, {'attr': {'class': 'needs-validation', 'novalidate': 'novalidate'}}) }}
-<div
-	class="container mt-2 mb-2" style="max-width: 1000px; margin: 0 auto; padding: 20px; background-color:rgb(53, 67, 70); border-radius: 10px; box-shadow: 0 4px 8px rgba(146, 85, 62, 0.3);">
+<div class="container mt-2 mb-2" style="max-width: 1000px; margin: 0 auto; padding: 20px; background-color:rgb(53, 67, 70); border-radius: 10px; box-shadow: 0 4px 8px rgba(146, 85, 62, 0.3);">
 
-	{# <div class="container mt-4 mb-5 p-4 rounded bg-light shadow-sm" style="max-width: 800px;"> #}
-	<div class="container mt-4 mb-5 p-4 rounded {#bg-secondary-subtle#} shadow-sm" ">
+	<div class="container mt-2 mb-0 p-4 rounded {#bg-secondary-subtle#} shadow-sm" ">
 		<h2 class="text-center mb-4 mt-1 text-white">{{ button_label|default('Créer un Utilisateur') }}</h2>
 
     <div class="row">

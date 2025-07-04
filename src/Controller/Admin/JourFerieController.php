@@ -48,7 +48,8 @@ public function show(JourFerie $jourFerie): Response
     #[IsGranted('ROLE_ADMIN')]
     public function syncFromApi(Request $request, MessageBusInterface $messageBus): Response
     {
-        $zone = $request->request->get('zone', 'metropole');
+        $zone = $request->request->get('zone', 'all');
+          // $zone = $request->request->get('zone', 'metropole');
         $year = $request->request->get('year', date('Y'));
 
         $messageBus->dispatch(new SyncHolidaysMessage($zone, $year));

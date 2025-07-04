@@ -17,7 +17,7 @@
 
 
 	<table class="table table-bordered table-hover table-striped mb-0">
-		<thead class="table-light">
+		<thead class="table-light text-center">
 			<tr>
 				<th>Id</th>
 				<th>Date_debut</th>
@@ -26,16 +26,22 @@
 				<th>actions</th>
 			</tr>
 		</thead>
-		<tbody>
+		<tbody class="text-center">
 			{% for period_en_entreprise in period_en_entreprises %}
 				<tr>
 					<td>{{ period_en_entreprise.id }}</td>
 					<td>{{ period_en_entreprise.dateDebut ? period_en_entreprise.dateDebut|date('Y-m-d') : '' }}</td>
 					<td>{{ period_en_entreprise.dateFin ? period_en_entreprise.dateFin|date('Y-m-d') : '' }}</td>
 					<td>{{ period_en_entreprise.numbreHeures }}</td>
-					<td>
-						<a href="{{ path('app_period_en_entreprise_show', {'id': period_en_entreprise.id}) }}">show</a>
-						<a href="{{ path('app_period_en_entreprise_edit', {'id': period_en_entreprise.id}) }}">edit</a>
+				
+			<td class="text-center">
+  <div class="d-flex justify-content-center gap-2">
+
+						<a href="{{ path('app_period_en_entreprise_show', {'id': period_en_entreprise.id}) }}" class="btn btn-sm btn-outline-info">
+                <i class="bi bi-eye"></i> Voir</a>
+						<a href="{{ path('app_period_en_entreprise_edit', {'id': period_en_entreprise.id}) }}" class="btn btn-sm btn-outline-warning">
+               <i class="bi bi-pencil"></i> Éditer</a>
+                </div>
 					</td>
 				</tr>
 			{% else %}
