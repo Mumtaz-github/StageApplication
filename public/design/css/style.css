@@ -27,9 +27,11 @@ html {
 								
                    /*this is height of scroll body*/
 										.gantt-scroll-wrapper {
-											overflow: hidden; /* on gère manuellement le scroll via JS */
+											/*overflow: hidden; /dactivated0507025* on gère manuellement le scroll via JS */
+                      overflow-x:auto; /*these two added 5725 all these did for up and down scroll prevention*/
+                      overflow-y: hidden;/* these two added le 050725*/
 											cursor: grab;
-											height: 800px;
+											height: 1000px;
 											user-select: none;
 								
 										}
@@ -129,7 +131,9 @@ html {
 										}
 								
 										.gantt-scroll-body {
-											overflow-y: auto;
+                      max-height: 1000px; /*added0507025*/
+                      overflow-y: hidden;/*added0507025*/
+											/*overflow-y: auto; /*dactivated0507025*/
 											max-height: calc(100vh - 200px); /* ajuste si ton header fait +/– */
 										}
 								
@@ -157,6 +161,7 @@ html {
 											text-overflow: ellipsis;
 											align-items: center;
 											font-family: Arial, Helvetica, sans-serif;
+                 
 										}
 								
 										.entreprise-period {
@@ -226,7 +231,7 @@ html {
                       position: sticky;
                       top:0;
                       z-index: 10;
-                      height:700px;
+                      height:800px;
                       background: white;
                     }
                  
@@ -339,6 +344,3 @@ p {
 	color: white !important;
 }
 
- .button_label{
-  color:white;
- }
