@@ -48,9 +48,7 @@ class UsersVoter extends Voter
         }
 
         // Check permissions based on attribute
-        switch ($attribute) {
-            case self::EDIT:
-                $result = $this->canEdit($user);
+        switch ($attribute) { case self::EDIT:$result = $this->canEdit($user);
                 break;
             case self::DELETE:
                 $result = $this->canDelete($user);

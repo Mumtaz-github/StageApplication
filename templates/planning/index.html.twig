@@ -72,81 +72,24 @@
 									{% endfor %}
 								{% endfor %}
 
-              <div id="today-marker" class="today-marker"></div>
+              <div id="today-marker" class="today-marker">
+              </div>
              </div>
 
-{% for group, formations in grouped_formations %}
-  {% for formation in formations %}
-    <div class="gantt-row d-flex" style="margin-bottom: 5px;">
-      <div class="timeline-area" style="width: {{ total_days * day_width }}px; position: relative; height: 35px;">
-        
-        {# Grid lines (optional) #}
-        {% for i in 0..(total_days // 7) %}
-          <div class="grid-line" style="left: {{ i * 7 * day_width }}px;"></div>
-        {% endfor %}
 
-        {# Main Formation Bar #}
-        {% if is_granted('ROLE_ADMIN') %}
-          <a href="{{ path('app_formation_edit', {'id': formation.id}) }}"
-             class="formation-bar"
-             data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}"
-             data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}"
-             data-grn="{{ formation.groupeRattachement }}">
-        {% else %}
-          <div class="formation-bar"
-               data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}"
-               data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}"
-               data-grn="{{ formation.groupeRattachement }}">
-        {% endif %}
-          {{ formation.nom }} {{ formation.numero }} [{{ formation.nombreStagiaires ?? 0 }}]
-          {{ formation.dateDebut ? formation.dateDebut|date('d/m/Y') : '-' }}
-          {% if formation.dateFin %}→ {{ formation.dateFin|date('d/m/Y') }}{% endif %}
-          {% if formation.nombreHeures %} {{ formation.nombreHeures }}h {% endif %}
-        {% if is_granted('ROLE_ADMIN') %}
-          </a>
-        {% else %}
-          </div>
-        {% endif %}
-
-        {# Périodes en entreprise (internships) #}
-        {% for periode in formation.periodEnEntreprises %}
-          <div class="entreprise-period"
-               data-start="{{ periode.dateDebut|date('Y-m-d') }}"
-               data-end="{{ periode.dateFin|date('Y-m-d') }}">
-            {{ periode.dateDebut|date('d/m/Y') }} - {{ periode.dateFin|date('d/m/Y') }}
-            {{ periode.numbreHeures }}h
-          </div>
-        {% endfor %}
-
-        {# Validation period #}
-        {% if formation.dateDebutValidation and formation.dateFinValidation %}
-          <div class="validation-bar"
-               data-start="{{ formation.dateDebutValidation|date('Y-m-d') }}"
-               data-end="{{ formation.dateFinValidation|date('Y-m-d') }}">
-          </div>
-        {% endif %}
-
-        {# Interruptions (breaks) #}
-        {% for interruption in formation.interruptions %}
-          <div class="interruption"
-               data-start="{{ interruption.dateDebut|date('Y-m-d') }}"
-               data-end="{{ interruption.dateFin|date('Y-m-d') }}">
-          </div>
-        {% endfor %}
-
-
-							{# {% for group, formations in grouped_formations %}
+							{% for group, formations in grouped_formations %}
 								{% for formation in formations %}
 									<div class="gantt-row d-flex" style="margin-bottom: 5px;">
-										<div class="timeline-area" style="width: {{ total_days * day_width }}px; position:relative; height:27px;">
+										<div class="timeline-area" style="width: {{ total_days * day_width }}px; position:relative; height:37px;">
 
+                     {# Grid lines (optional) #}
 											{% for i in 0..(total_days // 7) %}
 												<div class="grid-line" style="left: {{ i * 7 * day_width }}px;"></div>
-											{% endfor %} #}
+											{% endfor %} 
 
 									
 											<!-- Bar Formation -->
-												{# {% if is_granted('ROLE_ADMIN') %}
+												 {% if is_granted('ROLE_ADMIN') %}
 													<a href="{{ path('app_formation_edit', {'id': formation.id}) }}" class="formation-bar" data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}" data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}" data-grn="{{ formation.groupeRattachement }}">
 												{% else %}
 													<div class="formation-bar" data-start="{{ formation.dateDebut ? formation.dateDebut|date('Y-m-d') : '' }}" data-end="{{ formation.dateFin ? formation.dateFin|date('Y-m-d') : '' }}" data-grn="{{ formation.groupeRattachement }}">
@@ -166,10 +109,10 @@
 													</a>
 											{% else %}
 												</div>
-											{% endif %} #}
+											{% endif %} 
 
 											<!-- Périodes en entreprise -->
-											{# {% for periode in formation.periodEnEntreprises %}
+											{% for periode in formation.periodEnEntreprises %}
 												{% if is_granted('ROLE_ADMIN') %}
 													<a href="{{ path('app_period_en_entreprise_edit', {'id': periode.id}) }}" class="entreprise-period" data-start="{{ periode.dateDebut|date('Y-m-d') }}" data-end="{{ periode.dateFin|date('Y-m-d') }}">
 													{% else %}
@@ -178,32 +121,31 @@
 														{{ periode.dateDebut|date('d/m/Y') }}
 														-
 														{{ periode.dateFin|date('d/m/Y') }}
-														{{ periode.numbreHeures }}
-														h
+														{{ periode.numbreHeures }}h
 														{% if is_granted('ROLE_ADMIN') %}
 														</a>
 												{% else %}
 													</div>
 												{% endif %}
 											{% endfor %}
-									 #}
+									 
 
 											<!-- Période de validation -->
-												{# {% if formation.dateDebutValidation and formation.dateFinValidation %}<div
-													class="validation-bar" data-start="{{ formation.dateDebutValidation|date('Y-m-d') }}" data-end="{{ formation.dateFinValidation|date('Y-m-d') }}"> {# {{ formation.dateDebutValidation|date('d/m/Y') }} →
-												 {{ formation.dateFinValidation|date('d/m/Y') }} #}
-												{# </div>
-											{% endif %} #} 
+												 {% if formation.dateDebutValidation and formation.dateFinValidation %}
+                         <div class="validation-bar" data-start="{{ formation.dateDebutValidation|date('Y-m-d') }}" 
+                         data-end="{{ formation.dateFinValidation|date('Y-m-d') }}"> 
+                       </div>
+											{% endif %} 
 
 
 											<!-- Interruptions -->
 
 											<!-- Top bar container -->
-											{# <div class="formation-bar">
+											 <div class="formation-bar">
 												{% for interruption in formation.interruptions %}
 													<div class="interruption" data-start="{{ interruption.dateDebut|date('Y-m-d') }}" data-end="{{ interruption.dateFin|date('Y-m-d') }}"></div>
 												{% endfor %}
-											</div> #}
+											</div> 
 
 											<!-- Vertical column container -->
 											{# <div class="vertical-column">
